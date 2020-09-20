@@ -1,5 +1,5 @@
-/build
-/debug
-/libs
-/release
-/sampledata
+build/
+debug/
+libs/
+release/
+sampledata/

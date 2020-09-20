@@ -1,7 +1,7 @@
-.gradle
-.idea
-build
-gradle
+.gradle/
+.idea/
+build/
+gradle/
 gradlew
 gradlew.bat
 local.properties
