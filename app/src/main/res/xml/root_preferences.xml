@@ -1,0 +1,20 @@
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/general">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="offline_mode"
+            android:title="@string/offline_mode" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/write">
+
+        <EditTextPreference
+            android:defaultValue="0"
+            android:key="custom_help"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/custom_help" />
+    </PreferenceCategory>
+</PreferenceScreen>
