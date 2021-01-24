@@ -4,7 +4,7 @@
         <item
             android:id="@+id/mwords"
             android:icon="@drawable/ic_school_black_24dp"
-            android:title="@string/mwords" />
+            android:title="@string/start_test" />
         <item
             android:id="@+id/query"
             android:icon="@drawable/ic_playlist_add_check_black_24dp"

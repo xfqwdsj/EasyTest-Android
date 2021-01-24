@@ -3,6 +3,6 @@
     <dbname value="Result" />
     <version value="1" />
     <list>
-        <mapping class="com.xfq.mwords.Result" />
+        <mapping class="com.xfq.easytest.Result" />
     </list>
 </litepal>

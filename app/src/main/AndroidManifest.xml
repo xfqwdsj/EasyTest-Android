@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.xfq.mwords">
-
-    <uses-permission android:name="android.permission.INTERNET" />
+    package="com.xfq.easytest">
 
     <application
         android:name=".ModulesInit"
@@ -12,14 +10,32 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".WordsActivity" android:configChanges="orientation|screenSize" />
-        <activity android:name=".DownloadActivity" android:configChanges="orientation|screenSize" />
-        <activity android:name=".IDQueryActivity" android:configChanges="orientation|screenSize" />
-        <activity android:name=".ResultActivity" android:configChanges="orientation|screenSize" />
-        <activity android:name=".MwordsActivity" android:configChanges="orientation|screenSize" />
-        <activity android:name=".SettingsActivity" android:configChanges="orientation|screenSize" />
-        <activity android:name=".LoginActivity" android:configChanges="orientation|screenSize" />
-        <activity android:name=".MainActivity" android:configChanges="orientation|screenSize" >
+        <activity android:name=".TestActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".SelectQuestionBankActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".DownloadActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".IDQueryActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".ResultActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".MwordsActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".SettingsActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".LoginActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,5 +43,7 @@
             </intent-filter>
         </activity>
     </application>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

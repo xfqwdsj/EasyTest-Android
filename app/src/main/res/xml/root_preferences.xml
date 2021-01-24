@@ -1,4 +1,3 @@
-
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory android:title="@string/general">
@@ -6,7 +5,16 @@
         <SwitchPreference
             android:defaultValue="false"
             android:key="offline_mode"
-            android:title="@string/offline_mode" />
+            android:title="@string/offline_mode"
+            android:enabled="false" />
+        <EditTextPreference
+            android:defaultValue="https://xfqwdsj.gitee.io/easy-test/question-bank-index.json"
+            android:enabled="false"
+            android:key="custom_source"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="@string/one_per_line"
+            android:title="@string/custom_source" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/write">
 

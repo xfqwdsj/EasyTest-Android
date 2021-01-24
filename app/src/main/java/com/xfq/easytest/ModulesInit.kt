@@ -1,4 +1,4 @@
-package com.xfq.mwords
+package com.xfq.easytest
 
 import android.app.Application
 import cn.leancloud.AVOSCloud

@@ -11,7 +11,11 @@
     </style>
     
     <style name="ToolbarTheme">
+        <item name="android:theme">@style/ToolbarTheme</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="colorControlNormal">@android:color/white</item>
+        <item name="titleTextColor">@android:color/white</item>
     </style>
 
     <style name="BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">

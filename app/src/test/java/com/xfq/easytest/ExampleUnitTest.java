@@ -1,4 +1,4 @@
-package com.xfq.mwords;
+package com.xfq.easytest;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.xfq.mwords
+package com.xfq.easytest
 
 import android.content.Intent
 import android.content.SharedPreferences
@@ -12,14 +12,15 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import androidx.preference.PreferenceManager
 import cn.leancloud.AVException
 import cn.leancloud.AVObject
 import cn.leancloud.AVUser
 import com.alibaba.fastjson.JSON
 import com.xfq.bottomdialog.BottomDialog
-import com.xfq.mwords.MyClass.getResString
-import com.xfq.mwords.MyClass.setInsert
+import com.xfq.easytest.MyClass.getResString
+import com.xfq.easytest.MyClass.setInset
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_mwords.*
@@ -74,7 +75,6 @@ class MwordsActivity : AppCompatActivity() {
             override fun onFailure(call: Call, e: IOException) {
                 dialog.close()
                 error(e)
-                finish()
             }
 
             override fun onResponse(call: Call, response: Response) {
@@ -231,11 +231,11 @@ class MwordsActivity : AppCompatActivity() {
                         BottomDialog().create(this@MwordsActivity).apply {
                             setTitle(R.string.congratulations)
                             setContent(this@MwordsActivity.resources.getString(R.string.mwords_result, stopTimerGetTime()))
-                            setButton1(android.R.string.yes) {
+                            setButton1(android.R.string.ok) {
                                 close()
                                 upload()
                             }
-                            setButton2(android.R.string.no) {
+                            setButton2(android.R.string.cancel) {
                                 close()
                             }
                             setCancelAble(false)
@@ -275,7 +275,7 @@ class MwordsActivity : AppCompatActivity() {
                 BottomDialog().create(this@MwordsActivity).apply {
                     setTitle(R.string.success)
                     setContent(R.string.upload_success)
-                    setButton1(android.R.string.yes) {
+                    setButton1(android.R.string.ok) {
                         close()
                         applyUploaded(avObject.objectId)
                     }
@@ -291,11 +291,11 @@ class MwordsActivity : AppCompatActivity() {
                     val message = error.message?.substring(error.message!!.indexOf("[") + 1, error.message!!.indexOf("]"))
                     BottomDialog().create(this@MwordsActivity).apply {
                         setTitle(R.string.failed)
-                        setContent(if (code == 202) getResString(R.string.better_record) else resources.getString(R.string.error, error))
-                        setButton1(android.R.string.yes) {
+                        setContent(if (code == 202) getResString(R.string.better_record) else resources.getString(R.string.error, message))
+                        setButton1(android.R.string.ok) {
                             close()
                             if (code == 202) {
-                                applyDoNotUpload(unit, time, customHelp, help, userId, message)
+                                applyDoNotUpload(unit, time, customHelp, help, userId)
                             }
                         }
                         if (code != 202) {
@@ -311,7 +311,7 @@ class MwordsActivity : AppCompatActivity() {
                     BottomDialog().create(this@MwordsActivity).apply {
                         setTitle(R.string.failed)
                         setContent(resources.getString(R.string.error, error))
-                        setButton1(android.R.string.yes) {
+                        setButton1(android.R.string.ok) {
                             close()
                         }
                         setButton2(R.string.retry) {
@@ -337,14 +337,13 @@ class MwordsActivity : AppCompatActivity() {
         }
     }
 
-    private fun applyDoNotUpload(unit: String, time: Int, customHelp: Int, help: Int, userId: String?, history: String?) {
+    private fun applyDoNotUpload(unit: String, time: Int, customHelp: Int, help: Int, userId: String?) {
         Intent(this, ResultActivity::class.java).apply {
             putExtra("uploaded", false)
             putExtra("unit", unit)
             putExtra("time", time)
             putExtra("help", help)
             putExtra("customHelp", customHelp)
-            putExtra("history", history)
             putExtra("user", userId)
             putExtra("createdAt", System.currentTimeMillis())
             startActivity(this)
@@ -360,9 +359,9 @@ class MwordsActivity : AppCompatActivity() {
                 BottomDialog().create(this).apply {
                     setTitle(R.string.failed)
                     setContent(R.string.no_login)
-                    setButton1(android.R.string.yes) {
+                    setButton1(android.R.string.ok) {
                         close()
-                        applyDoNotUpload(spinner.selectedItem.toString(), time, customHelp, help, null, null)
+                        applyDoNotUpload(spinner.selectedItem.toString(), time, customHelp, help, null)
                     }
                     setCancelAble(false)
                     show()
@@ -417,7 +416,7 @@ class MwordsActivity : AppCompatActivity() {
             setTitle(R.string.failed)
             setContent(resources.getString(R.string.error, e))
             setCancelAble(false)
-            setButton1(android.R.string.yes) {
+            setButton1(android.R.string.ok) {
                 close()
                 finish()
             }
@@ -428,14 +427,14 @@ class MwordsActivity : AppCompatActivity() {
         /*
             root
          */
-        root.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-        setInsert(MyClass.INSERT_BOTTOM, root)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        setInset(MyClass.INSERT_BOTTOM, root)
         /*
             Toolbar
          */
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setInsert(MyClass.INSERT_TOP, toolbar)
+        setInset(MyClass.INSERT_TOP, toolbar)
         /*
             Button
          */
@@ -481,7 +480,7 @@ class MwordsActivity : AppCompatActivity() {
             BottomDialog().create(this).apply {
                 setTitle(R.string.no_login)
                 setContent(R.string.no_login_message)
-                setButton1(android.R.string.yes) {
+                setButton1(android.R.string.ok) {
                     close()
                 }
                 show()

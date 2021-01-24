@@ -1,11 +1,14 @@
-package com.xfq.mwords
+package com.xfq.easytest
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.xfq.mwords.MyClass.setInsert
+import androidx.core.view.WindowCompat
+import com.xfq.easytest.MyClass.RESULT_TYPE_LOCAL_UPLOADED
+import com.xfq.easytest.MyClass.RESULT_TYPE_NO_UPLOADED_SAVED
+import com.xfq.easytest.MyClass.RESULT_TYPE_UPLOADED
+import com.xfq.easytest.MyClass.setInset
 import kotlinx.android.synthetic.main.activity_id_query.*
 
 class IDQueryActivity : AppCompatActivity() {
@@ -13,30 +16,28 @@ class IDQueryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_id_query)
-        root.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setInsert(MyClass.INSERT_TOP, toolbar)
-        setInsert(MyClass.INSERT_BOTTOM, root)
+        setInset(MyClass.INSERT_TOP, toolbar)
+        setInset(MyClass.INSERT_BOTTOM, root)
         button.setOnClickListener {
             if (editText.text.toString() != "") {
                 if (online.isChecked) {
                     Intent(this, ResultActivity::class.java).apply {
-                        putExtra("uploaded", true)
+                        putExtra("type", RESULT_TYPE_UPLOADED)
                         putExtra("id", editText.text.toString())
                         startActivity(this)
                     }
                 } else if (localUploaded.isChecked) {
                     Intent(this, ResultActivity::class.java).apply {
-                        putExtra("uploaded", true)
-                        putExtra("saved", true)
+                        putExtra("type", RESULT_TYPE_LOCAL_UPLOADED)
                         putExtra("id", editText.text.toString())
                         startActivity(this)
                     }
                 } else if (local.isChecked) {
                     Intent(this, ResultActivity::class.java).apply {
-                        putExtra("uploaded", false)
-                        putExtra("saved", true)
+                        putExtra("type", RESULT_TYPE_NO_UPLOADED_SAVED)
                         putExtra("id", editText.text.toString().toInt())
                         startActivity(this)
                     }

@@ -1,14 +1,20 @@
-package com.xfq.mwords
+package com.xfq.easytest
 
 import android.content.Context
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 
 object MyClass {
     val INSERT_TOP: Int = 0
     val INSERT_BOTTOM: Int = 1
     val INSERT_LEFT: Int = 2
     val INSERT_RIGHT: Int = 3
+    val RESULT_TYPE_UPLOADED = 0
+    val RESULT_TYPE_NO_UPLOADED_NO_SAVE = 1
+    val RESULT_TYPE_NO_UPLOADED_SAVED = 2
+    val RESULT_TYPE_LOCAL_UPLOADED = 3
     private var context: Context? = null
 
     fun getResString(id: Int): String {
@@ -23,29 +29,29 @@ object MyClass {
         return ContextCompat.getColor(context!!, id)
     }
 
-    fun setInsert(type: Int, view: View) {
+    fun setInset(type: Int, view: View) {
         when (type) {
             INSERT_TOP -> {
-                view.setOnApplyWindowInsetsListener { myView, windowInsets ->
-                    myView.setPadding(myView.paddingLeft, windowInsets.systemWindowInsetTop, myView.paddingRight, myView.paddingBottom)
+                ViewCompat.setOnApplyWindowInsetsListener(view) { myView, windowInsets ->
+                    myView.setPadding(myView.paddingLeft, windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).top, myView.paddingRight, myView.paddingBottom)
                     windowInsets
                 }
             }
             INSERT_BOTTOM -> {
-                view.setOnApplyWindowInsetsListener { myView, windowInsets ->
-                    myView.setPadding(myView.paddingLeft, myView.paddingTop, myView.paddingRight, windowInsets.systemWindowInsetBottom)
+                ViewCompat.setOnApplyWindowInsetsListener(view) { myView, windowInsets ->
+                    myView.setPadding(myView.paddingLeft, myView.paddingTop, myView.paddingRight, windowInsets.getInsets(WindowInsetsCompat.Type.statusBars()).bottom)
                     windowInsets
                 }
             }
             INSERT_LEFT -> {
-                view.setOnApplyWindowInsetsListener { myView, windowInsets ->
-                    myView.setPadding(windowInsets.systemWindowInsetLeft, myView.paddingTop, myView.paddingRight, myView.paddingBottom)
+                ViewCompat.setOnApplyWindowInsetsListener(view) { myView, windowInsets ->
+                    myView.setPadding(windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).left, myView.paddingTop, myView.paddingRight, myView.paddingBottom)
                     windowInsets
                 }
             }
             INSERT_RIGHT -> {
-                view.setOnApplyWindowInsetsListener { myView, windowInsets ->
-                    myView.setPadding(myView.paddingLeft, myView.paddingTop, windowInsets.systemWindowInsetRight, myView.paddingBottom)
+                ViewCompat.setOnApplyWindowInsetsListener(view) { myView, windowInsets ->
+                    myView.setPadding(myView.paddingLeft, myView.paddingTop, windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).right, myView.paddingBottom)
                     windowInsets
                 }
             }

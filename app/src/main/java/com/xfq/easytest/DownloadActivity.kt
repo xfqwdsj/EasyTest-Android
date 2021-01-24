@@ -1,4 +1,4 @@
-package com.xfq.mwords
+package com.xfq.easytest
 
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
@@ -10,15 +10,15 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.InputType
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import com.blankj.utilcode.util.FileUtils.delete
 import com.blankj.utilcode.util.FileUtils.isFileExists
 import com.blankj.utilcode.util.ZipUtils.unzipFile
 import com.google.android.material.snackbar.Snackbar
 import com.xfq.bottomdialog.EditDialog
-import com.xfq.mwords.MyClass.getResString
-import com.xfq.mwords.MyClass.setInsert
+import com.xfq.easytest.MyClass.getResString
+import com.xfq.easytest.MyClass.setInset
 import kotlinx.android.synthetic.main.activity_download.*
 
 
@@ -30,11 +30,11 @@ class DownloadActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_download)
-        root.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setInsert(MyClass.INSERT_TOP, toolbar)
-        setInsert(MyClass.INSERT_BOTTOM, root)
+        setInset(MyClass.INSERT_TOP, toolbar)
+        setInset(MyClass.INSERT_BOTTOM, root)
         button.setOnClickListener {
             download("https://xfqwdsj.github.io/mword/words.zip")
         }
@@ -43,7 +43,7 @@ class DownloadActivity : AppCompatActivity() {
                 getEdit()!!.hint = getResString(R.string.source)
                 getEdit()!!.inputType = InputType.TYPE_TEXT_VARIATION_URI
                 setTitle(R.string.custom_source)
-                setButton(android.R.string.yes) {
+                setButton(android.R.string.ok) {
                     close()
                     if (getText() != "") {
                         download(getText())
@@ -70,7 +70,7 @@ class DownloadActivity : AppCompatActivity() {
             downloadId = downloadManager!!.enqueue(request)
             this.registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
         } else {
-            Snackbar.make(root, R.string.file_exists, Snackbar.LENGTH_LONG).setAction(android.R.string.yes) {
+            Snackbar.make(root, R.string.file_exists, Snackbar.LENGTH_LONG).setAction(android.R.string.ok) {
                 delete(getExternalFilesDir("")!!.path + "/" + fileName)
                 val request = DownloadManager.Request(Uri.parse(url))
                 request.setTitle(fileName)

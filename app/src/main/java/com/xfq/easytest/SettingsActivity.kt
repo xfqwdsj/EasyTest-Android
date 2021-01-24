@@ -1,23 +1,23 @@
-package com.xfq.mwords
+package com.xfq.easytest
 
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import com.xfq.mwords.MyClass.setInsert
+import com.xfq.easytest.MyClass.setInset
 import kotlinx.android.synthetic.main.activity_settings.*
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-        SettingsLayout.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setInsert(MyClass.INSERT_TOP, toolbar)
-        setInsert(MyClass.INSERT_BOTTOM, settings)
+        setInset(MyClass.INSERT_TOP, toolbar)
+        setInset(MyClass.INSERT_BOTTOM, settings)
         supportFragmentManager.beginTransaction().replace(R.id.settings, SettingsFragment()).commit()
     }
 

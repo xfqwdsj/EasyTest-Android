@@ -9,7 +9,7 @@
     <string name="offline_mode">离线模式</string>
     <string name="general">常规</string>
     <string name="home">主页</string>
-    <string name="app_name">MWords</string>
+    <string name="app_name">一测</string>
     <string name="drawer_open">抽屉打开</string>
     <string name="drawer_close">抽屉关闭</string>
     <string name="login">登录</string>
@@ -19,7 +19,7 @@
     <string name="username">用户名</string>
     <string name="logout">注销</string>
     <string name="ask_logout">注销？</string>
-    <string name="mwords">背单词</string>
+    <string name="start_test">开始测试</string>
     <string name="prompt">提示</string>
     <string name="next">下一个</string>
     <string name="retry">重试</string>
@@ -62,4 +62,10 @@
     <string name="online_result">在线成果</string>
     <string name="uploaded_local_result">已上传的本地成果</string>
     <string name="unknown">未知</string>
+    <string name="unknown_error">未知错误</string>
+    <string name="account">账户</string>
+    <string name="test">测试</string>
+    <string name="question_bank_selection">题库选择</string>
+    <string name="one_per_line">一行一个</string>
+    <string name="question_bank_icon">题库图标</string>
 </resources>
