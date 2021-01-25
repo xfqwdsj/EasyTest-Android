@@ -9,36 +9,38 @@ import com.xfq.easytest.MyClass.RESULT_TYPE_LOCAL_UPLOADED
 import com.xfq.easytest.MyClass.RESULT_TYPE_NO_UPLOADED_SAVED
 import com.xfq.easytest.MyClass.RESULT_TYPE_UPLOADED
 import com.xfq.easytest.MyClass.setInset
-import kotlinx.android.synthetic.main.activity_id_query.*
+import com.xfq.easytest.databinding.ActivityIdQueryBinding
 
 class IDQueryActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityIdQueryBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_id_query)
+        binding = ActivityIdQueryBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setInset(MyClass.INSERT_TOP, toolbar)
-        setInset(MyClass.INSERT_BOTTOM, root)
-        button.setOnClickListener {
-            if (editText.text.toString() != "") {
-                if (online.isChecked) {
+        setInset(MyClass.INSET_TOP, binding.toolbar)
+        setInset(MyClass.INSET_BOTTOM, binding.root)
+        binding.button.setOnClickListener {
+            if (binding.editText.text.toString() != "") {
+                if (binding.online.isChecked) {
                     Intent(this, ResultActivity::class.java).apply {
                         putExtra("type", RESULT_TYPE_UPLOADED)
-                        putExtra("id", editText.text.toString())
+                        putExtra("id", binding.editText.text.toString())
                         startActivity(this)
                     }
-                } else if (localUploaded.isChecked) {
+                } else if (binding.localUploaded.isChecked) {
                     Intent(this, ResultActivity::class.java).apply {
                         putExtra("type", RESULT_TYPE_LOCAL_UPLOADED)
-                        putExtra("id", editText.text.toString())
+                        putExtra("id", binding.editText.text.toString())
                         startActivity(this)
                     }
-                } else if (local.isChecked) {
+                } else if (binding.local.isChecked) {
                     Intent(this, ResultActivity::class.java).apply {
                         putExtra("type", RESULT_TYPE_NO_UPLOADED_SAVED)
-                        putExtra("id", editText.text.toString().toInt())
+                        putExtra("id", binding.editText.text.toString().toInt())
                         startActivity(this)
                     }
                 }

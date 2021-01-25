@@ -10,22 +10,25 @@ import com.xfq.bottomdialog.BottomDialog
 import com.xfq.bottomdialog.EditDialog
 import com.xfq.easytest.MyClass.getResString
 import com.xfq.easytest.MyClass.setInset
+import com.xfq.easytest.databinding.ActivityLoginBinding
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityLoginBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setInset(MyClass.INSERT_TOP, toolbar)
-        setInset(MyClass.INSERT_BOTTOM, root)
-        login.setOnClickListener {
-            if (username.text.toString() != "" && password.text.toString() != "") {
-                AVUser.logIn(username.text.toString(), password.text.toString()).subscribe(object : Observer<AVUser?> {
+        setInset(MyClass.INSET_TOP, binding.toolbar)
+        setInset(MyClass.INSET_BOTTOM, binding.root)
+        binding.login.setOnClickListener {
+            if (binding.username.text.toString() != "" && binding.password.text.toString() != "") {
+                AVUser.logIn(binding.username.text.toString(), binding.password.text.toString()).subscribe(object : Observer<AVUser?> {
                     override fun onSubscribe(d: Disposable) {}
                     override fun onNext(t: AVUser) {
                         finish()
@@ -46,17 +49,17 @@ class LoginActivity : AppCompatActivity() {
                 })
             }
         }
-        signup.setOnClickListener {
+        binding.signup.setOnClickListener {
             EditDialog().create(this).apply {
                 getEdit()!!.hint = getResString(R.string.email)
                 getEdit()!!.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
                 setTitle(R.string.signup)
                 setButton(android.R.string.ok) {
                     close()
-                    if (username.text.toString() != "" && password.text.toString() != "" && getText() != "") {
+                    if (binding.username.text.toString() != "" && binding.password.text.toString() != "" && getText() != "") {
                         val avUser = AVUser()
-                        avUser.username = username.text.toString()
-                        avUser.password = password.text.toString()
+                        avUser.username = binding.username.text.toString()
+                        avUser.password = binding.password.text.toString()
                         avUser.email = getText()
                         avUser.signUpInBackground().subscribe(object : Observer<AVUser?> {
                             override fun onSubscribe(disposable: Disposable) {}

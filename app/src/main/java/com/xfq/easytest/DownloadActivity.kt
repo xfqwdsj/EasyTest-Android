@@ -19,26 +19,28 @@ import com.google.android.material.snackbar.Snackbar
 import com.xfq.bottomdialog.EditDialog
 import com.xfq.easytest.MyClass.getResString
 import com.xfq.easytest.MyClass.setInset
-import kotlinx.android.synthetic.main.activity_download.*
+import com.xfq.easytest.databinding.ActivityDownloadBinding
 
 
 class DownloadActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityDownloadBinding
     private var downloadManager: DownloadManager? = null
     private var downloadId: Long? = null
     private var fileName: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_download)
+        binding = ActivityDownloadBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setInset(MyClass.INSERT_TOP, toolbar)
-        setInset(MyClass.INSERT_BOTTOM, root)
-        button.setOnClickListener {
+        setInset(MyClass.INSET_TOP, binding.toolbar)
+        setInset(MyClass.INSET_BOTTOM, binding.root)
+        binding.button.setOnClickListener {
             download("https://xfqwdsj.github.io/mword/words.zip")
         }
-        button.setOnLongClickListener {
+        binding.button.setOnLongClickListener {
             EditDialog().create(this).apply {
                 getEdit()!!.hint = getResString(R.string.source)
                 getEdit()!!.inputType = InputType.TYPE_TEXT_VARIATION_URI
@@ -58,7 +60,7 @@ class DownloadActivity : AppCompatActivity() {
     private fun download(url: String) {
         fileName = getFileName(url)
         if (fileName == null) {
-            Snackbar.make(root, R.string.failed, Snackbar.LENGTH_LONG).show()
+            Snackbar.make(binding.root, R.string.failed, Snackbar.LENGTH_LONG).show()
             return
         }
         if (!isFileExists(getExternalFilesDir("")!!.path + "/" + fileName)) {
@@ -70,7 +72,7 @@ class DownloadActivity : AppCompatActivity() {
             downloadId = downloadManager!!.enqueue(request)
             this.registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
         } else {
-            Snackbar.make(root, R.string.file_exists, Snackbar.LENGTH_LONG).setAction(android.R.string.ok) {
+            Snackbar.make(binding.root, R.string.file_exists, Snackbar.LENGTH_LONG).setAction(android.R.string.ok) {
                 delete(getExternalFilesDir("")!!.path + "/" + fileName)
                 val request = DownloadManager.Request(Uri.parse(url))
                 request.setTitle(fileName)
@@ -105,16 +107,16 @@ class DownloadActivity : AppCompatActivity() {
                     DownloadManager.STATUS_SUCCESSFUL -> {
                         if (unzipFile(getExternalFilesDir("")!!.path + "/" + fileName, getExternalFilesDir("")!!.path + "/") != null) {
                             delete(getExternalFilesDir("")!!.path + "/" + fileName)
-                            Snackbar.make(root, R.string.success, Snackbar.LENGTH_LONG).show()
+                            Snackbar.make(binding.root, R.string.success, Snackbar.LENGTH_LONG).show()
                         } else {
                             delete(getExternalFilesDir("")!!.path + "/" + fileName)
-                            Snackbar.make(root, R.string.failed, Snackbar.LENGTH_LONG).show()
+                            Snackbar.make(binding.root, R.string.failed, Snackbar.LENGTH_LONG).show()
                         }
                         cursor.close()
                         this.unregisterReceiver(receiver)
                     }
                     DownloadManager.STATUS_FAILED -> {
-                        Snackbar.make(root, R.string.failed, Snackbar.LENGTH_LONG).show()
+                        Snackbar.make(binding.root, R.string.failed, Snackbar.LENGTH_LONG).show()
                         cursor.close()
                         this.unregisterReceiver(receiver)
                     }

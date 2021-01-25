@@ -1,5 +1,6 @@
 package com.xfq.easytest
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.webkit.WebView
@@ -7,24 +8,24 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.fastjson.JSON
-import com.google.gson.Gson
-import com.google.gson.JsonParser
-import com.google.gson.reflect.TypeToken
 import com.xfq.bottomdialog.BottomDialog
-import com.xfq.easytest.MyClass.INSERT_TOP
+import com.xfq.easytest.MyClass.INSET_TOP
 import com.xfq.easytest.MyClass.setInset
-import kotlinx.android.synthetic.main.activity_select_question_bank.*
+import com.xfq.easytest.databinding.ActivitySelectQuestionBankBinding
 import okhttp3.*
 import java.io.IOException
 
 class SelectQuestionBankActivity : AppCompatActivity() {
+    private lateinit var binding: ActivitySelectQuestionBankBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_select_question_bank)
+        binding = ActivitySelectQuestionBankBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setInset(INSERT_TOP, toolbar)
+        setInset(INSET_TOP, binding.toolbar)
 
         val url = "https://xfqwdsj.gitee.io/easy-test/question-bank-index.json"
 
@@ -54,8 +55,8 @@ class SelectQuestionBankActivity : AppCompatActivity() {
                     try {
                         val json = JSON.parseArray(response.body?.string(), QuestionBank::class.java)
                         runOnUiThread {
-                            recyclerView.layoutManager = LinearLayoutManager(this@SelectQuestionBankActivity)
-                            recyclerView.adapter = QuestionBankAdapter(json, 0) { item: QuestionBank -> onItemClicked(item) }
+                            binding.recyclerView.layoutManager = LinearLayoutManager(this@SelectQuestionBankActivity)
+                            binding.recyclerView.adapter = QuestionBankAdapter(json) { item: QuestionBank, isLast: Boolean -> onItemClicked(item, isLast) }
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -65,8 +66,13 @@ class SelectQuestionBankActivity : AppCompatActivity() {
         })
     }
 
-    private fun onItemClicked(item: QuestionBank) {
-
+    private fun onItemClicked(item: QuestionBank, isLast: Boolean) {
+        if (isLast) {
+            Intent(this, TestActivity::class.java).apply {
+                putExtra("url", item.url)
+                startActivity(this)
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -14,27 +14,29 @@ import cn.leancloud.AVUser
 import com.google.android.material.appbar.MaterialToolbar
 import com.xfq.bottomdialog.BottomDialog
 import com.xfq.easytest.MyClass.setInset
-import kotlinx.android.synthetic.main.activity_main.*
+import com.xfq.easytest.databinding.ActivityMainBinding
 import okhttp3.*
 import org.litepal.LitePal
 import java.io.IOException
 import java.net.URL
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
     private var headerView: View? = null
     private var currentUser: AVUser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         createDb()
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        headerView = navigationView.getHeaderView(0)
+        headerView = binding.navigationView.getHeaderView(0)
         val headerToolbar = headerView!!.findViewById<MaterialToolbar>(R.id.toolbar)
-        ViewCompat.setOnApplyWindowInsetsListener(toolbar) { myView, windowInsets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar) { myView, windowInsets ->
             myView.setPadding(myView.paddingLeft, windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).top, myView.paddingRight, myView.paddingBottom)
             headerToolbar.setPadding(headerToolbar.paddingLeft, windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).top, headerToolbar.paddingRight, headerToolbar.paddingBottom)
             windowInsets
@@ -60,7 +62,7 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
-        navigationView.setNavigationItemSelectedListener { item ->
+        binding.navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.mwords -> startActivity(Intent(this, SelectQuestionBankActivity::class.java))
                 R.id.query -> startActivity(Intent(this, IDQueryActivity::class.java))
@@ -68,10 +70,10 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
-        setInset(MyClass.INSERT_BOTTOM, navigationView)
-        val actionBarDrawerToggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close)
+        setInset(MyClass.INSET_BOTTOM, binding.navigationView)
+        val actionBarDrawerToggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.toolbar, R.string.expanded, R.string.collapsed)
         actionBarDrawerToggle.syncState()
-        drawerLayout.addDrawerListener(actionBarDrawerToggle)
+        binding.drawerLayout.addDrawerListener(actionBarDrawerToggle)
         try {
             getNetworkStatus(URL("https://xfqwdsj.gitee.io/easy-test/"))
         } catch (e: Exception) {
@@ -120,18 +122,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun get(url: URL, dialog: BottomDialog) {
-        /*
-            val httpURLConnection = url.openConnection() as HttpURLConnection
-            httpURLConnection.requestMethod = "GET"
-            if (httpURLConnection.responseCode == 200) {
-                dialog.close()
-            } else {
-                dialog.close()
-                runOnUiThread {
-                    askOffline()
-                }
-            }
-         */
         val client = OkHttpClient()
         val request = Request.Builder()
                 .url(url)
@@ -144,6 +134,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onResponse(call: Call, response: Response) {
                 dialog.close()
+                response.close()
             }
         })
     }

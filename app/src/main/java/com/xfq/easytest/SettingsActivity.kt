@@ -7,17 +7,20 @@ import androidx.core.view.WindowCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.xfq.easytest.MyClass.setInset
-import kotlinx.android.synthetic.main.activity_settings.*
+import com.xfq.easytest.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {
+    private lateinit var binding: ActivitySettingsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setInset(MyClass.INSERT_TOP, toolbar)
-        setInset(MyClass.INSERT_BOTTOM, settings)
+        setInset(MyClass.INSET_TOP, binding.toolbar)
+        setInset(MyClass.INSET_BOTTOM, binding.settings)
         supportFragmentManager.beginTransaction().replace(R.id.settings, SettingsFragment()).commit()
     }
 

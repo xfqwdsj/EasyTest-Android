@@ -20,9 +20,9 @@ import com.xfq.easytest.MyClass.RESULT_TYPE_NO_UPLOADED_SAVED
 import com.xfq.easytest.MyClass.RESULT_TYPE_UPLOADED
 import com.xfq.easytest.MyClass.getResString
 import com.xfq.easytest.MyClass.setInset
+import com.xfq.easytest.databinding.ActivityResultBinding
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.activity_result.*
 import org.litepal.LitePal
 import org.litepal.extension.find
 import java.text.DateFormat.getDateInstance
@@ -31,10 +31,12 @@ import java.util.*
 
 
 class ResultActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityResultBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_result)
+        binding = ActivityResultBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         val intent = this.intent
         val type = intent.getIntExtra("type", -1)
         if (type == -1) {
@@ -49,10 +51,10 @@ class ResultActivity : AppCompatActivity() {
             }
         }
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setInset(MyClass.INSERT_TOP, toolbar)
-        setInset(MyClass.INSERT_BOTTOM, root)
+        setInset(MyClass.INSET_TOP, binding.toolbar)
+        setInset(MyClass.INSET_BOTTOM, binding.root)
         when (type) {
             RESULT_TYPE_UPLOADED -> {
                 val id = intent.getStringExtra("id")
@@ -75,10 +77,10 @@ class ResultActivity : AppCompatActivity() {
                                 val help = result.get("help") as Int
                                 val createdAt = getDateInstance().format(result.createdAt) + " " + getTimeInstance().format(result.createdAt)
                                 val updatedAt = getDateInstance().format(result.updatedAt) + " " + getTimeInstance().format(result.updatedAt)
-                                textView.text = this@ResultActivity.resources.getString(R.string.result_text_uploaded, nickname, username, unit, getTime(time), help.toString(), checkCustomHelp(customHelp), createdAt, updatedAt)
-                                toolbar.title = this@ResultActivity.resources.getString(R.string.result_title, nickname)
-                                button1.visibility = View.VISIBLE
-                                button1.setOnClickListener {
+                                binding.textView.text = this@ResultActivity.resources.getString(R.string.result_text_uploaded, nickname, username, unit, getTime(time), help.toString(), checkCustomHelp(customHelp), createdAt, updatedAt)
+                                binding.toolbar.title = this@ResultActivity.resources.getString(R.string.result_title, nickname)
+                                binding.button1.visibility = View.VISIBLE
+                                binding.button1.setOnClickListener {
                                     val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                                     val clipData = ClipData.newPlainText("Label", id)
                                     clipboardManager.setPrimaryClip(clipData)
@@ -115,10 +117,10 @@ class ResultActivity : AppCompatActivity() {
                 val time = intent.getIntExtra("time", 9999)
                 val help = intent.getIntExtra("help", 9999)
                 val customHelp = intent.getIntExtra("customHelp", 0)
-                textView.text = this.resources.getString(R.string.result_text_no_uploaded, unit, getTime(time), help.toString(), checkCustomHelp(customHelp), getResString(R.string.unknown))
-                toolbar.title = getResString(R.string.offline_result)
-                button2.visibility = View.VISIBLE
-                button2.setOnClickListener {
+                binding.textView.text = this.resources.getString(R.string.result_text_no_uploaded, unit, getTime(time), help.toString(), checkCustomHelp(customHelp), getResString(R.string.unknown))
+                binding.toolbar.title = getResString(R.string.offline_result)
+                binding.button2.visibility = View.VISIBLE
+                binding.button2.setOnClickListener {
                     val user = intent.getStringExtra("user")
                     val result = Result()
                     if (user != null) result.user = user
@@ -145,7 +147,7 @@ class ResultActivity : AppCompatActivity() {
                             show()
                         }
                     } else {
-                        Snackbar.make(root, R.string.failed, Snackbar.LENGTH_LONG).show()
+                        Snackbar.make(binding.root, R.string.failed, Snackbar.LENGTH_LONG).show()
                     }
                 }
             }
@@ -153,16 +155,16 @@ class ResultActivity : AppCompatActivity() {
                 val id = intent.getIntExtra("id", 1).toLong()
                 val result = LitePal.find<Result>(id)
                 if (result != null) {
-                    textView.text = this.resources.getString(R.string.result_text_no_uploaded, result.unit, getTime(result.time!!), result.help.toString(), checkCustomHelp(result.customHelp!!), getDate(result.createdAt!!))
-                    toolbar.title = getResString(R.string.offline_result)
-                    button1.visibility = View.VISIBLE
-                    button1.setOnClickListener {
+                    binding.textView.text = this.resources.getString(R.string.result_text_no_uploaded, result.unit, getTime(result.time!!), result.help.toString(), checkCustomHelp(result.customHelp!!), getDate(result.createdAt!!))
+                    binding.toolbar.title = getResString(R.string.offline_result)
+                    binding.button1.visibility = View.VISIBLE
+                    binding.button1.setOnClickListener {
                         val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         val clipData = ClipData.newPlainText("Label", result.id.toString())
                         clipboardManager.setPrimaryClip(clipData)
                     }
-                    button3.visibility = View.VISIBLE
-                    button3.setOnClickListener {
+                    binding.button3.visibility = View.VISIBLE
+                    binding.button3.setOnClickListener {
                         val user: String = (if (result.user != null) result.user else if (AVUser.getCurrentUser() != null) AVUser.getCurrentUser().objectId else null)
                                 ?: return@setOnClickListener
                         val avObject = AVObject("LocalMwordsResult").apply {
@@ -230,11 +232,11 @@ class ResultActivity : AppCompatActivity() {
                                 val help = result.getInt("help")
                                 val createdAt = getDate(result.createdAt)
                                 val updatedAt = getDate(result.updatedAt)
-                                textView.text = this@ResultActivity.resources.getString(R.string.result_text_uploaded, nickname, username, unit, getTime(time), help.toString(), checkCustomHelp(customHelp), createdAt, updatedAt)
-                                toolbar.title = this@ResultActivity.resources.getString(R.string.result_title, nickname)
-                                warning.visibility = View.VISIBLE
-                                button1.visibility = View.VISIBLE
-                                button1.setOnClickListener {
+                                binding.textView.text = this@ResultActivity.resources.getString(R.string.result_text_uploaded, nickname, username, unit, getTime(time), help.toString(), checkCustomHelp(customHelp), createdAt, updatedAt)
+                                binding.toolbar.title = this@ResultActivity.resources.getString(R.string.result_title, nickname)
+                                binding.warning.visibility = View.VISIBLE
+                                binding.button1.visibility = View.VISIBLE
+                                binding.button1.setOnClickListener {
                                     val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                                     val clipData = ClipData.newPlainText("Label", id)
                                     clipboardManager.setPrimaryClip(clipData)

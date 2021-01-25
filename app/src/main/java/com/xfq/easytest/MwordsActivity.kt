@@ -21,9 +21,9 @@ import com.alibaba.fastjson.JSON
 import com.xfq.bottomdialog.BottomDialog
 import com.xfq.easytest.MyClass.getResString
 import com.xfq.easytest.MyClass.setInset
+import com.xfq.easytest.databinding.ActivityMwordsBinding
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.activity_mwords.*
 import kotlinx.coroutines.*
 import okhttp3.*
 import java.io.IOException
@@ -32,6 +32,7 @@ import java.util.regex.Pattern
 import kotlin.properties.Delegates
 
 class MwordsActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMwordsBinding
     private lateinit var sharedPreferences: SharedPreferences
     private var customHelp by Delegates.notNull<Int>()
     private var index = 0
@@ -44,7 +45,8 @@ class MwordsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_mwords)
+        binding = ActivityMwordsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         customHelp = sharedPreferences.getString("custom_help", "0")!!.toInt()
         getList()
@@ -92,8 +94,8 @@ class MwordsActivity : AppCompatActivity() {
                         setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                     }
                     runOnUiThread {
-                        spinner.adapter = adapter
-                        spinner.onItemSelectedListener = object : OnItemSelectedListener {
+                        binding.spinner.adapter = adapter
+                        binding.spinner.onItemSelectedListener = object : OnItemSelectedListener {
                             override fun onItemSelected(parent: AdapterView<*>?, view: View?, i: Int, id: Long) {
                                 init(urlList[i])
                             }
@@ -135,10 +137,10 @@ class MwordsActivity : AppCompatActivity() {
                         val wordsTextView = findViewById<TextView>(R.id.words)
                         runOnUiThread {
                             wordsTextView.text = wordsList.toString()
-                            progress.text = 0.toString()
-                            all.text = wordsList.size.toString()
-                            progressBar.max = wordsList.size
-                            progressBar.progress = 0
+                            binding.progress.text = 0.toString()
+                            binding.all.text = wordsList.size.toString()
+                            binding.progressBar.max = wordsList.size
+                            binding.progressBar.progress = 0
                             startWrite(wordsList)
                             dialog.close()
                         }
@@ -160,13 +162,13 @@ class MwordsActivity : AppCompatActivity() {
         time = -1
         val textView = findViewById<TextView>(R.id.timer)
         textView.text = (-1).toString()
-        timerStatus.text = timer.toString()
+        binding.timerStatus.text = timer.toString()
         if (this::job.isInitialized && job.isActive) job.cancel()
         job = GlobalScope.launch(Dispatchers.Main) {
             while (timer) {
                 time++
                 textView.text = (textView.text.toString().toInt() + 1).toString()
-                if (textView.text.toString().toInt() != time && timerStatus.text.toString() != timer.toString()) {
+                if (textView.text.toString().toInt() != time && binding.timerStatus.text.toString() != timer.toString()) {
                     finish()
                 }
                 delay(1000)
@@ -177,17 +179,17 @@ class MwordsActivity : AppCompatActivity() {
     private fun stopTimer() {
         if (this::job.isInitialized && job.isActive) job.cancel()
         val textView = findViewById<TextView>(R.id.timer)
-        if (textView.text.toString().toInt() != time && timerStatus.text.toString() != timer.toString()) {
+        if (textView.text.toString().toInt() != time && binding.timerStatus.text.toString() != timer.toString()) {
             finish()
         }
         timer = false
-        timerStatus.text = timer.toString()
-        editText.setText("")
-        editText.hint = ""
+        binding.timerStatus.text = timer.toString()
+        binding.editText.setText("")
+        binding.editText.hint = ""
     }
 
     private fun stopTimerGetTime(): String? {
-        return if (index + 1 == all.text.toString().toInt() && index + 1 == progress.text.toString().toInt()) {
+        return if (index + 1 == binding.all.text.toString().toInt() && index + 1 == binding.progress.text.toString().toInt()) {
             stopTimer()
             val returnTime: String
             val timeMinutesString: String
@@ -213,21 +215,21 @@ class MwordsActivity : AppCompatActivity() {
     }
 
     private fun startWrite(words: MutableList<Word>) {
-        textTop.text = words[index].trans
-        editText.isEnabled = true
-        button1.isEnabled = true
-        button2.isEnabled = true
+        binding.textTop.text = words[index].trans
+        binding.editText.isEnabled = true
+        binding.button1.isEnabled = true
+        binding.button2.isEnabled = true
     }
 
     private fun next() {
-        if (editText.text.toString() == wordsList[index].word) {
-            editText.setText("")
-            progressBar.progress = progressBar.progress + 1
-            progress.text = (progress.text.toString().toInt() + 1).toString()
-            if (index + 1 == all.text.toString().toInt() && index + 1 == progress.text.toString().toInt()) {
+        if (binding.editText.text.toString() == wordsList[index].word) {
+            binding.editText.setText("")
+            binding.progressBar.progress = binding.progressBar.progress + 1
+            binding.progress.text = (binding.progress.text.toString().toInt() + 1).toString()
+            if (index + 1 == binding.all.text.toString().toInt() && index + 1 == binding.progress.text.toString().toInt()) {
                 if (job.isActive) {
                     GlobalScope.launch(Dispatchers.Main) {
-                        textTop.setText(R.string.congratulations)
+                        binding.textTop.setText(R.string.congratulations)
                         BottomDialog().create(this@MwordsActivity).apply {
                             setTitle(R.string.congratulations)
                             setContent(this@MwordsActivity.resources.getString(R.string.mwords_result, stopTimerGetTime()))
@@ -241,23 +243,23 @@ class MwordsActivity : AppCompatActivity() {
                             setCancelAble(false)
                             show()
                         }
-                        editText.hint = ""
-                        editText.isEnabled = false
-                        button1.isEnabled = false
-                        button2.isEnabled = false
+                        binding.editText.hint = ""
+                        binding.editText.isEnabled = false
+                        binding.button1.isEnabled = false
+                        binding.button2.isEnabled = false
                     }
                 } else {
                     finish()
                 }
-            } else if (index + 1 < all.text.toString().toInt() && index + 1 == progress.text.toString().toInt()) {
+            } else if (index + 1 < binding.all.text.toString().toInt() && index + 1 == binding.progress.text.toString().toInt()) {
                 index++
-                textTop.text = wordsList[index].trans
+                binding.textTop.text = wordsList[index].trans
             } else {
                 finish()
             }
         } else {
-            editText.setText("")
-            editText.setHint(R.string.incorrect_write)
+            binding.editText.setText("")
+            binding.editText.setHint(R.string.incorrect_write)
         }
     }
 
@@ -351,17 +353,17 @@ class MwordsActivity : AppCompatActivity() {
     }
 
     private fun upload() {
-        if (wordsList.size == index + 1 && index + 1 == all.text.toString().toInt() && words.text.toString() == wordsList.toString()) {
+        if (wordsList.size == index + 1 && index + 1 == binding.all.text.toString().toInt() && binding.words.text.toString() == wordsList.toString()) {
             val currentUser = AVUser.getCurrentUser()
             if (currentUser != null) {
-                applyUpload(spinner.selectedItem.toString(), time, customHelp, help, currentUser.objectId, wordsList.size.toDouble() / time.toDouble())
+                applyUpload(binding.spinner.selectedItem.toString(), time, customHelp, help, currentUser.objectId, wordsList.size.toDouble() / time.toDouble())
             } else {
                 BottomDialog().create(this).apply {
                     setTitle(R.string.failed)
                     setContent(R.string.no_login)
                     setButton1(android.R.string.ok) {
                         close()
-                        applyDoNotUpload(spinner.selectedItem.toString(), time, customHelp, help, null)
+                        applyDoNotUpload(binding.spinner.selectedItem.toString(), time, customHelp, help, null)
                     }
                     setCancelAble(false)
                     show()
@@ -428,22 +430,22 @@ class MwordsActivity : AppCompatActivity() {
             root
          */
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        setInset(MyClass.INSERT_BOTTOM, root)
+        setInset(MyClass.INSET_BOTTOM, binding.root)
         /*
             Toolbar
          */
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setInset(MyClass.INSERT_TOP, toolbar)
+        setInset(MyClass.INSET_TOP, binding.toolbar)
         /*
             Button
          */
-        button1.setOnClickListener {
-            editText.setText("")
+        binding.button1.setOnClickListener {
+            binding.editText.setText("")
             if (customHelp != 0) {
-                editText.hint = wordsList[index].word.substring(0, if (wordsList[index].word.length >= customHelp) customHelp else wordsList[index].word.length)
+                binding.editText.hint = wordsList[index].word.substring(0, if (wordsList[index].word.length >= customHelp) customHelp else wordsList[index].word.length)
             } else {
-                editText.hint = wordsList[index].word
+                binding.editText.hint = wordsList[index].word
             }
             help++
             val textView = findViewById<TextView>(R.id.help)
@@ -453,21 +455,21 @@ class MwordsActivity : AppCompatActivity() {
                 finish()
             }
         }
-        button2.setOnClickListener {
+        binding.button2.setOnClickListener {
             try {
                 next()
             } catch (e: InterruptedException) {
                 error(e)
             }
         }
-        button3.setOnClickListener { init(urlList[spinner.selectedItemPosition]) }
+        binding.button3.setOnClickListener { init(urlList[binding.spinner.selectedItemPosition]) }
         /*
             EditText
          */
-        editText.addTextChangedListener(object : TextWatcher {
+        binding.editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-                editText.hint = ""
+                binding.editText.hint = ""
             }
 
             override fun afterTextChanged(editable: Editable) {}
