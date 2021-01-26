@@ -32,7 +32,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:clipToPadding="false"
-            app:headerLayout="@layout/main_header"
+            app:headerLayout="@layout/layout_main_header"
             app:menu="@menu/main_drawer" />
     </androidx.drawerlayout.widget.DrawerLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -496,7 +496,7 @@ class MwordsActivity : AppCompatActivity() {
         list[j] = temp
     }
 
-    private fun randomSort(list: MutableList<Word>) {
+    private fun <T> randomSort(list: MutableList<T>) {
         val length = list.size
         for (i in length downTo 1) {
             val random = Random()

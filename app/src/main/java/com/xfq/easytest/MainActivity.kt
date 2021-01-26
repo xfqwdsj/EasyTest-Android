@@ -122,11 +122,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun get(url: URL, dialog: BottomDialog) {
-        val client = OkHttpClient()
         val request = Request.Builder()
                 .url(url)
                 .build()
-        client.newCall(request).enqueue(object : Callback {
+        OkHttpClient().newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 dialog.close()
                 askOffline()

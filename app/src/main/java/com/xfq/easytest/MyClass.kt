@@ -15,7 +15,7 @@ object MyClass {
     const val RESULT_TYPE_NO_UPLOADED_NO_SAVE = 1
     const val RESULT_TYPE_NO_UPLOADED_SAVED = 2
     const val RESULT_TYPE_LOCAL_UPLOADED = 3
-    private var context: Context? = null
+    var context: Context? = null
 
     fun getResString(id: Int): String {
         return context!!.resources!!.getString(id)

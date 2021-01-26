@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.xfq.easytest.MyClass.getResString
 import kotlin.Unit
 
 class QuestionBankAdapter(list: MutableList<QuestionBank>, clickListener: (QuestionBank, Boolean) -> Unit) : RecyclerView.Adapter<QuestionBankAdapter.ViewHolder>() {
@@ -64,7 +63,7 @@ class QuestionBankAdapter(list: MutableList<QuestionBank>, clickListener: (Quest
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.question_bank_item, parent, false)
+        val view = inflater.inflate(R.layout.layout_question_bank_item, parent, false)
         return ViewHolder(view)
     }
 

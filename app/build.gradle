@@ -11,8 +11,8 @@ android {
         applicationId "com.xfq.easytest"
         minSdkVersion 24
         targetSdkVersion 30
-        versionCode 3
-        versionName "beta-1.2"
+        versionCode 4
+        versionName "beta-2.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -67,4 +67,5 @@ dependencies {
     implementation "io.noties.markwon:linkify:$markwon_version"
     implementation "io.noties.markwon:simple-ext:$markwon_version"
     implementation "io.noties.markwon:syntax-highlight:$markwon_version"
+    implementation 'com.google.android:flexbox:2.0.1'
 }

@@ -29,13 +29,12 @@ class SelectQuestionBankActivity : AppCompatActivity() {
 
         val url = "https://xfqwdsj.gitee.io/easy-test/question-bank-index.json"
 
-        val client = OkHttpClient()
         val request = Request.Builder()
                 .url(url)
                 .removeHeader("User-Agent")
                 .addHeader("User-Agent", WebView(this).settings.userAgentString)
                 .build()
-        client.newCall(request).enqueue(object : Callback {
+        OkHttpClient().newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 runOnUiThread {
                     BottomDialog().create(this@SelectQuestionBankActivity).apply {
@@ -67,11 +66,13 @@ class SelectQuestionBankActivity : AppCompatActivity() {
     }
 
     private fun onItemClicked(item: QuestionBank, isLast: Boolean) {
-        if (isLast) {
+        if (isLast && item.url != "") {
             Intent(this, TestActivity::class.java).apply {
                 putExtra("url", item.url)
+                putExtra("random", item.random)
                 startActivity(this)
             }
+            finish()
         }
     }
 
