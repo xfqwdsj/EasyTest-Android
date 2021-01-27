@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import kotlin.Unit
 
 class QuestionBankAdapter(list: MutableList<QuestionBank>, clickListener: (QuestionBank, Boolean) -> Unit) : RecyclerView.Adapter<QuestionBankAdapter.ViewHolder>() {
     private val mList: MutableList<QuestionBank> = list
@@ -23,10 +22,10 @@ class QuestionBankAdapter(list: MutableList<QuestionBank>, clickListener: (Quest
                 itemView.findViewById<ImageView>(R.id.imageView).animate().setDuration(0).rotation(90F).start()
             }
             if (item.children.isEmpty()) {
-                itemView.findViewById<ImageView>(R.id.imageView).setImageResource(R.drawable.ic_school_black_24dp)
+                itemView.findViewById<ImageView>(R.id.imageView).setImageResource(R.drawable.ic_baseline_school_24)
                 itemView.setOnClickListener { mClickListener(item, true) }
             } else {
-                itemView.findViewById<ImageView>(R.id.imageView).setImageResource(R.drawable.ic_arrow_right_black_24dp)
+                itemView.findViewById<ImageView>(R.id.imageView).setImageResource(R.drawable.ic_baseline_arrow_right_24)
                 itemView.setOnClickListener {
                     if (item.status == 0) {
                         item.status = 1

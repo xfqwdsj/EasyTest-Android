@@ -19,7 +19,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_arrow_right_black_24dp" />
+            app:srcCompat="@drawable/ic_baseline_arrow_right_24" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/textView"
