@@ -69,4 +69,5 @@
     <string name="one_per_line">一行一个</string>
     <string name="question_bank_icon">题库图标</string>
     <string name="your_answer">你的答案</string>
+    <string name="question_number">第%d题</string>
 </resources>

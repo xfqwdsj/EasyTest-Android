@@ -6,11 +6,12 @@ open class Question {
     lateinit var question: String
 
     class FillBankQuestion: Question() {
-        lateinit var answer: FillBankQuestionAnswer
+        lateinit var answer: List<FillBankQuestionAnswer>
 
         class FillBankQuestionAnswer {
             lateinit var answer: String
             var score by Delegates.notNull<Float>()
+            lateinit var userAnswer: String
         }
     }
 
@@ -21,6 +22,7 @@ open class Question {
             lateinit var option: String
             var isCorrect by Delegates.notNull<Boolean>()
             var score by Delegates.notNull<Float>()
+            var userSelected by Delegates.notNull<Boolean>()
         }
     }
 
@@ -34,6 +36,7 @@ open class Question {
             var isCorrect by Delegates.notNull<Boolean>()
             lateinit var selected: MultipleChooseQuestionOptionSelectAble
             lateinit var unselected: MultipleChooseQuestionOptionSelectAble
+            var userSelected by Delegates.notNull<Boolean>()
 
             class MultipleChooseQuestionOptionSelectAble {
                 lateinit var selectedOption: List<Int>
@@ -47,5 +50,6 @@ open class Question {
         var exactMatch by Delegates.notNull<Boolean>()
         lateinit var answer: List<String>
         var score by Delegates.notNull<Float>()
+        lateinit var userAnswer: String
     }
 }
