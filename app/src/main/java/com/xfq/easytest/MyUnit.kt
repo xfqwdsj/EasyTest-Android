@@ -1,6 +1,6 @@
 package com.xfq.easytest
 
-class Unit {
+class MyUnit {
     lateinit var url: String
     lateinit var displayName: String
 }
