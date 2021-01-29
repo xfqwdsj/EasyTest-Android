@@ -39,7 +39,7 @@
     <string name="loading_sources">加载资源</string>
     <string name="result_title">%s 的成果</string>
     <string name="result_text_uploaded">昵称：%s\n用户名：%s\n默写的单元：%s\n用时：%s\n提示数：%s\n自定义提示：%s\n创建于：%s\n最后一次更新：%s</string>
-    <string name="result">成果</string>
+    <string name="result">结果</string>
     <string name="better_record">你有一个更好的记录</string>
     <string name="copy_id">复制ID</string>
     <string name="query_by_id">通过ID查询结果</string>
@@ -71,4 +71,5 @@
     <string name="your_answer">你的答案</string>
     <string name="question_number">第%d题</string>
     <string name="submit">提交</string>
+    <string name="start">开始</string>
 </resources>

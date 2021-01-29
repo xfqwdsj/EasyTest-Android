@@ -28,7 +28,16 @@ class SelectQuestionBankActivity : AppCompatActivity() {
         setInset(INSET_TOP, binding.toolbar)
 
         val url = "https://xfqwdsj.gitee.io/easy-test/question-bank-index.json"
+        binding.refresh.post {
+            binding.refresh.isRefreshing = true
+        }
+        binding.refresh.setOnRefreshListener {
+            get(url)
+        }
+        get(url)
+    }
 
+    fun get(url: String) {
         val request = Request.Builder()
                 .url(url)
                 .removeHeader("User-Agent")
@@ -56,6 +65,9 @@ class SelectQuestionBankActivity : AppCompatActivity() {
                         runOnUiThread {
                             binding.recyclerView.layoutManager = LinearLayoutManager(this@SelectQuestionBankActivity)
                             binding.recyclerView.adapter = QuestionBankAdapter(json) { item: QuestionBank, isLast: Boolean -> onItemClicked(item, isLast) }
+                            binding.refresh.post {
+                                binding.refresh.isRefreshing = false
+                            }
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()

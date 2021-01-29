@@ -10,7 +10,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".TestActivity"
+        <activity
+            android:name=".ResultActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".TestActivity"
             android:configChanges="orientation|screenSize" />
         <activity
             android:name=".SelectQuestionBankActivity"
@@ -22,7 +26,7 @@
             android:name=".IDQueryActivity"
             android:configChanges="orientation|screenSize" />
         <activity
-            android:name=".ResultActivity"
+            android:name=".ResultActivity2"
             android:configChanges="orientation|screenSize" />
         <activity
             android:name=".MwordsActivity"

@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
 
-class TestPagerAdaper(private val mViewList: List<View>, private val context: Context) : PagerAdapter() {
+class TestPagerAdapter(private val mViewList: List<View>, private val context: Context) : PagerAdapter() {
 
     override fun getCount(): Int = mViewList.size
 
@@ -20,5 +20,5 @@ class TestPagerAdaper(private val mViewList: List<View>, private val context: Co
         container.removeView(mViewList[position])
     }
 
-    override fun getPageTitle(position: Int): CharSequence? = context.resources.getString(R.string.question_number, position + 1)
+    override fun getPageTitle(position: Int): CharSequence = context.resources.getString(R.string.question_number, position + 1)
 }

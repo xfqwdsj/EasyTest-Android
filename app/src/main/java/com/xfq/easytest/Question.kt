@@ -1,18 +1,23 @@
 package com.xfq.easytest
 
+import android.os.Parcel
+import android.os.Parcelable
 import kotlin.properties.Delegates
 
-open class Question {
+open class Question() : Parcelable {
     lateinit var question: String
 
-    class FillBankQuestion: Question() {
+    constructor(parcel: Parcel) : this() {
+        question = parcel.readString().toString()
+    }
+
+    class FillBankQuestion : Question() {
         lateinit var answer: List<FillBankQuestionAnswer>
 
         class FillBankQuestionAnswer {
             lateinit var answer: String
             var score by Delegates.notNull<Float>()
             lateinit var userAnswer: String
-            var exactMatch by Delegates.notNull<Boolean>()
         }
     }
 
@@ -38,10 +43,28 @@ open class Question {
         lateinit var options: List<Option>
     }
 
-    class GeneralQuestion: Question() {
+    class GeneralQuestion : Question() {
         var exactMatch by Delegates.notNull<Boolean>()
-        lateinit var answer: List<String>
+        lateinit var answer: MutableList<String>
         var score by Delegates.notNull<Float>()
         lateinit var userAnswer: String
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(question)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Question> {
+        override fun createFromParcel(parcel: Parcel): Question {
+            return Question(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Question?> {
+            return arrayOfNulls(size)
+        }
     }
 }

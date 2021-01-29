@@ -38,7 +38,7 @@
     <string name="loading_sources">Loading sources</string>
     <string name="result_title">%s\' s result</string>
     <string name="result_text_uploaded">Nickname: %s\nUsername: %s\nWried unit: %s\nTime: %s\nHelp count: %s\nCustom help: %s\nCreated at: %s\nLatest update: %s</string>
-    <string name="result">result</string>
+    <string name="result">Result</string>
     <string name="better_record">You have a better record</string>
     <string name="copy_id">Copy ID</string>
     <string name="query_by_id">Query result by ID</string>
@@ -70,4 +70,5 @@
     <string name="your_answer">Your answer</string>
     <string name="question_number">Question %d</string>
     <string name="submit">Submit</string>
+    <string name="start">Start</string>
 </resources>

@@ -332,7 +332,7 @@ class MwordsActivity : AppCompatActivity() {
     }
 
     private fun applyUploaded(id: String) {
-        Intent(this, ResultActivity::class.java).apply {
+        Intent(this, ResultActivity2::class.java).apply {
             putExtra("uploaded", true)
             putExtra("id", id)
             startActivity(this)
@@ -340,7 +340,7 @@ class MwordsActivity : AppCompatActivity() {
     }
 
     private fun applyDoNotUpload(unit: String, time: Int, customHelp: Int, help: Int, userId: String?) {
-        Intent(this, ResultActivity::class.java).apply {
+        Intent(this, ResultActivity2::class.java).apply {
             putExtra("uploaded", false)
             putExtra("unit", unit)
             putExtra("time", time)

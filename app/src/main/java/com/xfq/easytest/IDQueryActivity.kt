@@ -26,19 +26,19 @@ class IDQueryActivity : AppCompatActivity() {
         binding.button.setOnClickListener {
             if (binding.editText.text.toString() != "") {
                 if (binding.online.isChecked) {
-                    Intent(this, ResultActivity::class.java).apply {
+                    Intent(this, ResultActivity2::class.java).apply {
                         putExtra("type", RESULT_TYPE_UPLOADED)
                         putExtra("id", binding.editText.text.toString())
                         startActivity(this)
                     }
                 } else if (binding.localUploaded.isChecked) {
-                    Intent(this, ResultActivity::class.java).apply {
+                    Intent(this, ResultActivity2::class.java).apply {
                         putExtra("type", RESULT_TYPE_LOCAL_UPLOADED)
                         putExtra("id", binding.editText.text.toString())
                         startActivity(this)
                     }
                 } else if (binding.local.isChecked) {
-                    Intent(this, ResultActivity::class.java).apply {
+                    Intent(this, ResultActivity2::class.java).apply {
                         putExtra("type", RESULT_TYPE_NO_UPLOADED_SAVED)
                         putExtra("id", binding.editText.text.toString().toInt())
                         startActivity(this)
