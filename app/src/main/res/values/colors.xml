@@ -3,4 +3,7 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="colorTestRight">#60FF60</color>
+    <color name="colorTestWrong">#FF6060</color>
+    <color name="colorTestHalf">#FFFF60</color>
 </resources>

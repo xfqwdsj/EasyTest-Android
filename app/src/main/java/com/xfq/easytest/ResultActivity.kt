@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
-import com.xfq.bottomdialog.BottomDialog
 import com.xfq.easytest.databinding.ActivityResultBinding
 
 class ResultActivity : AppCompatActivity() {
@@ -22,20 +21,9 @@ class ResultActivity : AppCompatActivity() {
         val score = intent.getFloatArrayExtra("score")
         val correctness = intent.getIntArrayExtra("correctness")
         val questions = intent.getParcelableArrayExtra("questions")
-        if (score != null && correctness != null && questions != null) {
-            var scoreString = "["
-            var correctnessString = "["
-            for (i in score.indices) {
-                scoreString += "${score[i]}, "
-                correctnessString += "${correctness[i]}, "
-            }
-            scoreString = "${scoreString.substring(0, scoreString.length - 2)}]"
-            correctnessString = "${correctnessString.substring(0, correctnessString.length - 2)}]"
-            BottomDialog().create(this).apply {
-                setTitle("临时结果显示")
-                setContent("分数：$scoreString\n正确性：$correctnessString")
-                show()
-            }
+        val positions = intent.getIntArrayExtra("positions")
+        if (score != null && correctness != null && questions != null && positions != null) {
+
         }
     }
 

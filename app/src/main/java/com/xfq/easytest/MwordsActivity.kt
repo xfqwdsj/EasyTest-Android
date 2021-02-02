@@ -83,7 +83,7 @@ class MwordsActivity : AppCompatActivity() {
                 val data = response.body?.string()
                 dialog.close()
                 if (data != null) {
-                    val json = JSON.parseArray(data, Unit::class.java)
+                    val json = JSON.parseArray(data, MyUnit::class.java)
                     val unitsArray = Array(json.size) { "" }
                     urlList = MutableList(json.size) { "" }
                     for (i in 0 until json.size) {

@@ -1,20 +1,23 @@
 package com.xfq.easytest
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.*
 import android.webkit.WebView
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.view.WindowCompat
 import androidx.core.widget.addTextChangedListener
 import com.alibaba.fastjson.JSON
 import com.google.android.flexbox.FlexboxLayout
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.textfield.TextInputEditText
 import com.xfq.bottomdialog.BottomDialog
 import com.xfq.easytest.MyClass.INSET_TOP
+import com.xfq.easytest.MyClass.dip2PxI
+import com.xfq.easytest.MyClass.getResColor
 import com.xfq.easytest.MyClass.setInset
 import com.xfq.easytest.databinding.ActivityTestBinding
 import io.noties.markwon.Markwon
@@ -33,6 +36,8 @@ class TestActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTestBinding
     private lateinit var url: String
     private lateinit var userAnswer: List<Question>
+    private val positionList: MutableList<Int> = ArrayList()
+    private val viewList: MutableList<View> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,7 +103,6 @@ class TestActivity : AppCompatActivity() {
     }
 
     private fun setAdapter(random: Boolean, questionList: List<Question>) {
-        val viewList: MutableList<View> = ArrayList()  //预留Pager的View列表
         for (position in questionList.indices) {
             val question = questionList[position]  //当前的question
             val view = LayoutInflater.from(this).inflate(R.layout.layout_test, LinearLayout(this), true)
@@ -177,6 +181,11 @@ class TestActivity : AppCompatActivity() {
                     }
                     markwon.setMarkdown(view.findViewById(R.id.fillBankQuestion), questionText)
                     for (i in bank.indices) {  //遍历“空”
+                        val cardView = MaterialCardView(this)
+                        val params = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                        params.setMargins(dip2PxI(5F), dip2PxI(5F), dip2PxI(5F), dip2PxI(5F))
+                        cardView.layoutParams = params
+                        cardView.id = i
                         val editText = TextInputEditText(this)
                         editText.hint = bank[i]
                         editText.minEms = 5
@@ -186,7 +195,8 @@ class TestActivity : AppCompatActivity() {
                         editText.addTextChangedListener {
                             (userAnswer[position] as Question.FillBankQuestion).answer[i].userAnswer = it.toString()
                         }
-                        view.findViewById<FlexboxLayout>(R.id.fillBankEdit).addView(editText)
+                        cardView.addView(editText)
+                        view.findViewById<FlexboxLayout>(R.id.fillBankEdit).addView(cardView)
                     }
                 }
                 is Question.SingleChooseQuestion -> {
@@ -194,9 +204,14 @@ class TestActivity : AppCompatActivity() {
                     markwon.setMarkdown(view.findViewById(R.id.chooseQuestion), question.question)
                     val buttonList: MutableList<CheckBox> = ArrayList()
                     for (i in question.options.indices) {
+                        val cardView = MaterialCardView(this)
+                        val params = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                        params.setMargins(dip2PxI(5F), dip2PxI(5F), dip2PxI(5F), dip2PxI(5F))
+                        cardView.layoutParams = params
+                        cardView.id = i
                         val button = LayoutInflater.from(this).inflate(R.layout.layout_for_test_single_choose, LinearLayout(this), false) as CheckBox
                         markwon.setMarkdown(button, question.options[i].option)
-                        button.isSelected = (userAnswer[position] as Question.SingleChooseQuestion).options[i].userSelected
+                        button.isChecked = (userAnswer[position] as Question.SingleChooseQuestion).options[i].userSelected
                         button.visibility = View.VISIBLE
                         button.setOnCheckedChangeListener { _, isChecked ->
                             (userAnswer[position] as Question.SingleChooseQuestion).options[i].userSelected = isChecked
@@ -209,34 +224,45 @@ class TestActivity : AppCompatActivity() {
                             }
                         }
                         buttonList.add(button)
-                        view.findViewById<LinearLayout>(R.id.chooseGroup).addView(button)
+                        cardView.addView(button)
+                        view.findViewById<LinearLayout>(R.id.chooseGroup).addView(cardView)
                     }
                 }
                 is Question.MultipleChooseQuestion -> {
                     view.findViewById<ScrollView>(R.id.chooseQuestionLayout).visibility = View.VISIBLE
                     markwon.setMarkdown(view.findViewById(R.id.chooseQuestion), question.question)
+                    val buttonList: MutableList<CheckBox> = ArrayList()
                     for (i in question.options.indices) {
+                        val cardView = MaterialCardView(this)
+                        val cardParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                        cardParams.setMargins(dip2PxI(5F), dip2PxI(5F), dip2PxI(5F), dip2PxI(5F))
+                        cardView.layoutParams = cardParams
+                        cardView.id = i
                         val button = MaterialCheckBox(this)
+                        val buttonParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                        buttonParams.setMargins(dip2PxI(5F), 0, dip2PxI(5F), 0)
+                        button.layoutParams = buttonParams
                         button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16F)
                         markwon.setMarkdown(button, question.options[i].option)
-                        button.isSelected = (userAnswer[position] as Question.MultipleChooseQuestion).options[i].userSelected
-                        button.id = i
+                        button.isChecked = (userAnswer[position] as Question.MultipleChooseQuestion).options[i].userSelected
                         button.setOnCheckedChangeListener { _, isChecked ->
                             (userAnswer[position] as Question.MultipleChooseQuestion).options[i].userSelected = isChecked
+                            val uncheckedButtonList: MutableList<CheckBox> = ArrayList()
                             var checked = 0
-                            val buttonList: MutableList<CheckBox> = ArrayList()
-                            for (j in question.options.indices) {
-                                if (question.options[j].userSelected) {
+                            for (other in buttonList) {
+                                if (other.isChecked) {
                                     checked++
                                 } else {
-                                    buttonList.add(view.findViewById(j))
+                                    uncheckedButtonList.add(other)
                                 }
                             }
-                            for (uncheckButton in buttonList) {
-                                uncheckButton.isEnabled = checked != question.maxSelecting
+                            for (uncheckedButton in uncheckedButtonList) {
+                                uncheckedButton.isEnabled = checked != question.maxSelecting
                             }
                         }
-                        view.findViewById<LinearLayout>(R.id.chooseGroup).addView(button)
+                        buttonList.add(button)
+                        cardView.addView(button)
+                        view.findViewById<LinearLayout>(R.id.chooseGroup).addView(cardView)
                     }
                 }
                 is Question.GeneralQuestion -> {
@@ -256,6 +282,10 @@ class TestActivity : AppCompatActivity() {
         }
         if (random) {
             randomSort(viewList)
+        } else {
+            for (i in viewList.indices) {
+                positionList.add(i)
+            }
         }
         binding.start.setOnClickListener {
             binding.viewPager.adapter = TestPagerAdapter(viewList, this)
@@ -263,6 +293,7 @@ class TestActivity : AppCompatActivity() {
             binding.start.isEnabled = false
             binding.start.visibility = View.GONE
             binding.toolbar.menu.findItem(R.id.submit).isVisible = true
+            binding.root.removeView(binding.start)
         }
         binding.start.isEnabled = true
     }
@@ -331,12 +362,21 @@ class TestActivity : AppCompatActivity() {
                                     var shouldCorrect = 0
                                     var actuallyCorrect = 0
                                     for (j in online.answer.indices) {
+                                        val cardView = viewList[positionList[i]].findViewById<CardView>(j)
+                                        cardView.getChildAt(0).isEnabled = false
+                                        cardView.setOnClickListener {
+                                            cardView.setCardBackgroundColor(getResColor(R.color.colorTestRight))
+                                            (cardView.getChildAt(0) as EditText).addTextChangedListener { }
+                                            (cardView.getChildAt(0) as EditText).setText((questions[i] as Question.FillBankQuestion).answer[j].answer)
+                                        }
                                         if (online.answer[j].answer == (userAnswer[i] as Question.FillBankQuestion).answer[j].userAnswer) {
                                             thisScore += online.answer[j].score
                                             shouldCorrect++
                                             actuallyCorrect++
+                                            cardView.setCardBackgroundColor(getResColor(R.color.colorTestRight))
                                         } else {
                                             shouldCorrect++
+                                            cardView.setCardBackgroundColor(getResColor(R.color.colorTestWrong))
                                         }
                                     }
                                     correctness.add(when (actuallyCorrect) {
@@ -348,11 +388,18 @@ class TestActivity : AppCompatActivity() {
                                 is Question.SingleChooseQuestion -> {
                                     var actuallyCorrect = 0
                                     for (j in online.options.indices) {
+                                        val cardView = viewList[positionList[i]].findViewById<CardView>(j)
+                                        cardView.getChildAt(0).isEnabled = false
                                         if ((userAnswer[i] as Question.SingleChooseQuestion).options[j].userSelected) {
                                             thisScore += online.options[j].score
                                         }
                                         if ((userAnswer[i] as Question.SingleChooseQuestion).options[j].userSelected && online.options[j].isCorrect == (userAnswer[i] as Question.SingleChooseQuestion).options[j].userSelected) {
                                             actuallyCorrect++
+                                        } else if ((userAnswer[i] as Question.SingleChooseQuestion).options[j].userSelected && online.options[j].isCorrect != (userAnswer[i] as Question.SingleChooseQuestion).options[j].userSelected) {
+                                            cardView.setCardBackgroundColor(getResColor(R.color.colorTestWrong))
+                                        }
+                                        if (online.options[j].isCorrect) {
+                                            cardView.setCardBackgroundColor(getResColor(R.color.colorTestRight))
                                         }
                                     }
                                     correctness.add(when (actuallyCorrect) {
@@ -365,6 +412,8 @@ class TestActivity : AppCompatActivity() {
                                     var shouldCorrect = 0
                                     var actuallyCorrect = 0
                                     for (j in online.options.indices) {
+                                        val cardView = viewList[positionList[i]].findViewById<CardView>(j)
+                                        cardView.getChildAt(0).isEnabled = false
                                         when (online.scoreType) {
                                             1 -> {
                                                 if ((userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected) {
@@ -389,6 +438,11 @@ class TestActivity : AppCompatActivity() {
                                         }
                                         if ((userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected && online.options[j].isCorrect == (userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected) {
                                             actuallyCorrect++
+                                        } else if ((userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected && online.options[j].isCorrect != (userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected) {
+                                            cardView.setCardBackgroundColor(getResColor(R.color.colorTestWrong))
+                                        }
+                                        if (online.options[j].isCorrect) {
+                                            cardView.setCardBackgroundColor(getResColor(R.color.colorTestRight))
                                         }
                                     }
                                     if (!hasScore) {
@@ -401,6 +455,13 @@ class TestActivity : AppCompatActivity() {
                                     }
                                 }
                                 is Question.GeneralQuestion -> {
+                                    val cardView = viewList[positionList[i]].findViewById<CardView>(R.id.cardView)
+                                    cardView.getChildAt(0).isEnabled = false
+                                    cardView.setOnClickListener {
+                                        cardView.setCardBackgroundColor(getResColor(R.color.colorTestRight))
+                                        (cardView.getChildAt(0) as EditText).addTextChangedListener { }
+                                        (cardView.getChildAt(0) as EditText).setText((questions[i] as Question.GeneralQuestion).answer[(questions[i] as Question.GeneralQuestion).answer.indices.random()])
+                                    }
                                     var correct = 2
                                     for (answer in online.answer) {
                                         when {
@@ -408,16 +469,19 @@ class TestActivity : AppCompatActivity() {
                                                 thisScore += online.score
                                                 if (correct != 1) {
                                                     correct = 1
+                                                    cardView.setCardBackgroundColor(getResColor(R.color.colorTestRight))
                                                 }
                                             }
                                             online.exactMatch -> {
                                                 if (correct != 1) {
                                                     correct = 2
+                                                    cardView.setCardBackgroundColor(getResColor(R.color.colorTestWrong))
                                                 }
                                             }
                                             else -> {
                                                 if (correct != 1) {
                                                     correct = 4
+                                                    cardView.setCardBackgroundColor(getResColor(R.color.colorTestHalf))
                                                 }
                                             }
                                         }
@@ -427,16 +491,7 @@ class TestActivity : AppCompatActivity() {
                             }
                             score.add(thisScore)
                         }
-                        if (score.size == correctness.size && correctness.size == questions.size) {
-                            runOnUiThread {
-                                Intent(this@TestActivity, ResultActivity::class.java).apply {
-                                    putExtra("score", score.toFloatArray())
-                                    putExtra("correctness", correctness.toIntArray())
-                                    putExtra("questions", questions.toTypedArray())
-                                    startActivity(this)
-                                }
-                            }
-                        }
+                        binding.toolbar.menu.findItem(R.id.submit).isVisible = false
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
@@ -447,26 +502,26 @@ class TestActivity : AppCompatActivity() {
 
     private fun cleanQuestions(list: List<Question>) {
         for (i in list.indices) {
-            when {
-                list[i] is Question.FillBankQuestion -> {
+            when (list[i]) {
+                is Question.FillBankQuestion -> {
                     for (j in (list[i] as Question.FillBankQuestion).answer.indices) {
                         (list[i] as Question.FillBankQuestion).answer[j].answer = ""
                         (list[i] as Question.FillBankQuestion).answer[j].score = 0F
                     }
                 }
-                list[i] is Question.SingleChooseQuestion -> {
+                is Question.SingleChooseQuestion -> {
                     for (j in (list[i] as Question.SingleChooseQuestion).options.indices) {
                         (list[i] as Question.SingleChooseQuestion).options[j].isCorrect = false
                         (list[i] as Question.SingleChooseQuestion).options[j].score = 0F
                     }
                 }
-                list[i] is Question.MultipleChooseQuestion -> {
+                is Question.MultipleChooseQuestion -> {
                     for (j in (list[i] as Question.MultipleChooseQuestion).options.indices) {
                         (list[i] as Question.MultipleChooseQuestion).options[j].isCorrect = false
                         (list[i] as Question.MultipleChooseQuestion).options[j].score = 0F
                     }
                 }
-                list[i] is Question.GeneralQuestion -> {
+                is Question.GeneralQuestion -> {
                     for (j in (list[i] as Question.GeneralQuestion).answer.indices) {
                         (list[i] as Question.GeneralQuestion).answer[j] = ""
                     }
@@ -477,18 +532,25 @@ class TestActivity : AppCompatActivity() {
         userAnswer = list
     }
 
-    private fun <T> swap(list: MutableList<T>, i: Int, j: Int) {
-        val temp = list[i]
-        list[i] = list[j]
-        list[j] = temp
-    }
-
     private fun <T> randomSort(list: MutableList<T>) {
-        val length = list.size
-        for (i in length downTo 1) {
-            val random = Random()
-            val randomInt = random.nextInt(i)
-            swap(list, randomInt, i - 1)
+        val originalList = list.toMutableList()
+        for (i in list.indices) {
+            while (true) {
+                val random = (0 until list.size).random()
+                var isOnly = true
+                for (number in positionList) {
+                    if (number == random) {
+                        isOnly = false
+                    }
+                }
+                if (isOnly) {
+                    positionList.add(random)
+                    break
+                }
+            }
+        }
+        for (i in positionList.indices) {
+            list[positionList[i]] = originalList[i]
         }
     }
 

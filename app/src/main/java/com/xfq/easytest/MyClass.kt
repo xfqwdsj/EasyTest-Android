@@ -58,12 +58,22 @@ object MyClass {
         }
     }
 
-    fun dip2Px(dpValue: Float): Int {
+    fun dip2PxI(dpValue: Float): Int {
         val scale = context!!.resources.displayMetrics.density
         return (dpValue * scale + 0.5f).toInt()
     }
 
-    fun px2Dip(pxValue: Float): Int {
+    fun px2DipI(pxValue: Float): Int {
+        val scale = context!!.resources.displayMetrics.density
+        return (pxValue / scale + 0.5f).toInt()
+    }
+
+    fun dip2PxF(dpValue: Float): Int {
+        val scale = context!!.resources.displayMetrics.density
+        return (dpValue * scale + 0.5f).toInt()
+    }
+
+    fun px2DipF(pxValue: Float): Int {
         val scale = context!!.resources.displayMetrics.density
         return (pxValue / scale + 0.5f).toInt()
     }
