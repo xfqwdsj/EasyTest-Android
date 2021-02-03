@@ -4,8 +4,10 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
+import com.xfq.easytest.MyClass.getResString
 
 class TestPagerAdapter(private val mViewList: List<View>, private val context: Context) : PagerAdapter() {
+    var submitted = false
 
     override fun getCount(): Int = mViewList.size
 
@@ -20,5 +22,5 @@ class TestPagerAdapter(private val mViewList: List<View>, private val context: C
         container.removeView(mViewList[position])
     }
 
-    override fun getPageTitle(position: Int): CharSequence = context.resources.getString(R.string.question_number, position + 1)
+    override fun getPageTitle(position: Int): CharSequence = if (!submitted || position != mViewList.size - 1) context.resources.getString(R.string.question_number, position + 1) else getResString(R.string.result)
 }

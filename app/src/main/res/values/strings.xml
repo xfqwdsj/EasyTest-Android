@@ -71,4 +71,10 @@
     <string name="question_number">Question %d</string>
     <string name="submit">Submit</string>
     <string name="start">Start</string>
+    <string name="wrong_question">Wrong question</string>
+    <string name="score">Score</string>
+    <string name="no_points">No points</string>
+    <string name="correct">Correct</string>
+    <string name="wrong">Wrong</string>
+    <string name="half_correct">Half correct</string>
 </resources>

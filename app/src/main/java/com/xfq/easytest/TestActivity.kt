@@ -1,6 +1,8 @@
 package com.xfq.easytest
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.*
 import android.webkit.WebView
@@ -8,16 +10,18 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.view.WindowCompat
-import androidx.core.widget.addTextChangedListener
 import com.alibaba.fastjson.JSON
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.checkbox.MaterialCheckBox
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.google.android.material.textfield.TextInputEditText
 import com.xfq.bottomdialog.BottomDialog
 import com.xfq.easytest.MyClass.INSET_TOP
 import com.xfq.easytest.MyClass.dip2PxI
 import com.xfq.easytest.MyClass.getResColor
+import com.xfq.easytest.MyClass.getResString
 import com.xfq.easytest.MyClass.setInset
 import com.xfq.easytest.databinding.ActivityTestBinding
 import io.noties.markwon.Markwon
@@ -36,6 +40,7 @@ class TestActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTestBinding
     private lateinit var url: String
     private lateinit var userAnswer: List<Question>
+    private lateinit var adapter: TestPagerAdapter
     private val positionList: MutableList<Int> = ArrayList()
     private val viewList: MutableList<View> = ArrayList()
 
@@ -105,7 +110,7 @@ class TestActivity : AppCompatActivity() {
     private fun setAdapter(random: Boolean, questionList: List<Question>) {
         for (position in questionList.indices) {
             val question = questionList[position]  //当前的question
-            val view = LayoutInflater.from(this).inflate(R.layout.layout_test, LinearLayout(this), true)
+            val view = layoutInflater.inflate(R.layout.layout_test, LinearLayout(this), true)
             val markwon = Markwon.builder(this).apply {
                 usePlugin(StrikethroughPlugin.create())
                 usePlugin(TablePlugin.create(this@TestActivity))
@@ -187,14 +192,22 @@ class TestActivity : AppCompatActivity() {
                         cardView.layoutParams = params
                         cardView.id = i
                         val editText = TextInputEditText(this)
+                        val watcher = object : TextWatcher {
+                            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                            override fun afterTextChanged(s: Editable?) {
+                                (userAnswer[position] as Question.FillBankQuestion).answer[i].userAnswer = s.toString()
+                            }
+                        }
                         editText.hint = bank[i]
                         editText.minEms = 5
                         editText.gravity = Gravity.CENTER
                         editText.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                         editText.setText((userAnswer[position] as Question.FillBankQuestion).answer[i].userAnswer)
-                        editText.addTextChangedListener {
-                            (userAnswer[position] as Question.FillBankQuestion).answer[i].userAnswer = it.toString()
-                        }
+                        editText.addTextChangedListener(watcher)
+                        editText.tag = watcher
                         cardView.addView(editText)
                         view.findViewById<FlexboxLayout>(R.id.fillBankEdit).addView(cardView)
                     }
@@ -269,9 +282,17 @@ class TestActivity : AppCompatActivity() {
                     view.findViewById<ScrollView>(R.id.generalQuestionLayout).visibility = View.VISIBLE
                     markwon.setMarkdown(view.findViewById(R.id.generalQuestion), question.question)
                     view.findViewById<EditText>(R.id.generalEdit).setText((userAnswer[position] as Question.GeneralQuestion).userAnswer)
-                    view.findViewById<EditText>(R.id.generalEdit).addTextChangedListener {
-                        (userAnswer[position] as Question.GeneralQuestion).userAnswer = it.toString()
+                    val watcher = object : TextWatcher {
+                        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                        override fun afterTextChanged(s: Editable?) {
+                            (userAnswer[position] as Question.GeneralQuestion).userAnswer = s.toString()
+                        }
                     }
+                    view.findViewById<EditText>(R.id.generalEdit).addTextChangedListener(watcher)
+                    view.findViewById<EditText>(R.id.generalEdit).tag = watcher
                 }
                 else -> {
                     finish()
@@ -288,7 +309,8 @@ class TestActivity : AppCompatActivity() {
             }
         }
         binding.start.setOnClickListener {
-            binding.viewPager.adapter = TestPagerAdapter(viewList, this)
+            adapter = TestPagerAdapter(viewList, this)
+            binding.viewPager.adapter = adapter
             binding.tabLayout.setupWithViewPager(binding.viewPager)
             binding.start.isEnabled = false
             binding.start.visibility = View.GONE
@@ -299,7 +321,7 @@ class TestActivity : AppCompatActivity() {
     }
 
     private fun submit() {
-        val score: MutableList<Float> = ArrayList()
+        val scoreList: MutableList<Float> = ArrayList()
         val correctness: MutableList<Int> = ArrayList()
         /*
         1 -> 正确
@@ -355,143 +377,227 @@ class TestActivity : AppCompatActivity() {
                                 }
                             }
                         }
-                        for (i in questions.indices) {
-                            var thisScore = 0F
-                            when (val online = questions[i]) {
-                                is Question.FillBankQuestion -> {
-                                    var shouldCorrect = 0
-                                    var actuallyCorrect = 0
-                                    for (j in online.answer.indices) {
-                                        val cardView = viewList[positionList[i]].findViewById<CardView>(j)
-                                        cardView.getChildAt(0).isEnabled = false
-                                        cardView.setOnClickListener {
-                                            cardView.setCardBackgroundColor(getResColor(R.color.colorTestRight))
-                                            (cardView.getChildAt(0) as EditText).addTextChangedListener { }
-                                            (cardView.getChildAt(0) as EditText).setText((questions[i] as Question.FillBankQuestion).answer[j].answer)
-                                        }
-                                        if (online.answer[j].answer == (userAnswer[i] as Question.FillBankQuestion).answer[j].userAnswer) {
-                                            thisScore += online.answer[j].score
-                                            shouldCorrect++
-                                            actuallyCorrect++
-                                            cardView.setCardBackgroundColor(getResColor(R.color.colorTestRight))
-                                        } else {
-                                            shouldCorrect++
-                                            cardView.setCardBackgroundColor(getResColor(R.color.colorTestWrong))
-                                        }
-                                    }
-                                    correctness.add(when (actuallyCorrect) {
-                                        shouldCorrect -> 1
-                                        0 -> 2
-                                        else -> 3
-                                    })
-                                }
-                                is Question.SingleChooseQuestion -> {
-                                    var actuallyCorrect = 0
-                                    for (j in online.options.indices) {
-                                        val cardView = viewList[positionList[i]].findViewById<CardView>(j)
-                                        cardView.getChildAt(0).isEnabled = false
-                                        if ((userAnswer[i] as Question.SingleChooseQuestion).options[j].userSelected) {
-                                            thisScore += online.options[j].score
-                                        }
-                                        if ((userAnswer[i] as Question.SingleChooseQuestion).options[j].userSelected && online.options[j].isCorrect == (userAnswer[i] as Question.SingleChooseQuestion).options[j].userSelected) {
-                                            actuallyCorrect++
-                                        } else if ((userAnswer[i] as Question.SingleChooseQuestion).options[j].userSelected && online.options[j].isCorrect != (userAnswer[i] as Question.SingleChooseQuestion).options[j].userSelected) {
-                                            cardView.setCardBackgroundColor(getResColor(R.color.colorTestWrong))
-                                        }
-                                        if (online.options[j].isCorrect) {
-                                            cardView.setCardBackgroundColor(getResColor(R.color.colorTestRight))
-                                        }
-                                    }
-                                    correctness.add(when (actuallyCorrect) {
-                                        1 -> 1
-                                        else -> 2
-                                    })
-                                }
-                                is Question.MultipleChooseQuestion -> {
-                                    var hasScore = true
-                                    var shouldCorrect = 0
-                                    var actuallyCorrect = 0
-                                    for (j in online.options.indices) {
-                                        val cardView = viewList[positionList[i]].findViewById<CardView>(j)
-                                        cardView.getChildAt(0).isEnabled = false
-                                        when (online.scoreType) {
-                                            1 -> {
-                                                if ((userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected) {
-                                                    thisScore += online.options[j].score
-                                                }
+                        runOnUiThread {
+                            for (i in questions.indices) {
+                                var thisScore = 0F
+                                when (val online = questions[i]) {
+                                    is Question.FillBankQuestion -> {
+                                        var shouldCorrect = 0
+                                        var actuallyCorrect = 0
+                                        for (j in online.answer.indices) {
+                                            val cardView = viewList[positionList[i]].findViewById<CardView>(j)
+                                            cardView.getChildAt(0).isEnabled = false
+                                            (cardView.getChildAt(0) as EditText).removeTextChangedListener(((cardView.getChildAt(0) as EditText).tag) as TextWatcher)
+                                            (cardView.getChildAt(0) as EditText).isClickable = false
+                                            (cardView.getChildAt(0) as EditText).isLongClickable = false
+                                            cardView.setOnClickListener {
+                                                cardView.setCardBackgroundColor(getResColor(R.color.colorTestRight))
+                                                (cardView.getChildAt(0) as EditText).setText((questions[i] as Question.FillBankQuestion).answer[j].answer)
                                             }
-                                            2 -> {
-                                                when {
-                                                    online.options[j].isCorrect == (userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected &&
-                                                            (userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected -> {
-                                                        thisScore += online.options[j].score
-                                                    }
-                                                    online.options[j].isCorrect != (userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected &&
-                                                            (userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected -> {
-                                                        hasScore = false
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        if (online.options[j].isCorrect) {
-                                            shouldCorrect++
-                                        }
-                                        if ((userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected && online.options[j].isCorrect == (userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected) {
-                                            actuallyCorrect++
-                                        } else if ((userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected && online.options[j].isCorrect != (userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected) {
-                                            cardView.setCardBackgroundColor(getResColor(R.color.colorTestWrong))
-                                        }
-                                        if (online.options[j].isCorrect) {
-                                            cardView.setCardBackgroundColor(getResColor(R.color.colorTestRight))
-                                        }
-                                    }
-                                    if (!hasScore) {
-                                        thisScore = 0F
-                                        correctness.add(2)
-                                    } else if (shouldCorrect == actuallyCorrect) {
-                                        correctness.add(1)
-                                    } else {
-                                        correctness.add(3)
-                                    }
-                                }
-                                is Question.GeneralQuestion -> {
-                                    val cardView = viewList[positionList[i]].findViewById<CardView>(R.id.cardView)
-                                    cardView.getChildAt(0).isEnabled = false
-                                    cardView.setOnClickListener {
-                                        cardView.setCardBackgroundColor(getResColor(R.color.colorTestRight))
-                                        (cardView.getChildAt(0) as EditText).addTextChangedListener { }
-                                        (cardView.getChildAt(0) as EditText).setText((questions[i] as Question.GeneralQuestion).answer[(questions[i] as Question.GeneralQuestion).answer.indices.random()])
-                                    }
-                                    var correct = 2
-                                    for (answer in online.answer) {
-                                        when {
-                                            (userAnswer[i] as Question.GeneralQuestion).userAnswer == answer -> {
-                                                thisScore += online.score
-                                                if (correct != 1) {
-                                                    correct = 1
+                                            cardView.setOnLongClickListener {
+                                                if (online.answer[j].answer == (userAnswer[i] as Question.FillBankQuestion).answer[j].userAnswer) {
                                                     cardView.setCardBackgroundColor(getResColor(R.color.colorTestRight))
-                                                }
-                                            }
-                                            online.exactMatch -> {
-                                                if (correct != 1) {
-                                                    correct = 2
+                                                } else {
                                                     cardView.setCardBackgroundColor(getResColor(R.color.colorTestWrong))
                                                 }
+                                                (cardView.getChildAt(0) as EditText).setText((userAnswer[i] as Question.FillBankQuestion).answer[j].userAnswer)
+                                                true
                                             }
-                                            else -> {
-                                                if (correct != 1) {
-                                                    correct = 4
-                                                    cardView.setCardBackgroundColor(getResColor(R.color.colorTestHalf))
+                                            if (online.answer[j].answer == (userAnswer[i] as Question.FillBankQuestion).answer[j].userAnswer) {
+                                                thisScore += online.answer[j].score
+                                                shouldCorrect++
+                                                actuallyCorrect++
+                                                cardView.setCardBackgroundColor(getResColor(R.color.colorTestRight))
+                                            } else {
+                                                shouldCorrect++
+                                                cardView.setCardBackgroundColor(getResColor(R.color.colorTestWrong))
+                                            }
+                                        }
+                                        correctness.add(when (actuallyCorrect) {
+                                            shouldCorrect -> 1
+                                            0 -> 2
+                                            else -> 3
+                                        })
+                                    }
+                                    is Question.SingleChooseQuestion -> {
+                                        var actuallyCorrect = 0
+                                        for (j in online.options.indices) {
+                                            val cardView = viewList[positionList[i]].findViewById<CardView>(j)
+                                            cardView.getChildAt(0).isEnabled = false
+                                            if ((userAnswer[i] as Question.SingleChooseQuestion).options[j].userSelected) {
+                                                thisScore += online.options[j].score
+                                            }
+                                            if ((userAnswer[i] as Question.SingleChooseQuestion).options[j].userSelected && online.options[j].isCorrect == (userAnswer[i] as Question.SingleChooseQuestion).options[j].userSelected) {
+                                                actuallyCorrect++
+                                            } else if ((userAnswer[i] as Question.SingleChooseQuestion).options[j].userSelected && online.options[j].isCorrect != (userAnswer[i] as Question.SingleChooseQuestion).options[j].userSelected) {
+                                                cardView.setCardBackgroundColor(getResColor(R.color.colorTestWrong))
+                                            }
+                                            if (online.options[j].isCorrect) {
+                                                cardView.setCardBackgroundColor(getResColor(R.color.colorTestRight))
+                                            }
+                                        }
+                                        correctness.add(when (actuallyCorrect) {
+                                            1 -> 1
+                                            else -> 2
+                                        })
+                                    }
+                                    is Question.MultipleChooseQuestion -> {
+                                        var hasScore = true
+                                        var shouldCorrect = 0
+                                        var actuallyCorrect = 0
+                                        for (j in online.options.indices) {
+                                            val cardView = viewList[positionList[i]].findViewById<CardView>(j)
+                                            cardView.getChildAt(0).isEnabled = false
+                                            when (online.scoreType) {
+                                                1 -> {
+                                                    if ((userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected) {
+                                                        thisScore += online.options[j].score
+                                                    }
+                                                }
+                                                2 -> {
+                                                    when {
+                                                        online.options[j].isCorrect == (userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected &&
+                                                                (userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected -> {
+                                                            thisScore += online.options[j].score
+                                                        }
+                                                        online.options[j].isCorrect != (userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected &&
+                                                                (userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected -> {
+                                                            hasScore = false
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            if (online.options[j].isCorrect) {
+                                                shouldCorrect++
+                                            }
+                                            if ((userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected && online.options[j].isCorrect == (userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected) {
+                                                actuallyCorrect++
+                                            } else if ((userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected && online.options[j].isCorrect != (userAnswer[i] as Question.MultipleChooseQuestion).options[j].userSelected) {
+                                                cardView.setCardBackgroundColor(getResColor(R.color.colorTestWrong))
+                                            }
+                                            if (online.options[j].isCorrect) {
+                                                cardView.setCardBackgroundColor(getResColor(R.color.colorTestRight))
+                                            }
+                                        }
+                                        if (!hasScore) {
+                                            thisScore = 0F
+                                            correctness.add(2)
+                                        } else if (shouldCorrect == actuallyCorrect) {
+                                            correctness.add(1)
+                                        } else if (actuallyCorrect == 0) {
+                                            correctness.add(2)
+                                        } else {
+                                            correctness.add(3)
+                                        }
+                                    }
+                                    is Question.GeneralQuestion -> {
+                                        val cardView = viewList[positionList[i]].findViewById<CardView>(R.id.cardView)
+                                        cardView.getChildAt(0).isEnabled = false
+                                        (cardView.getChildAt(0) as EditText).removeTextChangedListener(((cardView.getChildAt(0) as EditText).tag) as TextWatcher)
+                                        (cardView.getChildAt(0) as EditText).isClickable = false
+                                        (cardView.getChildAt(0) as EditText).isLongClickable = false
+                                        cardView.setOnClickListener {
+                                            cardView.setCardBackgroundColor(getResColor(R.color.colorTestRight))
+                                            (cardView.getChildAt(0) as EditText).setText((questions[i] as Question.GeneralQuestion).answer[(questions[i] as Question.GeneralQuestion).answer.indices.random()])
+                                        }
+                                        cardView.setOnLongClickListener {
+                                            var correct = true
+                                            for (answer in online.answer) {
+                                                when {
+                                                    (userAnswer[i] as Question.GeneralQuestion).userAnswer == answer -> {
+                                                        if (!correct) {
+                                                            correct = true
+                                                            cardView.setCardBackgroundColor(getResColor(R.color.colorTestRight))
+                                                        }
+                                                    }
+                                                    online.exactMatch -> {
+                                                        if (!correct) {
+                                                            cardView.setCardBackgroundColor(getResColor(R.color.colorTestWrong))
+                                                        }
+                                                    }
+                                                    else -> {
+                                                        if (!correct) {
+                                                            cardView.setCardBackgroundColor(getResColor(R.color.colorTestHalf))
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            (cardView.getChildAt(0) as EditText).setText((userAnswer[i] as Question.GeneralQuestion).userAnswer)
+                                            true
+                                        }
+                                        var correct = 2
+                                        for (answer in online.answer) {
+                                            when {
+                                                (userAnswer[i] as Question.GeneralQuestion).userAnswer == answer -> {
+                                                    thisScore += online.score
+                                                    if (correct != 1) {
+                                                        correct = 1
+                                                        cardView.setCardBackgroundColor(getResColor(R.color.colorTestRight))
+                                                    }
+                                                }
+                                                online.exactMatch -> {
+                                                    if (correct != 1) {
+                                                        correct = 2
+                                                        cardView.setCardBackgroundColor(getResColor(R.color.colorTestWrong))
+                                                    }
+                                                }
+                                                else -> {
+                                                    if (correct != 1) {
+                                                        correct = 4
+                                                        cardView.setCardBackgroundColor(getResColor(R.color.colorTestHalf))
+                                                    }
                                                 }
                                             }
                                         }
+                                        correctness.add(correct)
                                     }
-                                    correctness.add(correct)
+                                }
+                                scoreList.add(thisScore)
+                            }
+                            binding.toolbar.menu.findItem(R.id.submit).isVisible = false
+                            val markwon = Markwon.builder(this@TestActivity).apply {
+                                usePlugin(StrikethroughPlugin.create())
+                                usePlugin(TablePlugin.create(this@TestActivity))
+                                usePlugin(TaskListPlugin.create(this@TestActivity))
+                                usePlugin(HtmlPlugin.create())
+                                usePlugin(ImagesPlugin.create())
+                                usePlugin(LinkifyPlugin.create())
+                            }.build()
+                            val view = layoutInflater.inflate(R.layout.layout_test, LinearLayout(this@TestActivity), true)
+                            view.findViewById<ScrollView>(R.id.resultLayout).visibility = View.VISIBLE
+                            var scoreText = ""
+                            var total = 0F
+                            val wrongList: MutableList<Int> = ArrayList()
+                            for (i in scoreList.indices) {
+                                total += scoreList[i]
+                                scoreText += "${scoreList[i]}(${
+                                    getResString(when (correctness[i]) {
+                                        1 -> R.string.correct
+                                        2 -> R.string.wrong
+                                        3 -> R.string.half_correct
+                                        4 -> R.string.no_points
+                                        else -> R.string.unknown
+                                    })
+                                })${if (i != scoreList.size - 1) " + " else " = $total"}"
+                                if (correctness[i] != 1 && correctness[i] != 4) {
+                                    wrongList.add(i)
+                                    val button = Chip(this@TestActivity)
+                                    button.text = resources.getString(R.string.question_number, i + 1)
+                                    button.setOnClickListener {
+                                        binding.viewPager.currentItem = i
+                                    }
+                                    view.findViewById<ChipGroup>(R.id.resultWrongGroup).addView(button)
                                 }
                             }
-                            score.add(thisScore)
+                            if (wrongList.isNotEmpty()) {
+                                view.findViewById<LinearLayout>(R.id.resultWrong).visibility = View.VISIBLE
+                            }
+                            markwon.setMarkdown(view.findViewById(R.id.resultScoreText), scoreText)
+                            viewList.add(view)
+                            adapter.submitted = true
+                            adapter.notifyDataSetChanged()
+                            binding.viewPager.currentItem = viewList.size - 1
                         }
-                        binding.toolbar.menu.findItem(R.id.submit).isVisible = false
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }

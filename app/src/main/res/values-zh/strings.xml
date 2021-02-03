@@ -72,4 +72,10 @@
     <string name="question_number">第%d题</string>
     <string name="submit">提交</string>
     <string name="start">开始</string>
+    <string name="wrong_question">错题</string>
+    <string name="score">分数</string>
+    <string name="no_points">未赋分</string>
+    <string name="correct">正确</string>
+    <string name="wrong">错误</string>
+    <string name="half_correct">半对</string>
 </resources>
