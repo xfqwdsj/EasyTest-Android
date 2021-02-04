@@ -78,4 +78,6 @@
     <string name="correct">正确</string>
     <string name="wrong">错误</string>
     <string name="half_correct">半对</string>
+    <string name="scoring">赋分</string>
+    <string name="ask_answer_correct">您的答案是否正确？</string>
 </resources>

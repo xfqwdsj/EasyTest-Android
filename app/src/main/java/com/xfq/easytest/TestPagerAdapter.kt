@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
 import com.xfq.easytest.MyClass.getResString
 
-class TestPagerAdapter(private val mViewList: List<View>, private val context: Context) : PagerAdapter() {
+class TestPagerAdapter(private val mViewList: List<View>, private val mPositionList: List<Int>, private val context: Context) : PagerAdapter() {
     var submitted = false
 
     override fun getCount(): Int = mViewList.size
@@ -14,6 +14,7 @@ class TestPagerAdapter(private val mViewList: List<View>, private val context: C
     override fun isViewFromObject(view: View, `object`: Any): Boolean = view == `object`
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        container.removeView(mViewList[position])
         container.addView(mViewList[position])
         return mViewList[position]
     }
@@ -22,5 +23,5 @@ class TestPagerAdapter(private val mViewList: List<View>, private val context: C
         container.removeView(mViewList[position])
     }
 
-    override fun getPageTitle(position: Int): CharSequence = if (!submitted || position != mViewList.size - 1) context.resources.getString(R.string.question_number, position + 1) else getResString(R.string.result)
+    override fun getPageTitle(position: Int): CharSequence = if (!submitted || position != mViewList.size - 1) context.resources.getString(R.string.question_number, mPositionList[position] + 1) else getResString(R.string.result)
 }

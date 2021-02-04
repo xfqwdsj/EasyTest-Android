@@ -77,4 +77,6 @@
     <string name="correct">Correct</string>
     <string name="wrong">Wrong</string>
     <string name="half_correct">Half correct</string>
+    <string name="scoring">Scoring</string>
+    <string name="ask_answer_correct">Is your answer correct?</string>
 </resources>
