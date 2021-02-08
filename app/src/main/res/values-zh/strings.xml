@@ -34,7 +34,7 @@
     <string name="no_login">未登录</string>
     <string name="no_login_message">登录后，您的默写成果才能上传，但您仍可以将成果保存在本地并随时登录和上传</string>
     <string name="success">成功</string>
-    <string name="upload_success">回到主页可以查看成果</string>
+    <string name="upload_success">成功，ID：%d</string>
     <string name="error">遇到了错误：%s</string>
     <string name="loading_sources">加载资源</string>
     <string name="result_title">%s 的成果</string>
@@ -80,4 +80,7 @@
     <string name="half_correct">半对</string>
     <string name="scoring">赋分</string>
     <string name="ask_answer_correct">您的答案是否正确？</string>
+    <string name="about_to_exit">即将退出</string>
+    <string name="answer">答案</string>
+    <string name="change_it">换一个</string>
 </resources>

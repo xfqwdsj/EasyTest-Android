@@ -10,10 +10,5 @@
             android:enabled="false"
             android:icon="@drawable/ic_baseline_playlist_add_check_24"
             android:title="@string/query_by_id" />
-        <item
-            android:id="@+id/download"
-            android:enabled="false"
-            android:icon="@drawable/ic_baseline_cloud_download_24"
-            android:title="@string/download_resources" />
     </group>
 </menu>

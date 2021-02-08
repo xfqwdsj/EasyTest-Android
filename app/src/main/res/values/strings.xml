@@ -33,7 +33,7 @@
     <string name="no_login">Not logged in</string>
     <string name="no_login_message">After logging in, you can continue to write online, but you can still continue to write silently without logging in</string>
     <string name="success">Success</string>
-    <string name="upload_success">You can find it at home page</string>
+    <string name="upload_success">Success. ID: %d</string>
     <string name="error">Encountered an error: %s</string>
     <string name="loading_sources">Loading sources</string>
     <string name="result_title">%s\' s result</string>
@@ -79,4 +79,7 @@
     <string name="half_correct">Half correct</string>
     <string name="scoring">Scoring</string>
     <string name="ask_answer_correct">Is your answer correct?</string>
+    <string name="about_to_exit">About to exit</string>
+    <string name="answer">Answer</string>
+    <string name="change_it">Change it</string>
 </resources>

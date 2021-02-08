@@ -66,7 +66,6 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.mwords -> startActivity(Intent(this, SelectQuestionBankActivity::class.java))
                 R.id.query -> startActivity(Intent(this, IDQueryActivity::class.java))
-                R.id.download -> startActivity(Intent(this, DownloadActivity::class.java))
             }
             false
         }
@@ -128,30 +127,36 @@ class MainActivity : AppCompatActivity() {
         OkHttpClient().newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 dialog.close()
-                askOffline()
+                BottomDialog().create(this@MainActivity).apply {
+                    setTitle(R.string.failed)
+                    setContent(R.string.about_to_exit)
+                    setButton1(android.R.string.ok) {
+                        close()
+                        finish()
+                    }
+                    setCancelAble(false)
+                    show()
+                }
             }
 
             override fun onResponse(call: Call, response: Response) {
                 dialog.close()
+                if (response.code != 200) {
+                    runOnUiThread {
+                        BottomDialog().create(this@MainActivity).apply {
+                            setTitle(R.string.failed)
+                            setContent(R.string.about_to_exit)
+                            setButton1(android.R.string.ok) {
+                                close()
+                                finish()
+                            }
+                            setCancelAble(false)
+                            show()
+                        }
+                    }
+                }
                 response.close()
             }
         })
-    }
-
-    private fun askOffline() {
-        BottomDialog().create(this).apply {
-            setTitle(R.string.failed)
-            setContent(R.string.ask_offline_mode)
-            setButton1(android.R.string.ok) {
-                close()
-                //离线模式
-            }
-            setButton2(android.R.string.cancel) {
-                close()
-                finish()
-            }
-            setCancelAble(false)
-            show()
-        }
     }
 }

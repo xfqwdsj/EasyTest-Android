@@ -1,30 +1,13 @@
 package com.xfq.easytest
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
-import cn.leancloud.AVObject
-import cn.leancloud.AVQuery
-import cn.leancloud.AVUser
-import com.google.android.material.snackbar.Snackbar
 import com.xfq.bottomdialog.BottomDialog
-import com.xfq.easytest.MyClass.RESULT_TYPE_LOCAL_UPLOADED
-import com.xfq.easytest.MyClass.RESULT_TYPE_NO_UPLOADED_NO_SAVE
-import com.xfq.easytest.MyClass.RESULT_TYPE_NO_UPLOADED_SAVED
-import com.xfq.easytest.MyClass.RESULT_TYPE_UPLOADED
 import com.xfq.easytest.MyClass.getResString
 import com.xfq.easytest.MyClass.setInset
 import com.xfq.easytest.databinding.ActivityResult2Binding
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
-import org.litepal.LitePal
-import org.litepal.extension.find
 import java.text.DateFormat.getDateInstance
 import java.text.DateFormat.getTimeInstance
 import java.util.*
@@ -55,6 +38,7 @@ class ResultActivity2 : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setInset(MyClass.INSET_TOP, binding.toolbar)
         setInset(MyClass.INSET_BOTTOM, binding.root)
+        /*
         when (type) {
             RESULT_TYPE_UPLOADED -> {
                 val id = intent.getStringExtra("id")
@@ -275,6 +259,7 @@ class ResultActivity2 : AppCompatActivity() {
                 })
             }
         }
+         */
     }
 
     private fun getDate(date: Date): String {

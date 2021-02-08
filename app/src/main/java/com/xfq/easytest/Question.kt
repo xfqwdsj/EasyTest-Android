@@ -18,6 +18,7 @@ open class Question() : Parcelable {
             lateinit var answer: String
             var score by Delegates.notNull<Float>()
             lateinit var userAnswer: String
+            var exactMatch by Delegates.notNull<Boolean>()
         }
     }
 
@@ -34,7 +35,6 @@ open class Question() : Parcelable {
 
     class MultipleChooseQuestion : Question() {
         var scoreType by Delegates.notNull<Int>()
-
         /*
         1 -> 选择即得options[].score分
         2 -> 选对即得options[].score分 选错不得分
