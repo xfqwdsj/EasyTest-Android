@@ -18,13 +18,7 @@ class ResultActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         MyClass.setInset(MyClass.INSET_TOP, binding.toolbar)
 
-        val score = intent.getFloatArrayExtra("score")
-        val correctness = intent.getIntArrayExtra("correctness")
-        val questions = intent.getParcelableArrayExtra("questions")
-        val positions = intent.getIntArrayExtra("positions")
-        if (score != null && correctness != null && questions != null && positions != null) {
 
-        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

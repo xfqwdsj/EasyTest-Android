@@ -1,13 +1,39 @@
 package com.xfq.easytest;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.litepal.crud.LitePalSupport;
 
 import java.util.List;
 
-class Result extends LitePalSupport {
+class Result extends LitePalSupport implements Parcelable {
     private Integer id;
     private String question;
-    private List<String> answer;
+    public static final Creator<Result> CREATOR = new Creator<Result>() {
+        @Override
+        public Result createFromParcel(Parcel in) {
+            return new Result(in);
+        }
+
+        @Override
+        public Result[] newArray(int size) {
+            return new Result[size];
+        }
+    };
+    private List<Integer> correctnessList;
+
+    Result() {
+    }
+
+    protected Result(Parcel in) {
+        if (in.readByte() == 0) {
+            id = null;
+        } else {
+            id = in.readInt();
+        }
+        question = in.readString();
+    }
 
     public Integer getId() {
         return id;
@@ -25,11 +51,27 @@ class Result extends LitePalSupport {
         this.question = question;
     }
 
-    public List<String> getAnswer() {
-        return answer;
+    public List<Integer> getCorrectnessList() {
+        return correctnessList;
     }
 
-    public void setAnswer(List<String> answer) {
-        this.answer = answer;
+    public void setCorrectnessList(List<Integer> correctnessList) {
+        this.correctnessList = correctnessList;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (id == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(id);
+        }
+        dest.writeString(question);
     }
 }

@@ -5,11 +5,11 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
-import com.xfq.easytest.MyClass.RESULT_TYPE_LOCAL_UPLOADED
-import com.xfq.easytest.MyClass.RESULT_TYPE_NO_UPLOADED_SAVED
-import com.xfq.easytest.MyClass.RESULT_TYPE_UPLOADED
+import com.google.android.material.snackbar.Snackbar
 import com.xfq.easytest.MyClass.setInset
 import com.xfq.easytest.databinding.ActivityIdQueryBinding
+import org.litepal.LitePal
+import org.litepal.extension.find
 
 class IDQueryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityIdQueryBinding
@@ -24,26 +24,13 @@ class IDQueryActivity : AppCompatActivity() {
         setInset(MyClass.INSET_TOP, binding.toolbar)
         setInset(MyClass.INSET_BOTTOM, binding.root)
         binding.button.setOnClickListener {
-            if (binding.editText.text.toString() != "") {
-                if (binding.online.isChecked) {
-                    Intent(this, ResultActivity2::class.java).apply {
-                        putExtra("type", RESULT_TYPE_UPLOADED)
-                        putExtra("id", binding.editText.text.toString())
-                        startActivity(this)
-                    }
-                } else if (binding.localUploaded.isChecked) {
-                    Intent(this, ResultActivity2::class.java).apply {
-                        putExtra("type", RESULT_TYPE_LOCAL_UPLOADED)
-                        putExtra("id", binding.editText.text.toString())
-                        startActivity(this)
-                    }
-                } else if (binding.local.isChecked) {
-                    Intent(this, ResultActivity2::class.java).apply {
-                        putExtra("type", RESULT_TYPE_NO_UPLOADED_SAVED)
-                        putExtra("id", binding.editText.text.toString().toInt())
-                        startActivity(this)
-                    }
+            val result = LitePal.find<Result>(binding.editText.text.toString().toLong())
+            if (result != null) {
+                Intent(this, ResultActivity::class.java).apply {
+                    putExtra("result", result)
                 }
+            } else {
+                Snackbar.make(binding.root, R.string.not_found, Snackbar.LENGTH_LONG).show()
             }
         }
     }

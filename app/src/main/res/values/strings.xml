@@ -82,4 +82,5 @@
     <string name="about_to_exit">About to exit</string>
     <string name="answer">Answer</string>
     <string name="change_it">Change it</string>
+    <string name="not_found">Not found</string>
 </resources>

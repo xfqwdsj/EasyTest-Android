@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.webkit.WebView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -123,6 +124,8 @@ class MainActivity : AppCompatActivity() {
     private fun get(url: URL, dialog: BottomDialog) {
         val request = Request.Builder()
                 .url(url)
+                .removeHeader("User-Agent")
+                .addHeader("User-Agent", WebView(this).settings.userAgentString)
                 .build()
         OkHttpClient().newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
