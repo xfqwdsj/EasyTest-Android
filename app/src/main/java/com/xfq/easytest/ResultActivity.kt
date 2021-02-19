@@ -240,7 +240,7 @@ class ResultActivity : AppCompatActivity() {
                             "1" -> getResColor(R.color.colorTestCorrect)
                             else -> getResColor(R.color.colorTestWrong)
                         })
-                        if (result.correctnessList[index] == "1") scoreList.add(question.children[0].score)
+                        scoreList.add(if (result.correctnessList[index] == "1") question.children[0].score else 0F)
                     }
                     else -> {
                         finish()
