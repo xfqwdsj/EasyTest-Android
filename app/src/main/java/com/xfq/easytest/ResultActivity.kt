@@ -167,11 +167,11 @@ class ResultActivity : AppCompatActivity() {
                                 id = i
                                 cardElevation = 0F
                                 addView(button)
-                                setCardBackgroundColor(when {
-                                    question.children[i].isCorrect && question.userAnswer[i] == "1" -> getResColor(R.color.colorTestCorrect)
-                                    !question.children[i].isCorrect && question.userAnswer[i] == "1" -> getResColor(R.color.colorTestWrong)
-                                    else -> getResColor(R.color.colorTestWrong)
-                                })
+                                if (question.children[i].isCorrect && question.userAnswer[i] == "1") {
+                                    setCardBackgroundColor(getResColor(R.color.colorTestCorrect))
+                                } else if (!question.children[i].isCorrect && question.userAnswer[i] == "1") {
+                                    setCardBackgroundColor(getResColor(R.color.colorTestWrong))
+                                }
                             })
                             if (question.userAnswer[i] == "1") score += question.children[i].score
                         }
@@ -203,11 +203,11 @@ class ResultActivity : AppCompatActivity() {
                                 id = i
                                 cardElevation = 0F
                                 addView(button)
-                                setCardBackgroundColor(when {
-                                    question.children[i].isCorrect && question.userAnswer[i] == "1" -> getResColor(R.color.colorTestCorrect)
-                                    !question.children[i].isCorrect && question.userAnswer[i] == "1" -> getResColor(R.color.colorTestWrong)
-                                    else -> getResColor(R.color.colorTestWrong)
-                                })
+                                if (question.children[i].isCorrect && question.userAnswer[i] == "1") {
+                                    setCardBackgroundColor(getResColor(R.color.colorTestCorrect))
+                                } else if (!question.children[i].isCorrect && question.userAnswer[i] == "1") {
+                                    setCardBackgroundColor(getResColor(R.color.colorTestWrong))
+                                }
                             })
                             when (question.scoreType) {
                                 1 -> {
