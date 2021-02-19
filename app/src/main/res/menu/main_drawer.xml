@@ -2,12 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group>
         <item
-            android:id="@+id/mwords"
+            android:id="@+id/test"
             android:icon="@drawable/ic_baseline_school_24"
             android:title="@string/start_test" />
         <item
             android:id="@+id/query"
-            android:enabled="false"
             android:icon="@drawable/ic_baseline_playlist_add_check_24"
             android:title="@string/query_by_id" />
     </group>

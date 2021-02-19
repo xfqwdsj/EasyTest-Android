@@ -8,8 +8,6 @@ import org.litepal.crud.LitePalSupport;
 import java.util.List;
 
 class Result extends LitePalSupport implements Parcelable {
-    private Integer id;
-    private String question;
     public static final Creator<Result> CREATOR = new Creator<Result>() {
         @Override
         public Result createFromParcel(Parcel in) {
@@ -21,7 +19,9 @@ class Result extends LitePalSupport implements Parcelable {
             return new Result[size];
         }
     };
+    private String question;
     private List<String> correctnessList;
+    private Long id;
 
     Result() {
     }
@@ -30,16 +30,17 @@ class Result extends LitePalSupport implements Parcelable {
         if (in.readByte() == 0) {
             id = null;
         } else {
-            id = in.readInt();
+            id = in.readLong();
         }
         question = in.readString();
+        correctnessList = in.createStringArrayList();
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -70,8 +71,9 @@ class Result extends LitePalSupport implements Parcelable {
             dest.writeByte((byte) 0);
         } else {
             dest.writeByte((byte) 1);
-            dest.writeInt(id);
+            dest.writeLong(id);
         }
         dest.writeString(question);
+        dest.writeStringList(correctnessList);
     }
 }

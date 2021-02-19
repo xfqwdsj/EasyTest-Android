@@ -28,6 +28,7 @@ class IDQueryActivity : AppCompatActivity() {
             if (result != null) {
                 Intent(this, ResultActivity::class.java).apply {
                     putExtra("result", result)
+                    startActivity(this)
                 }
             } else {
                 Snackbar.make(binding.root, R.string.not_found, Snackbar.LENGTH_LONG).show()

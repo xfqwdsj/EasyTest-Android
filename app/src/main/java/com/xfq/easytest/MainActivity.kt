@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         }
         binding.navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.mwords -> startActivity(Intent(this, SelectQuestionBankActivity::class.java))
+                R.id.test -> startActivity(Intent(this, SelectQuestionBankActivity::class.java))
                 R.id.query -> startActivity(Intent(this, IDQueryActivity::class.java))
             }
             false

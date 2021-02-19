@@ -71,7 +71,7 @@ class TestActivity : AppCompatActivity() {
             usePlugin(LinkifyPlugin.create())
         }.build()  //初始化Markwon
         val random = this.intent.getBooleanExtra("random", false)  //获取是否随机排序
-        var questions: MutableList<Question>  //预留一个题目列表 稍后进行解析
+        var questionList: MutableList<Question>  //预留一个题目列表 稍后进行解析
 
         val request = Request.Builder()
                 .url(url)
@@ -96,13 +96,13 @@ class TestActivity : AppCompatActivity() {
             override fun onResponse(call: Call, response: Response) {
                 if (response.code == 200) {
                     try {
-                        questions = JSON.parseArray(response.body?.string().toString(), Question::class.java).toMutableList()  //把获取到的json字符串数组解析出来
-                        userAnswerList = List(questions.size) { Question() }
-                        for (i in questions.indices) {
-                            userAnswerList[i].userAnswer = questions[i].userAnswer
+                        questionList = JSON.parseArray(response.body?.string().toString(), Question::class.java).toMutableList()  //把获取到的json字符串数组解析出来
+                        userAnswerList = List(questionList.size) { Question() }
+                        for (i in questionList.indices) {
+                            userAnswerList[i].userAnswer = questionList[i].userAnswer
                         }
                         runOnUiThread {
-                            setAdapter(random, questions)  //给ViewPager和TabLayout设置适配器
+                            setAdapter(random, questionList)  //给ViewPager和TabLayout设置适配器
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -519,7 +519,7 @@ class TestActivity : AppCompatActivity() {
                                                 when {
                                                     userAnswerList[i].userAnswer[0] == correctAnswer -> {
                                                         correctness = 1
-                                                        score += online.children[j].score
+                                                        score += online.children[0].score
                                                         cardView.setCardBackgroundColor(getResColor(R.color.colorTestCorrect))
                                                     }
                                                     online.children[0].exactMatch == true -> {
@@ -552,12 +552,11 @@ class TestActivity : AppCompatActivity() {
                                 scoreList.add(score)
                             }
                             binding.toolbar.menu.findItem(R.id.submit).isVisible = false
-                            val view = layoutInflater.inflate(R.layout.layout_test, LinearLayout(this@TestActivity), true)
-                            view.findViewById<ScrollView>(R.id.resultLayout).visibility = View.VISIBLE
-                            val wrongList: MutableList<Int> = ArrayList()
+                            val view = layoutInflater.inflate(R.layout.layout_test, LinearLayout(this@TestActivity), true).apply {
+                                findViewById<ScrollView>(R.id.resultLayout).visibility = View.VISIBLE
+                            }
                             var scoreText = ""
                             var total = 0F
-                            var hasNoPoints = false
                             for (i in scoreList.indices) {
                                 var correctness = correctnessList[i]
                                 var originalCorrectness = correctness
@@ -586,10 +585,8 @@ class TestActivity : AppCompatActivity() {
                                     text = resources.getString(R.string.question_number, i + 1)
                                 }
                                 if (originalCorrectness == "2" || originalCorrectness == "3") {
-                                    wrongList.add(i)
                                     view.findViewById<ChipGroup>(R.id.resultWrongGroup).addView(button)
                                 } else if (originalCorrectness == "4") {
-                                    hasNoPoints = true
                                     generalScoringFunction = { position ->
                                         if (correctnessList[position] == "4") {
                                             fun refreshView() {
@@ -672,10 +669,8 @@ class TestActivity : AppCompatActivity() {
                                             text = resources.getString(R.string.question_number, i + 1)
                                         }
                                         if (char == '2') {
-                                            wrongList.add(i)
                                             view.findViewById<ChipGroup>(R.id.resultWrongGroup).addView(bankButton)
                                         } else if (char == '4') {
-                                            hasNoPoints = true
                                             fillScoringFunction = { questionPosition, bankPosition ->
                                                 if (correctnessList[questionPosition][bankPosition] == '4') {
                                                     fun refreshView() {
@@ -773,10 +768,10 @@ class TestActivity : AppCompatActivity() {
                                 }
                             }
                             view.findViewById<TextView>(R.id.resultScoreText).text = scoreText
-                            if (wrongList.isNotEmpty()) {
+                            if (view.findViewById<ChipGroup>(R.id.resultWrongGroup).childCount > 0) {
                                 view.findViewById<LinearLayout>(R.id.resultWrong).visibility = View.VISIBLE
                             }
-                            if (hasNoPoints) {
+                            if (view.findViewById<ChipGroup>(R.id.resultNoPointsGroup).childCount > 0) {
                                 view.findViewById<LinearLayout>(R.id.resultNoPoints).visibility = View.VISIBLE
                             } else {
                                 view.findViewById<Button>(R.id.submit).isEnabled = true
