@@ -169,7 +169,7 @@ class ResultActivity : AppCompatActivity() {
                                 addView(button)
                                 setCardBackgroundColor(when {
                                     question.children[i].isCorrect && question.userAnswer[i] == "1" -> getResColor(R.color.colorTestCorrect)
-                                    question.children[i].isCorrect && question.userAnswer[i] == "1" -> getResColor(R.color.colorTestWrong)
+                                    !question.children[i].isCorrect && question.userAnswer[i] == "1" -> getResColor(R.color.colorTestWrong)
                                     else -> getResColor(R.color.colorTestWrong)
                                 })
                             })
@@ -205,7 +205,7 @@ class ResultActivity : AppCompatActivity() {
                                 addView(button)
                                 setCardBackgroundColor(when {
                                     question.children[i].isCorrect && question.userAnswer[i] == "1" -> getResColor(R.color.colorTestCorrect)
-                                    question.children[i].isCorrect && question.userAnswer[i] == "1" -> getResColor(R.color.colorTestWrong)
+                                    !question.children[i].isCorrect && question.userAnswer[i] == "1" -> getResColor(R.color.colorTestWrong)
                                     else -> getResColor(R.color.colorTestWrong)
                                 })
                             })
