@@ -92,8 +92,8 @@ class Question {
             return isCorrect;
         }
 
-        public void setIsCorrect(Boolean correct) {
-            isCorrect = correct;
+        public void setIsCorrect(Boolean isCorrect) {
+            this.isCorrect = isCorrect;
         }
     }
 }

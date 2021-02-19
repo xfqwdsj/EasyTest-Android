@@ -21,7 +21,7 @@ class Result extends LitePalSupport implements Parcelable {
             return new Result[size];
         }
     };
-    private List<Integer> correctnessList;
+    private List<String> correctnessList;
 
     Result() {
     }
@@ -51,11 +51,11 @@ class Result extends LitePalSupport implements Parcelable {
         this.question = question;
     }
 
-    public List<Integer> getCorrectnessList() {
+    public List<String> getCorrectnessList() {
         return correctnessList;
     }
 
-    public void setCorrectnessList(List<Integer> correctnessList) {
+    public void setCorrectnessList(List<String> correctnessList) {
         this.correctnessList = correctnessList;
     }
 
