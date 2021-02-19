@@ -55,6 +55,7 @@ class ResultActivity : AppCompatActivity() {
             for ((index, question) in questionList.withIndex()) {
                 val view = layoutInflater.inflate(R.layout.layout_test, LinearLayout(this), true)
                 val answerView = layoutInflater.inflate(R.layout.layout_answer, LinearLayout(this), false)
+                viewList.add(view)
                 when (question.type) {
                     1 -> {  //填空题
                         view.findViewById<ScrollView>(R.id.fillBankQuestionLayout).visibility = View.VISIBLE
@@ -124,7 +125,7 @@ class ResultActivity : AppCompatActivity() {
                         var score = 0F
                         var answer = ""
                         for (i in bank.indices) {  //遍历“空”
-                            answer += question.children[i].text
+                            answer += "${question.children[i].text}; "
                             view.findViewById<FlexboxLayout>(R.id.fillBankEdit).addView(MaterialCardView(this).apply {
                                 layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
                                     setMargins(MyClass.dip2PxI(5F), MyClass.dip2PxI(5F), MyClass.dip2PxI(5F), MyClass.dip2PxI(5F))
@@ -186,11 +187,11 @@ class ResultActivity : AppCompatActivity() {
                                 }
                                 if (question.children[i].isCorrect) {
                                     answerView.findViewById<TextView>(R.id.answer).text = question.children[i].text
-                                    viewList[index].findViewById<ConstraintLayout>(R.id.fillBankQuestionConstraint).addView(answerView)
+                                    viewList[index].findViewById<ConstraintLayout>(R.id.chooseQuestionConstraint).addView(answerView)
                                     ConstraintSet().apply {
-                                        clone(viewList[index].findViewById<ConstraintLayout>(R.id.fillBankQuestionConstraint))
-                                        connect(R.id.answerLayout, ConstraintSet.TOP, R.id.fillBankEdit, ConstraintSet.BOTTOM, MyClass.dip2PxI(8F))
-                                        applyTo(viewList[index].findViewById(R.id.fillBankQuestionConstraint))
+                                        clone(viewList[index].findViewById<ConstraintLayout>(R.id.chooseQuestionConstraint))
+                                        connect(R.id.answerLayout, ConstraintSet.TOP, R.id.chooseGroup, ConstraintSet.BOTTOM, MyClass.dip2PxI(8F))
+                                        applyTo(viewList[index].findViewById(R.id.chooseQuestionConstraint))
                                     }
                                 }
                             })
@@ -254,11 +255,11 @@ class ResultActivity : AppCompatActivity() {
                         }
                         scoreList.add(if (hasScore) score else 0F)
                         answerView.findViewById<TextView>(R.id.answer).text = answer.substring(0, answer.length - 2)
-                        viewList[index].findViewById<ConstraintLayout>(R.id.fillBankQuestionConstraint).addView(answerView)
+                        viewList[index].findViewById<ConstraintLayout>(R.id.chooseQuestionConstraint).addView(answerView)
                         ConstraintSet().apply {
-                            clone(viewList[index].findViewById<ConstraintLayout>(R.id.fillBankQuestionConstraint))
-                            connect(R.id.answerLayout, ConstraintSet.TOP, R.id.fillBankEdit, ConstraintSet.BOTTOM, MyClass.dip2PxI(8F))
-                            applyTo(viewList[index].findViewById(R.id.fillBankQuestionConstraint))
+                            clone(viewList[index].findViewById<ConstraintLayout>(R.id.chooseQuestionConstraint))
+                            connect(R.id.answerLayout, ConstraintSet.TOP, R.id.chooseGroup, ConstraintSet.BOTTOM, MyClass.dip2PxI(8F))
+                            applyTo(viewList[index].findViewById(R.id.chooseQuestionConstraint))
                         }
                     }
                     4 -> {
@@ -278,11 +279,11 @@ class ResultActivity : AppCompatActivity() {
                         answerView.findViewById<Button>(R.id.change).setOnClickListener {
                             answerView.findViewById<TextView>(R.id.answer).text = question.children[question.children.indices.random()].text
                         }
-                        viewList[index].findViewById<ConstraintLayout>(R.id.fillBankQuestionConstraint).addView(answerView)
+                        viewList[index].findViewById<ConstraintLayout>(R.id.generalQuestionConstraint).addView(answerView)
                         ConstraintSet().apply {
-                            clone(viewList[index].findViewById<ConstraintLayout>(R.id.fillBankQuestionConstraint))
-                            connect(R.id.answerLayout, ConstraintSet.TOP, R.id.fillBankEdit, ConstraintSet.BOTTOM, MyClass.dip2PxI(8F))
-                            applyTo(viewList[index].findViewById(R.id.fillBankQuestionConstraint))
+                            clone(viewList[index].findViewById<ConstraintLayout>(R.id.generalQuestionConstraint))
+                            connect(R.id.answerLayout, ConstraintSet.TOP, R.id.cardView, ConstraintSet.BOTTOM, MyClass.dip2PxI(8F))
+                            applyTo(viewList[index].findViewById(R.id.generalQuestionConstraint))
                         }
                     }
                     else -> {
@@ -290,7 +291,6 @@ class ResultActivity : AppCompatActivity() {
                         return
                     }
                 }
-                viewList.add(view)
                 positionList.add(index)
             }
             val view = layoutInflater.inflate(R.layout.layout_test, LinearLayout(this), true).apply {
