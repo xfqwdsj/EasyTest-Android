@@ -418,10 +418,11 @@ class TestActivity : AppCompatActivity() {
                                         }
                                         layout.findViewById<TextView>(R.id.answer).text = answer.substring(0, answer.length - 2)
                                         viewList[i].findViewById<ConstraintLayout>(R.id.fillBankQuestionConstraint).addView(layout)
-                                        val constraintSet = ConstraintSet()
-                                        constraintSet.clone(viewList[i].findViewById<ConstraintLayout>(R.id.fillBankQuestionConstraint))
-                                        constraintSet.connect(R.id.answerLayout, ConstraintSet.TOP, R.id.fillBankEdit, ConstraintSet.BOTTOM, dip2PxI(8F))
-                                        constraintSet.applyTo(viewList[i].findViewById(R.id.fillBankQuestionConstraint))
+                                        ConstraintSet().apply {
+                                            clone(viewList[i].findViewById<ConstraintLayout>(R.id.fillBankQuestionConstraint))
+                                            connect(R.id.answerLayout, ConstraintSet.TOP, R.id.fillBankEdit, ConstraintSet.BOTTOM, dip2PxI(8F))
+                                            applyTo(viewList[i].findViewById(R.id.fillBankQuestionConstraint))
+                                        }
                                         correctnessList.add(correctness)
                                     }
                                     2 -> {
@@ -441,10 +442,11 @@ class TestActivity : AppCompatActivity() {
                                                 cardView.setCardBackgroundColor(getResColor(R.color.colorTestCorrect))
                                                 layout.findViewById<TextView>(R.id.answer).text = online.children[j].text
                                                 viewList[i].findViewById<ConstraintLayout>(R.id.chooseQuestionConstraint).addView(layout)
-                                                val constraintSet = ConstraintSet()
-                                                constraintSet.clone(viewList[i].findViewById<ConstraintLayout>(R.id.chooseQuestionConstraint))
-                                                constraintSet.connect(R.id.answerLayout, ConstraintSet.TOP, R.id.chooseGroup, ConstraintSet.BOTTOM, dip2PxI(8F))
-                                                constraintSet.applyTo(viewList[i].findViewById(R.id.chooseQuestionConstraint))
+                                                ConstraintSet().apply {
+                                                    clone(viewList[i].findViewById<ConstraintLayout>(R.id.chooseQuestionConstraint))
+                                                    connect(R.id.answerLayout, ConstraintSet.TOP, R.id.chooseGroup, ConstraintSet.BOTTOM, dip2PxI(8F))
+                                                    applyTo(viewList[i].findViewById(R.id.chooseQuestionConstraint))
+                                                }
                                             }
                                         }
                                         val correctness = when (actuallyCorrect) {
@@ -493,10 +495,11 @@ class TestActivity : AppCompatActivity() {
                                         }
                                         layout.findViewById<TextView>(R.id.answer).text = answer.substring(0, answer.length - 2)
                                         viewList[i].findViewById<ConstraintLayout>(R.id.chooseQuestionConstraint).addView(layout)
-                                        val constraintSet = ConstraintSet()
-                                        constraintSet.clone(viewList[i].findViewById<ConstraintLayout>(R.id.chooseQuestionConstraint))
-                                        constraintSet.connect(R.id.answerLayout, ConstraintSet.TOP, R.id.chooseGroup, ConstraintSet.BOTTOM, dip2PxI(8F))
-                                        constraintSet.applyTo(viewList[i].findViewById(R.id.chooseQuestionConstraint))
+                                        ConstraintSet().apply {
+                                            clone(viewList[i].findViewById<ConstraintLayout>(R.id.chooseQuestionConstraint))
+                                            connect(R.id.answerLayout, ConstraintSet.TOP, R.id.chooseGroup, ConstraintSet.BOTTOM, dip2PxI(8F))
+                                            applyTo(viewList[i].findViewById(R.id.chooseQuestionConstraint))
+                                        }
                                         if (!hasScore) {
                                             score = 0F
                                         }
@@ -542,10 +545,11 @@ class TestActivity : AppCompatActivity() {
                                             layout.findViewById<TextView>(R.id.answer).text = online.children[online.children.indices.random()].text
                                         }
                                         viewList[i].findViewById<ConstraintLayout>(R.id.generalQuestionConstraint).addView(layout)
-                                        val constraintSet = ConstraintSet()
-                                        constraintSet.clone(viewList[i].findViewById<ConstraintLayout>(R.id.generalQuestionConstraint))
-                                        constraintSet.connect(R.id.answerLayout, ConstraintSet.TOP, R.id.cardView, ConstraintSet.BOTTOM, dip2PxI(8F))
-                                        constraintSet.applyTo(viewList[i].findViewById(R.id.generalQuestionConstraint))
+                                        ConstraintSet().apply {
+                                            clone(viewList[i].findViewById<ConstraintLayout>(R.id.generalQuestionConstraint))
+                                            connect(R.id.answerLayout, ConstraintSet.TOP, R.id.cardView, ConstraintSet.BOTTOM, dip2PxI(8F))
+                                            applyTo(viewList[i].findViewById(R.id.generalQuestionConstraint))
+                                        }
                                         correctnessList.add(correctness.toString())
                                     }
                                 }

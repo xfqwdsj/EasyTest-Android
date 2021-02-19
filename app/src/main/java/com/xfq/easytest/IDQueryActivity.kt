@@ -30,6 +30,7 @@ class IDQueryActivity : AppCompatActivity() {
                     putExtra("result", result)
                     startActivity(this)
                 }
+                finish()
             } else {
                 Snackbar.make(binding.root, R.string.not_found, Snackbar.LENGTH_LONG).show()
             }

@@ -6,6 +6,8 @@ import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowCompat
 import com.alibaba.fastjson.JSON
 import com.google.android.flexbox.FlexboxLayout
@@ -52,6 +54,7 @@ class ResultActivity : AppCompatActivity() {
             val scoreList: MutableList<Float> = ArrayList()
             for ((index, question) in questionList.withIndex()) {
                 val view = layoutInflater.inflate(R.layout.layout_test, LinearLayout(this), true)
+                val answerView = layoutInflater.inflate(R.layout.layout_answer, LinearLayout(this), false)
                 when (question.type) {
                     1 -> {  //填空题
                         view.findViewById<ScrollView>(R.id.fillBankQuestionLayout).visibility = View.VISIBLE
@@ -119,7 +122,9 @@ class ResultActivity : AppCompatActivity() {
                         }
                         markwon.setMarkdown(view.findViewById(R.id.fillBankQuestion), questionText)
                         var score = 0F
+                        var answer = ""
                         for (i in bank.indices) {  //遍历“空”
+                            answer += question.children[i].text
                             view.findViewById<FlexboxLayout>(R.id.fillBankEdit).addView(MaterialCardView(this).apply {
                                 layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
                                     setMargins(MyClass.dip2PxI(5F), MyClass.dip2PxI(5F), MyClass.dip2PxI(5F), MyClass.dip2PxI(5F))
@@ -142,6 +147,13 @@ class ResultActivity : AppCompatActivity() {
                             if (result.correctnessList[index][i] == '1') score += question.children[i].score
                         }
                         scoreList.add(score)
+                        answerView.findViewById<TextView>(R.id.answer).text = answer.substring(0, answer.length - 2)
+                        viewList[index].findViewById<ConstraintLayout>(R.id.fillBankQuestionConstraint).addView(answerView)
+                        ConstraintSet().apply {
+                            clone(viewList[index].findViewById<ConstraintLayout>(R.id.fillBankQuestionConstraint))
+                            connect(R.id.answerLayout, ConstraintSet.TOP, R.id.fillBankEdit, ConstraintSet.BOTTOM, MyClass.dip2PxI(8F))
+                            applyTo(viewList[index].findViewById(R.id.fillBankQuestionConstraint))
+                        }
                     }
                     2 -> {
                         view.findViewById<ScrollView>(R.id.chooseQuestionLayout).visibility = View.VISIBLE
@@ -172,6 +184,15 @@ class ResultActivity : AppCompatActivity() {
                                 } else if (!question.children[i].isCorrect && question.userAnswer[i] == "1") {
                                     setCardBackgroundColor(getResColor(R.color.colorTestWrong))
                                 }
+                                if (question.children[i].isCorrect) {
+                                    answerView.findViewById<TextView>(R.id.answer).text = question.children[i].text
+                                    viewList[index].findViewById<ConstraintLayout>(R.id.fillBankQuestionConstraint).addView(answerView)
+                                    ConstraintSet().apply {
+                                        clone(viewList[index].findViewById<ConstraintLayout>(R.id.fillBankQuestionConstraint))
+                                        connect(R.id.answerLayout, ConstraintSet.TOP, R.id.fillBankEdit, ConstraintSet.BOTTOM, MyClass.dip2PxI(8F))
+                                        applyTo(viewList[index].findViewById(R.id.fillBankQuestionConstraint))
+                                    }
+                                }
                             })
                             if (question.userAnswer[i] == "1") score += question.children[i].score
                         }
@@ -182,6 +203,7 @@ class ResultActivity : AppCompatActivity() {
                         markwon.setMarkdown(view.findViewById(R.id.chooseQuestion), question.question)
                         var score = 0F
                         var hasScore = true
+                        var answer = ""
                         for (i in question.children.indices) {
                             val button = MaterialCheckBox(this).apply {
                                 layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
@@ -217,17 +239,27 @@ class ResultActivity : AppCompatActivity() {
                                 }
                                 2 -> {
                                     when {
-                                        question.children[i].isCorrect == true && question.userAnswer[i] == "1" -> {
+                                        question.children[i].isCorrect && question.userAnswer[i] == "1" -> {
                                             score += question.children[i].score
                                         }
-                                        question.children[i].isCorrect == false && question.userAnswer[i] == "1" -> {
+                                        !question.children[i].isCorrect && question.userAnswer[i] == "1" -> {
                                             hasScore = false
                                         }
                                     }
                                 }
                             }
+                            if (question.children[i].isCorrect) {
+                                answer += "${question.children[i].text}; "
+                            }
                         }
                         scoreList.add(if (hasScore) score else 0F)
+                        answerView.findViewById<TextView>(R.id.answer).text = answer.substring(0, answer.length - 2)
+                        viewList[index].findViewById<ConstraintLayout>(R.id.fillBankQuestionConstraint).addView(answerView)
+                        ConstraintSet().apply {
+                            clone(viewList[index].findViewById<ConstraintLayout>(R.id.fillBankQuestionConstraint))
+                            connect(R.id.answerLayout, ConstraintSet.TOP, R.id.fillBankEdit, ConstraintSet.BOTTOM, MyClass.dip2PxI(8F))
+                            applyTo(viewList[index].findViewById(R.id.fillBankQuestionConstraint))
+                        }
                     }
                     4 -> {
                         view.findViewById<ScrollView>(R.id.generalQuestionLayout).visibility = View.VISIBLE
@@ -241,6 +273,17 @@ class ResultActivity : AppCompatActivity() {
                             else -> getResColor(R.color.colorTestWrong)
                         })
                         scoreList.add(if (result.correctnessList[index] == "1") question.children[0].score else 0F)
+                        answerView.findViewById<TextView>(R.id.answer).text = question.children[question.children.indices.random()].text
+                        answerView.findViewById<Button>(R.id.change).visibility = View.VISIBLE
+                        answerView.findViewById<Button>(R.id.change).setOnClickListener {
+                            answerView.findViewById<TextView>(R.id.answer).text = question.children[question.children.indices.random()].text
+                        }
+                        viewList[index].findViewById<ConstraintLayout>(R.id.fillBankQuestionConstraint).addView(answerView)
+                        ConstraintSet().apply {
+                            clone(viewList[index].findViewById<ConstraintLayout>(R.id.fillBankQuestionConstraint))
+                            connect(R.id.answerLayout, ConstraintSet.TOP, R.id.fillBankEdit, ConstraintSet.BOTTOM, MyClass.dip2PxI(8F))
+                            applyTo(viewList[index].findViewById(R.id.fillBankQuestionConstraint))
+                        }
                     }
                     else -> {
                         finish()
