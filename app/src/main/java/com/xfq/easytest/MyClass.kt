@@ -6,14 +6,13 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 
 @SuppressLint("StaticFieldLeak")
 object MyClass {
     private var context: Context? = null
     const val INSET_TOP: Int = 0
     const val INSET_BOTTOM: Int = 1
-    const val INSET_LEFT: Int = 2
-    const val INSET_RIGHT: Int = 3
 
     fun getResString(id: Int): String {
         return context!!.resources!!.getString(id)
@@ -27,32 +26,39 @@ object MyClass {
         return ContextCompat.getColor(context!!, id)
     }
 
-    fun setInset(type: Int, view: View) {
+    fun View.setInset(type: Int) {
         when (type) {
             INSET_TOP -> {
-                ViewCompat.setOnApplyWindowInsetsListener(view) { myView, windowInsets ->
-                    myView.setPadding(myView.paddingLeft, windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).top, myView.paddingRight, myView.paddingBottom)
+                val padding = this.paddingTop
+                ViewCompat.setOnApplyWindowInsetsListener(this) { myView, windowInsets ->
+                    myView.updatePadding(top = padding + windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).top)
                     windowInsets
                 }
+                this.requestApplyInsetsWhenAttached()
             }
             INSET_BOTTOM -> {
-                ViewCompat.setOnApplyWindowInsetsListener(view) { myView, windowInsets ->
-                    myView.setPadding(myView.paddingLeft, myView.paddingTop, myView.paddingRight, windowInsets.getInsets(WindowInsetsCompat.Type.statusBars()).bottom)
+                val padding = this.paddingBottom
+                ViewCompat.setOnApplyWindowInsetsListener(this) { myView, windowInsets ->
+                    myView.updatePadding(bottom = padding + windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom)
                     windowInsets
                 }
+                this.requestApplyInsetsWhenAttached()
             }
-            INSET_LEFT -> {
-                ViewCompat.setOnApplyWindowInsetsListener(view) { myView, windowInsets ->
-                    myView.setPadding(windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).left, myView.paddingTop, myView.paddingRight, myView.paddingBottom)
-                    windowInsets
+        }
+    }
+
+    fun View.requestApplyInsetsWhenAttached() {
+        if (isAttachedToWindow) {
+            requestApplyInsets()
+        } else {
+            addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(v: View) {
+                    v.removeOnAttachStateChangeListener(this)
+                    v.requestApplyInsets()
                 }
-            }
-            INSET_RIGHT -> {
-                ViewCompat.setOnApplyWindowInsetsListener(view) { myView, windowInsets ->
-                    myView.setPadding(myView.paddingLeft, myView.paddingTop, windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).right, myView.paddingBottom)
-                    windowInsets
-                }
-            }
+
+                override fun onViewDetachedFromWindow(v: View) = Unit
+            })
         }
     }
 

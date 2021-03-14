@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.xfq.easytest.MyClass.INSET_TOP
 import com.xfq.easytest.MyClass.setInset
 import com.xfq.easytest.databinding.ActivitySettingsBinding
 
@@ -19,8 +20,8 @@ class SettingsActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setInset(MyClass.INSET_TOP, binding.toolbar)
-        setInset(MyClass.INSET_BOTTOM, binding.settings)
+        binding.appbar.setInset(INSET_TOP)
+        binding.settings.setInset(MyClass.INSET_BOTTOM)
         supportFragmentManager.beginTransaction().replace(R.id.settings, SettingsFragment()).commit()
     }
 

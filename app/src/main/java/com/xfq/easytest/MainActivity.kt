@@ -8,12 +8,11 @@ import android.view.View
 import android.webkit.WebView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
 import cn.leancloud.AVUser
 import com.google.android.material.appbar.MaterialToolbar
 import com.xfq.bottomdialog.BottomDialog
+import com.xfq.easytest.MyClass.INSET_TOP
 import com.xfq.easytest.MyClass.setInset
 import com.xfq.easytest.databinding.ActivityMainBinding
 import okhttp3.*
@@ -35,15 +34,10 @@ class MainActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.appbar.setInset(INSET_TOP)
         headerView = binding.navigationView.getHeaderView(0)
+        headerView!!.findViewById<MaterialToolbar>(R.id.appbar).setInset(INSET_TOP)
         val headerToolbar = headerView!!.findViewById<MaterialToolbar>(R.id.toolbar)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar) { myView, windowInsets ->
-            myView.setPadding(myView.paddingLeft, windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).top, myView.paddingRight, myView.paddingBottom)
-            headerToolbar.setPadding(headerToolbar.paddingLeft, windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).top, headerToolbar.paddingRight, headerToolbar.paddingBottom)
-            windowInsets
-        }
-        //setInset(MyClass.INSERT_TOP, toolbar)
-        //setInset(MyClass.INSERT_TOP, headerToolbar)
         headerToolbar.inflateMenu(R.menu.drawer_menu)
         headerToolbar.setOnMenuItemClickListener {
             when (it.itemId) {
@@ -70,7 +64,7 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
-        setInset(MyClass.INSET_BOTTOM, binding.navigationView)
+        //setInset(MyClass.INSET_BOTTOM, binding.navigationView)
         val actionBarDrawerToggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.toolbar, R.string.expanded, R.string.collapsed)
         actionBarDrawerToggle.syncState()
         binding.drawerLayout.addDrawerListener(actionBarDrawerToggle)

@@ -6,6 +6,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.google.android.material.snackbar.Snackbar
+import com.xfq.easytest.MyClass.INSET_TOP
 import com.xfq.easytest.MyClass.setInset
 import com.xfq.easytest.databinding.ActivityIdQueryBinding
 import org.litepal.LitePal
@@ -21,8 +22,7 @@ class IDQueryActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setInset(MyClass.INSET_TOP, binding.toolbar)
-        setInset(MyClass.INSET_BOTTOM, binding.root)
+        binding.toolbar.setInset(INSET_TOP)
         binding.button.setOnClickListener {
             val result = LitePal.find<Result>(binding.editText.text.toString().toLong())
             if (result != null) {

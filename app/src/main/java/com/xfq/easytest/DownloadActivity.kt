@@ -17,6 +17,7 @@ import com.blankj.utilcode.util.FileUtils.isFileExists
 import com.blankj.utilcode.util.ZipUtils.unzipFile
 import com.google.android.material.snackbar.Snackbar
 import com.xfq.bottomdialog.EditDialog
+import com.xfq.easytest.MyClass.INSET_TOP
 import com.xfq.easytest.MyClass.getResString
 import com.xfq.easytest.MyClass.setInset
 import com.xfq.easytest.databinding.ActivityDownloadBinding
@@ -35,8 +36,7 @@ class DownloadActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setInset(MyClass.INSET_TOP, binding.toolbar)
-        setInset(MyClass.INSET_BOTTOM, binding.root)
+        binding.toolbar.setInset(INSET_TOP)
         binding.button.setOnClickListener {
             download("https://xfqwdsj.github.io/mword/words.zip")
         }

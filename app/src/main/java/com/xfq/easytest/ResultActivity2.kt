@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.xfq.bottomdialog.BottomDialog
 import com.xfq.easytest.MyClass.getResString
-import com.xfq.easytest.MyClass.setInset
 import com.xfq.easytest.databinding.ActivityResult2Binding
 import java.text.DateFormat.getDateInstance
 import java.text.DateFormat.getTimeInstance
@@ -36,8 +35,7 @@ class ResultActivity2 : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setInset(MyClass.INSET_TOP, binding.toolbar)
-        setInset(MyClass.INSET_BOTTOM, binding.root)
+        //binding.appbar.setInset(INSET_TOP)
         /*
         when (type) {
             RESULT_TYPE_UPLOADED -> {

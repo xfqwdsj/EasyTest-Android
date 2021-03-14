@@ -10,6 +10,7 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.fastjson.JSON
 import com.xfq.bottomdialog.BottomDialog
+import com.xfq.easytest.MyClass.INSET_BOTTOM
 import com.xfq.easytest.MyClass.INSET_TOP
 import com.xfq.easytest.MyClass.setInset
 import com.xfq.easytest.databinding.ActivitySelectQuestionBankBinding
@@ -26,8 +27,8 @@ class SelectQuestionBankActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setInset(INSET_TOP, binding.toolbar)
-
+        binding.toolbar.setInset(INSET_TOP)
+        binding.recyclerView.setInset(INSET_BOTTOM)
 
         val urlList = PreferenceManager.getDefaultSharedPreferences(this).getString("custom_source", "")!!.split("\n").toMutableList()
         urlList.add("https://xfqwdsj.gitee.io/easy-test/question-bank-index.json")

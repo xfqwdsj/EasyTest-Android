@@ -15,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowCompat
 import androidx.transition.TransitionManager
+import androidx.viewpager.widget.ViewPager
 import com.alibaba.fastjson.JSON
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.card.MaterialCardView
@@ -26,10 +27,12 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
 import com.xfq.bottomdialog.BottomDialog
+import com.xfq.easytest.MyClass.INSET_BOTTOM
 import com.xfq.easytest.MyClass.INSET_TOP
 import com.xfq.easytest.MyClass.dip2PxI
 import com.xfq.easytest.MyClass.getResColor
 import com.xfq.easytest.MyClass.getResString
+import com.xfq.easytest.MyClass.requestApplyInsetsWhenAttached
 import com.xfq.easytest.MyClass.setInset
 import com.xfq.easytest.databinding.ActivityTestBinding
 import io.noties.markwon.Markwon
@@ -60,7 +63,7 @@ class TestActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setInset(INSET_TOP, binding.toolbar)
+        binding.toolbar.setInset(INSET_TOP)
         url = this.intent.getStringExtra("url").toString()  //获取题目url
         markwon = Markwon.builder(this).apply {
             usePlugin(StrikethroughPlugin.create())
@@ -313,6 +316,7 @@ class TestActivity : AppCompatActivity() {
                     return
                 }
             }
+            view.setInset(INSET_BOTTOM)
             viewList.add(view)
         }
         if (random) {
@@ -323,6 +327,15 @@ class TestActivity : AppCompatActivity() {
             }
         }
         adapter = TestPagerAdapter(viewList, positionList, this)
+        binding.viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                viewList[position].requestApplyInsetsWhenAttached()
+            }
+
+            override fun onPageSelected(position: Int) {}
+
+            override fun onPageScrollStateChanged(state: Int) {}
+        })
         binding.viewPager.adapter = adapter
         binding.tabLayout.setupWithViewPager(binding.viewPager)
         binding.start.setOnClickListener {
@@ -342,7 +355,7 @@ class TestActivity : AppCompatActivity() {
         binding.start.isEnabled = true
     }
 
-    private fun submit() {
+    private fun onSubmitClick() {
         val scoreList: MutableList<Float> = ArrayList()
         val correctnessList: MutableList<String> = ArrayList()
         /*
@@ -351,12 +364,15 @@ class TestActivity : AppCompatActivity() {
         3 -> 半对
         4 -> 待定
          */
-        var questionList: MutableList<Question>
+        var questionList: MutableList<Question> = ArrayList()
         val request = Request.Builder()
                 .url(url)
                 .removeHeader("User-Agent")
                 .addHeader("User-Agent", WebView(this).settings.userAgentString)
                 .build()
+        val view = layoutInflater.inflate(R.layout.layout_test, LinearLayout(this@TestActivity), true).apply {
+            findViewById<ScrollView>(R.id.resultLayout).visibility = View.VISIBLE
+        }
         OkHttpClient().newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 runOnUiThread {
@@ -372,6 +388,58 @@ class TestActivity : AppCompatActivity() {
                 }
             }
 
+            fun refreshView(questionIndex: Int, bankIndex: Int, button: Chip) {
+                var scoreText = ""
+                var total = 0F
+                var correctness: String
+                for (index in questionList.indices) {
+                    correctness = correctnessList[index]
+                    val originalCorrectness = correctness
+                    if (originalCorrectness.length > 1) {
+                        correctness = when {
+                            originalCorrectness.contains('4') -> "4"
+                            originalCorrectness.contains('1') && originalCorrectness.contains('2') -> "3"
+                            originalCorrectness.contains('1') -> "1"
+                            else -> "2"
+                        }
+                    }
+                    total += scoreList[index]
+                    scoreText += "${scoreList[index]}(${
+                        getResString(when (correctness) {
+                            "1" -> R.string.correct
+                            "2" -> R.string.wrong
+                            "3" -> R.string.half_correct
+                            "4" -> R.string.no_points
+                            else -> R.string.unknown
+                        })
+                    })${if (index != scoreList.size - 1) " + " else " = $total"}"
+                }
+                view.findViewById<TextView>(R.id.resultScoreText).text = scoreText
+                correctness = correctnessList[questionIndex][bankIndex].toString()
+                view.findViewById<ChipGroup>(R.id.resultNoPointsGroup).removeView(button)
+                if (view.findViewById<ChipGroup>(R.id.resultNoPointsGroup).childCount == 0) {
+                    view.findViewById<LinearLayout>(R.id.resultNoPoints).visibility = View.GONE
+                    view.findViewById<Button>(R.id.submit).isEnabled = true
+                    view.findViewById<Button>(R.id.submit).setOnClickListener {
+                        val result = Result()
+                        result.question = JSON.toJSONString(questionList)
+                        result.correctnessList = correctnessList
+                        if (result.save()) {
+                            Snackbar.make(binding.root, resources.getString(R.string.upload_success, result.id), Snackbar.LENGTH_LONG).show()
+                            it.visibility = View.GONE
+                        }
+                    }
+                }
+                if (correctness == "2" || correctness == "3") {
+                    view.findViewById<LinearLayout>(R.id.resultWrong).visibility = View.VISIBLE
+                    view.findViewById<ChipGroup>(R.id.resultWrongGroup).addView(button)
+                }
+            }
+
+            fun refreshView(questionIndex: Int, button: Chip) {
+                refreshView(questionIndex, 0, button)
+            }
+
             @SuppressLint("ClickableViewAccessibility")
             override fun onResponse(call: Call, response: Response) {
                 if (response.code == 200) {
@@ -379,73 +447,127 @@ class TestActivity : AppCompatActivity() {
                         questionList = JSON.parseArray(response.body?.string(), Question::class.java)
                         runOnUiThread {
                             recoveryList()
-                            var fillScoringFunction: (Int, Int) -> Unit = { _, _ -> }
-                            var generalScoringFunction: (Int) -> Unit = {}
-                            for (i in questionList.indices) {
-                                questionList[i].userAnswer = userAnswerList[i].userAnswer
+                            binding.toolbar.menu.findItem(R.id.submit).isVisible = false
+                            var scoreText = ""
+                            for (questionIndex in questionList.indices) {
+                                questionList[questionIndex].userAnswer = userAnswerList[questionIndex].userAnswer
                                 var score = 0F
                                 val layout = layoutInflater.inflate(R.layout.layout_answer, LinearLayout(this@TestActivity), false)
-                                val online = questionList[i]
+                                val online = questionList[questionIndex]
+                                val questionButton = Chip(this@TestActivity).apply {
+                                    setOnClickListener {
+                                        binding.viewPager.currentItem = questionIndex
+                                    }
+                                    text = resources.getString(R.string.question_number, questionIndex + 1)
+                                }
                                 when (online.type) {
                                     1 -> {
                                         var correctness = ""
                                         var answer = ""
-                                        for (j in online.children.indices) {
-                                            val correctAnswer = online.children[j].text
+                                        for (childrenIndex in online.children.indices) {
+                                            val bankButton = Chip(this@TestActivity).apply {
+                                                setOnClickListener {
+                                                    binding.viewPager.currentItem = questionIndex
+                                                }
+                                                text = resources.getString(R.string.question_number, questionIndex + 1)
+                                            }
+                                            val correctAnswer = online.children[childrenIndex].text
                                             answer += "$correctAnswer; "
-                                            val cardView = viewList[i].findViewById<CardView>(j)
+                                            val cardView = viewList[questionIndex].findViewById<CardView>(childrenIndex)
                                             cardView.getChildAt(0).isEnabled = false
                                             (cardView.getChildAt(0) as EditText).isClickable = false
                                             (cardView.getChildAt(0) as EditText).isLongClickable = false
                                             when {
-                                                userAnswerList[i].userAnswer[j] == correctAnswer -> {
-                                                    score += online.children[j].score
+                                                userAnswerList[questionIndex].userAnswer[childrenIndex] == correctAnswer -> {
+                                                    score += online.children[childrenIndex].score
                                                     cardView.setCardBackgroundColor(getResColor(R.color.colorTestCorrect))
                                                     correctness += "1"
                                                 }
-                                                online.children[j].exactMatch == true || online.children[j].exactMatch == null -> {
+                                                online.children[childrenIndex].exactMatch || online.children[childrenIndex].exactMatch == null -> {
                                                     cardView.setCardBackgroundColor(getResColor(R.color.colorTestWrong))
                                                     correctness += "2"
+                                                    view.findViewById<ChipGroup>(R.id.resultWrongGroup).addView(bankButton)
                                                 }
                                                 else -> {
                                                     cardView.setCardBackgroundColor(getResColor(R.color.colorTestHalf))
                                                     cardView.setOnClickListener {
-                                                        fillScoringFunction(i, j)
+                                                        BottomDialog().create(this@TestActivity).apply {
+                                                            setTitle(R.string.scoring)
+                                                            setContent(R.string.ask_answer_correct)
+                                                            setButton1(R.string.correct) {
+                                                                scoreList[questionIndex] += questionList[questionIndex].children[childrenIndex].score
+                                                                val questionCorrectnessList = correctnessList[questionIndex].split("")
+                                                                var questionCorrectnessString = ""
+                                                                for (correctnessIndex in 1..(questionCorrectnessList.size - 2)) {
+                                                                    questionCorrectnessString += if (correctnessIndex - 1 == childrenIndex) {
+                                                                        "1"
+                                                                    } else {
+                                                                        questionCorrectnessList[correctnessIndex]
+                                                                    }
+                                                                }
+                                                                correctnessList[questionIndex] = questionCorrectnessString
+                                                                viewList[questionIndex].findViewById<CardView>(childrenIndex).setCardBackgroundColor(getResColor(R.color.colorTestCorrect))
+                                                                refreshView(questionIndex, childrenIndex, bankButton)
+                                                                it.setOnClickListener(null)
+                                                                close()
+                                                            }
+                                                            setButton2(R.string.wrong) {
+                                                                val questionCorrectnessList = correctnessList[questionIndex].split("")
+                                                                var questionCorrectnessString = ""
+                                                                for (correctnessIndex in 1..(questionCorrectnessList.size - 2)) {
+                                                                    questionCorrectnessString += if (correctnessIndex - 1 == childrenIndex) {
+                                                                        "2"
+                                                                    } else {
+                                                                        questionCorrectnessList[correctnessIndex]
+                                                                    }
+                                                                }
+                                                                correctnessList[questionIndex] = questionCorrectnessString
+                                                                viewList[questionIndex].findViewById<CardView>(R.id.cardView).setCardBackgroundColor(getResColor(R.color.colorTestWrong))
+                                                                refreshView(questionIndex, childrenIndex, bankButton)
+                                                                it.setOnClickListener(null)
+                                                                close()
+                                                            }
+                                                            setButton3(android.R.string.cancel) {
+                                                                close()
+                                                            }
+                                                            show()
+                                                        }
                                                     }
+                                                    view.findViewById<ChipGroup>(R.id.resultNoPointsGroup).addView(bankButton)
                                                     correctness += "4"
                                                 }
                                             }
                                         }
                                         layout.findViewById<TextView>(R.id.answer).text = answer.substring(0, answer.length - 2)
-                                        viewList[i].findViewById<ConstraintLayout>(R.id.fillBankQuestionConstraint).addView(layout)
+                                        viewList[questionIndex].findViewById<ConstraintLayout>(R.id.fillBankQuestionConstraint).addView(layout)
                                         ConstraintSet().apply {
-                                            clone(viewList[i].findViewById<ConstraintLayout>(R.id.fillBankQuestionConstraint))
+                                            clone(viewList[questionIndex].findViewById<ConstraintLayout>(R.id.fillBankQuestionConstraint))
                                             connect(R.id.answerLayout, ConstraintSet.TOP, R.id.fillBankEdit, ConstraintSet.BOTTOM, dip2PxI(8F))
-                                            applyTo(viewList[i].findViewById(R.id.fillBankQuestionConstraint))
+                                            applyTo(viewList[questionIndex].findViewById(R.id.fillBankQuestionConstraint))
                                         }
                                         correctnessList.add(correctness)
                                     }
                                     2 -> {
                                         var actuallyCorrect = 0
                                         for (j in online.children.indices) {
-                                            val cardView = viewList[i].findViewById<CardView>(j)
+                                            val cardView = viewList[questionIndex].findViewById<CardView>(j)
                                             cardView.getChildAt(0).isEnabled = false
-                                            if (userAnswerList[i].userAnswer[j] == "1") {
+                                            if (userAnswerList[questionIndex].userAnswer[j] == "1") {
                                                 score += online.children[j].score
                                             }
-                                            if (userAnswerList[i].userAnswer[j] == "1" && online.children[j].isCorrect == true) {
+                                            if (userAnswerList[questionIndex].userAnswer[j] == "1" && online.children[j].isCorrect == true) {
                                                 actuallyCorrect++
-                                            } else if (userAnswerList[i].userAnswer[j] == "1" && online.children[j].isCorrect == false) {
+                                            } else if (userAnswerList[questionIndex].userAnswer[j] == "1" && online.children[j].isCorrect == false) {
                                                 cardView.setCardBackgroundColor(getResColor(R.color.colorTestWrong))
                                             }
                                             if (online.children[j].isCorrect == true) {
                                                 cardView.setCardBackgroundColor(getResColor(R.color.colorTestCorrect))
                                                 layout.findViewById<TextView>(R.id.answer).text = online.children[j].text
-                                                viewList[i].findViewById<ConstraintLayout>(R.id.chooseQuestionConstraint).addView(layout)
+                                                viewList[questionIndex].findViewById<ConstraintLayout>(R.id.chooseQuestionConstraint).addView(layout)
                                                 ConstraintSet().apply {
-                                                    clone(viewList[i].findViewById<ConstraintLayout>(R.id.chooseQuestionConstraint))
+                                                    clone(viewList[questionIndex].findViewById<ConstraintLayout>(R.id.chooseQuestionConstraint))
                                                     connect(R.id.answerLayout, ConstraintSet.TOP, R.id.chooseGroup, ConstraintSet.BOTTOM, dip2PxI(8F))
-                                                    applyTo(viewList[i].findViewById(R.id.chooseQuestionConstraint))
+                                                    applyTo(viewList[questionIndex].findViewById(R.id.chooseQuestionConstraint))
                                                 }
                                             }
                                         }
@@ -461,20 +583,20 @@ class TestActivity : AppCompatActivity() {
                                         var actuallyCorrect = 0
                                         var answer = ""
                                         for (j in online.children.indices) {
-                                            val cardView = viewList[i].findViewById<CardView>(j)
+                                            val cardView = viewList[questionIndex].findViewById<CardView>(j)
                                             cardView.getChildAt(0).isEnabled = false
                                             when (online.scoreType) {
                                                 1 -> {
-                                                    if (userAnswerList[i].userAnswer[j] == "1") {
+                                                    if (userAnswerList[questionIndex].userAnswer[j] == "1") {
                                                         score += online.children[j].score
                                                     }
                                                 }
                                                 2 -> {
                                                     when {
-                                                        online.children[j].isCorrect == true && userAnswerList[i].userAnswer[j] == "1" -> {
+                                                        online.children[j].isCorrect == true && userAnswerList[questionIndex].userAnswer[j] == "1" -> {
                                                             score += online.children[j].score
                                                         }
-                                                        online.children[j].isCorrect == false && userAnswerList[i].userAnswer[j] == "1" -> {
+                                                        online.children[j].isCorrect == false && userAnswerList[questionIndex].userAnswer[j] == "1" -> {
                                                             hasScore = false
                                                         }
                                                     }
@@ -483,9 +605,9 @@ class TestActivity : AppCompatActivity() {
                                             if (online.children[j].isCorrect == true) {
                                                 shouldCorrect++
                                             }
-                                            if (userAnswerList[i].userAnswer[j] == "1" && online.children[j].isCorrect == true) {
+                                            if (userAnswerList[questionIndex].userAnswer[j] == "1" && online.children[j].isCorrect == true) {
                                                 actuallyCorrect++
-                                            } else if (userAnswerList[i].userAnswer[j] == "1" && online.children[j].isCorrect == false) {
+                                            } else if (userAnswerList[questionIndex].userAnswer[j] == "1" && online.children[j].isCorrect == false) {
                                                 cardView.setCardBackgroundColor(getResColor(R.color.colorTestWrong))
                                             }
                                             if (online.children[j].isCorrect == true) {
@@ -494,11 +616,11 @@ class TestActivity : AppCompatActivity() {
                                             }
                                         }
                                         layout.findViewById<TextView>(R.id.answer).text = answer.substring(0, answer.length - 2)
-                                        viewList[i].findViewById<ConstraintLayout>(R.id.chooseQuestionConstraint).addView(layout)
+                                        viewList[questionIndex].findViewById<ConstraintLayout>(R.id.chooseQuestionConstraint).addView(layout)
                                         ConstraintSet().apply {
-                                            clone(viewList[i].findViewById<ConstraintLayout>(R.id.chooseQuestionConstraint))
+                                            clone(viewList[questionIndex].findViewById<ConstraintLayout>(R.id.chooseQuestionConstraint))
                                             connect(R.id.answerLayout, ConstraintSet.TOP, R.id.chooseGroup, ConstraintSet.BOTTOM, dip2PxI(8F))
-                                            applyTo(viewList[i].findViewById(R.id.chooseQuestionConstraint))
+                                            applyTo(viewList[questionIndex].findViewById(R.id.chooseQuestionConstraint))
                                         }
                                         if (!hasScore) {
                                             score = 0F
@@ -511,16 +633,16 @@ class TestActivity : AppCompatActivity() {
                                         })
                                     }
                                     4 -> {
-                                        val cardView = viewList[i].findViewById<CardView>(R.id.cardView)
+                                        val cardView = viewList[questionIndex].findViewById<CardView>(R.id.cardView)
                                         cardView.getChildAt(0).isEnabled = false
                                         (cardView.getChildAt(0) as EditText).isClickable = false
                                         (cardView.getChildAt(0) as EditText).isLongClickable = false
                                         var correctness = 2
-                                        for (j in online.children.indices) {
-                                            val correctAnswer = online.children[j].text
+                                        for (child in online.children) {
+                                            val correctAnswer = child.text
                                             if (correctness != 1) {
                                                 when {
-                                                    userAnswerList[i].userAnswer[0] == correctAnswer -> {
+                                                    userAnswerList[questionIndex].userAnswer[0] == correctAnswer -> {
                                                         correctness = 1
                                                         score += online.children[0].score
                                                         cardView.setCardBackgroundColor(getResColor(R.color.colorTestCorrect))
@@ -533,8 +655,31 @@ class TestActivity : AppCompatActivity() {
                                                         correctness = 4
                                                         cardView.setCardBackgroundColor(getResColor(R.color.colorTestHalf))
                                                         cardView.setOnClickListener {
-                                                            generalScoringFunction(i)
+                                                            BottomDialog().create(this@TestActivity).apply {
+                                                                setTitle(R.string.scoring)
+                                                                setContent(R.string.ask_answer_correct)
+                                                                setButton1(R.string.correct) {
+                                                                    scoreList[questionIndex] += questionList[questionIndex].children[0].score
+                                                                    correctnessList[questionIndex] = "1"
+                                                                    cardView.setCardBackgroundColor(getResColor(R.color.colorTestCorrect))
+                                                                    refreshView(questionIndex, questionButton)
+                                                                    it.setOnClickListener(null)
+                                                                    close()
+                                                                }
+                                                                setButton2(R.string.wrong) {
+                                                                    correctnessList[questionIndex] = "2"
+                                                                    cardView.setCardBackgroundColor(getResColor(R.color.colorTestWrong))
+                                                                    refreshView(questionIndex, questionButton)
+                                                                    it.setOnClickListener(null)
+                                                                    close()
+                                                                }
+                                                                setButton3(android.R.string.cancel) {
+                                                                    close()
+                                                                }
+                                                                show()
+                                                            }
                                                         }
+                                                        view.findViewById<ChipGroup>(R.id.resultNoPointsGroup).addView(questionButton)
                                                     }
                                                 }
                                             }
@@ -544,26 +689,19 @@ class TestActivity : AppCompatActivity() {
                                         layout.findViewById<Button>(R.id.change).setOnClickListener {
                                             layout.findViewById<TextView>(R.id.answer).text = online.children[online.children.indices.random()].text
                                         }
-                                        viewList[i].findViewById<ConstraintLayout>(R.id.generalQuestionConstraint).addView(layout)
+                                        viewList[questionIndex].findViewById<ConstraintLayout>(R.id.generalQuestionConstraint).addView(layout)
                                         ConstraintSet().apply {
-                                            clone(viewList[i].findViewById<ConstraintLayout>(R.id.generalQuestionConstraint))
+                                            clone(viewList[questionIndex].findViewById<ConstraintLayout>(R.id.generalQuestionConstraint))
                                             connect(R.id.answerLayout, ConstraintSet.TOP, R.id.cardView, ConstraintSet.BOTTOM, dip2PxI(8F))
-                                            applyTo(viewList[i].findViewById(R.id.generalQuestionConstraint))
+                                            applyTo(viewList[questionIndex].findViewById(R.id.generalQuestionConstraint))
                                         }
                                         correctnessList.add(correctness.toString())
                                     }
                                 }
                                 scoreList.add(score)
-                            }
-                            binding.toolbar.menu.findItem(R.id.submit).isVisible = false
-                            val view = layoutInflater.inflate(R.layout.layout_test, LinearLayout(this@TestActivity), true).apply {
-                                findViewById<ScrollView>(R.id.resultLayout).visibility = View.VISIBLE
-                            }
-                            var scoreText = ""
-                            var total = 0F
-                            for (i in scoreList.indices) {
-                                var correctness = correctnessList[i]
-                                var originalCorrectness = correctness
+                                var correctness = correctnessList[questionIndex]
+                                val originalCorrectness = correctness
+                                var total = 0F
                                 if (originalCorrectness.length > 1) {
                                     correctness = when {
                                         originalCorrectness.contains('4') -> "4"
@@ -572,8 +710,8 @@ class TestActivity : AppCompatActivity() {
                                         else -> "2"
                                     }
                                 }
-                                total += scoreList[i]
-                                scoreText += "${scoreList[i]}(${
+                                total += scoreList[questionIndex]
+                                scoreText += "${scoreList[questionIndex]}(${
                                     getResString(when (correctness) {
                                         "1" -> R.string.correct
                                         "2" -> R.string.wrong
@@ -581,194 +719,9 @@ class TestActivity : AppCompatActivity() {
                                         "4" -> R.string.no_points
                                         else -> R.string.unknown
                                     })
-                                })${if (i != scoreList.size - 1) " + " else " = $total"}"
-                                val button = Chip(this@TestActivity).apply {
-                                    setOnClickListener {
-                                        binding.viewPager.currentItem = i
-                                    }
-                                    text = resources.getString(R.string.question_number, i + 1)
-                                }
+                                })${if (questionIndex != scoreList.size - 1) " + " else " = $total"}"
                                 if (originalCorrectness == "2" || originalCorrectness == "3") {
-                                    view.findViewById<ChipGroup>(R.id.resultWrongGroup).addView(button)
-                                } else if (originalCorrectness == "4") {
-                                    generalScoringFunction = { position ->
-                                        if (correctnessList[position] == "4") {
-                                            fun refreshView() {
-                                                scoreText = ""
-                                                total = 0F
-                                                for (j in scoreList.indices) {
-                                                    correctness = correctnessList[j]
-                                                    originalCorrectness = correctness
-                                                    if (originalCorrectness.length > 1) {
-                                                        correctness = when {
-                                                            originalCorrectness.contains('4') -> "4"
-                                                            originalCorrectness.contains('1') && originalCorrectness.contains('2') -> "3"
-                                                            originalCorrectness.contains('1') -> "1"
-                                                            else -> "2"
-                                                        }
-                                                    }
-                                                    total += scoreList[j]
-                                                    scoreText += "${scoreList[j]}(${
-                                                        getResString(when (correctness) {
-                                                            "1" -> R.string.correct
-                                                            "2" -> R.string.wrong
-                                                            "3" -> R.string.half_correct
-                                                            "4" -> R.string.no_points
-                                                            else -> R.string.unknown
-                                                        })
-                                                    })${if (j != scoreList.size - 1) " + " else " = $total"}"
-                                                }
-                                                view.findViewById<TextView>(R.id.resultScoreText).text = scoreText
-                                                view.findViewById<ChipGroup>(R.id.resultNoPointsGroup).removeView(button)
-                                                if (view.findViewById<ChipGroup>(R.id.resultNoPointsGroup).childCount == 0) {
-                                                    view.findViewById<LinearLayout>(R.id.resultNoPoints).visibility = View.GONE
-                                                    view.findViewById<Button>(R.id.submit).isEnabled = true
-                                                    view.findViewById<Button>(R.id.submit).setOnClickListener {
-                                                        val result = Result()
-                                                        result.question = JSON.toJSONString(questionList)
-                                                        result.correctnessList = correctnessList
-                                                        if (result.save()) {
-                                                            Snackbar.make(binding.root, resources.getString(R.string.upload_success, result.id), Snackbar.LENGTH_LONG).show()
-                                                            it.visibility = View.GONE
-                                                        }
-                                                    }
-                                                }
-                                                if (correctness == "2") {
-                                                    view.findViewById<LinearLayout>(R.id.resultWrong).visibility = View.VISIBLE
-                                                    view.findViewById<ChipGroup>(R.id.resultNoPointsGroup).removeView(button)
-                                                    view.findViewById<ChipGroup>(R.id.resultWrongGroup).addView(button)
-                                                }
-                                            }
-
-                                            BottomDialog().create(this@TestActivity).apply {
-                                                setTitle(R.string.scoring)
-                                                setContent(R.string.ask_answer_correct)
-                                                setButton1(R.string.correct) {
-                                                    correctnessList[position] = "1"
-                                                    viewList[position].findViewById<CardView>(R.id.cardView).setCardBackgroundColor(getResColor(R.color.colorTestCorrect))
-                                                    scoreList[position] = questionList[position].children[0].score
-                                                    refreshView()
-                                                    close()
-                                                }
-                                                setButton2(R.string.wrong) {
-                                                    correctnessList[position] = "2"
-                                                    viewList[position].findViewById<CardView>(R.id.cardView).setCardBackgroundColor(getResColor(R.color.colorTestWrong))
-                                                    refreshView()
-                                                    close()
-                                                }
-                                                setButton3(android.R.string.cancel) {
-                                                    close()
-                                                }
-                                                show()
-                                            }
-                                        }
-                                    }
-                                    view.findViewById<ChipGroup>(R.id.resultNoPointsGroup).addView(button)
-                                } else if (originalCorrectness.length > 1) {
-                                    for (char in originalCorrectness) {
-                                        val bankButton = Chip(this@TestActivity).apply {
-                                            setOnClickListener {
-                                                binding.viewPager.currentItem = i
-                                            }
-                                            text = resources.getString(R.string.question_number, i + 1)
-                                        }
-                                        if (char == '2') {
-                                            view.findViewById<ChipGroup>(R.id.resultWrongGroup).addView(bankButton)
-                                        } else if (char == '4') {
-                                            fillScoringFunction = { questionPosition, bankPosition ->
-                                                if (correctnessList[questionPosition][bankPosition] == '4') {
-                                                    fun refreshView() {
-                                                        scoreText = ""
-                                                        total = 0F
-                                                        for (j in scoreList.indices) {
-                                                            correctness = correctnessList[j]
-                                                            originalCorrectness = correctness
-                                                            if (originalCorrectness.length > 1) {
-                                                                correctness = when {
-                                                                    originalCorrectness.contains('4') -> "4"
-                                                                    originalCorrectness.contains('1') && originalCorrectness.contains('2') -> "3"
-                                                                    originalCorrectness.contains('1') -> "1"
-                                                                    else -> "2"
-                                                                }
-                                                            }
-                                                            total += scoreList[j]
-                                                            scoreText += "${scoreList[j]}(${
-                                                                getResString(when (correctness) {
-                                                                    "1" -> R.string.correct
-                                                                    "2" -> R.string.wrong
-                                                                    "3" -> R.string.half_correct
-                                                                    "4" -> R.string.no_points
-                                                                    else -> R.string.unknown
-                                                                })
-                                                            })${if (j != scoreList.size - 1) " + " else " = $total"}"
-                                                        }
-                                                        view.findViewById<TextView>(R.id.resultScoreText).text = scoreText
-                                                        correctness = correctnessList[questionPosition][bankPosition].toString()
-                                                        view.findViewById<ChipGroup>(R.id.resultNoPointsGroup).removeView(bankButton)
-                                                        if (view.findViewById<ChipGroup>(R.id.resultNoPointsGroup).childCount == 0) {
-                                                            view.findViewById<LinearLayout>(R.id.resultNoPoints).visibility = View.GONE
-                                                            view.findViewById<Button>(R.id.submit).isEnabled = true
-                                                            view.findViewById<Button>(R.id.submit).setOnClickListener {
-                                                                val result = Result()
-                                                                result.question = JSON.toJSONString(questionList)
-                                                                result.correctnessList = correctnessList
-                                                                if (result.save()) {
-                                                                    Snackbar.make(binding.root, resources.getString(R.string.upload_success, result.id), Snackbar.LENGTH_LONG).show()
-                                                                    it.visibility = View.GONE
-                                                                }
-                                                            }
-                                                        }
-                                                        if (correctness == "2") {
-                                                            view.findViewById<LinearLayout>(R.id.resultWrong).visibility = View.VISIBLE
-                                                            view.findViewById<ChipGroup>(R.id.resultNoPointsGroup).removeView(bankButton)
-                                                            view.findViewById<ChipGroup>(R.id.resultWrongGroup).addView(bankButton)
-                                                        }
-                                                    }
-
-                                                    BottomDialog().create(this@TestActivity).apply {
-                                                        setTitle(R.string.scoring)
-                                                        setContent(R.string.ask_answer_correct)
-                                                        setButton1(R.string.correct) {
-                                                            scoreList[questionPosition] += questionList[questionPosition].children[bankPosition].score
-                                                            val questionCorrectnessList = correctnessList[questionPosition].split("")
-                                                            var questionCorrectnessString = ""
-                                                            for (j in 1..(questionCorrectnessList.size - 2)) {
-                                                                questionCorrectnessString += if (j - 1 == bankPosition) {
-                                                                    "1"
-                                                                } else {
-                                                                    questionCorrectnessList[j]
-                                                                }
-                                                            }
-                                                            correctnessList[questionPosition] = questionCorrectnessString
-                                                            viewList[questionPosition].findViewById<CardView>(bankPosition).setCardBackgroundColor(getResColor(R.color.colorTestCorrect))
-                                                            refreshView()
-                                                            close()
-                                                        }
-                                                        setButton2(R.string.wrong) {
-                                                            val questionCorrectnessList = correctnessList[questionPosition].split("")
-                                                            var questionCorrectnessString = ""
-                                                            for (j in 1..(questionCorrectnessList.size - 2)) {
-                                                                questionCorrectnessString += if (j - 1 == bankPosition) {
-                                                                    "2"
-                                                                } else {
-                                                                    questionCorrectnessList[j]
-                                                                }
-                                                            }
-                                                            correctnessList[questionPosition] = questionCorrectnessString
-                                                            viewList[questionPosition].findViewById<CardView>(R.id.cardView).setCardBackgroundColor(getResColor(R.color.colorTestWrong))
-                                                            refreshView()
-                                                            close()
-                                                        }
-                                                        setButton3(android.R.string.cancel) {
-                                                            close()
-                                                        }
-                                                        show()
-                                                    }
-                                                }
-                                            }
-                                            view.findViewById<ChipGroup>(R.id.resultNoPointsGroup).addView(bankButton)
-                                        }
-                                    }
+                                    view.findViewById<ChipGroup>(R.id.resultWrongGroup).addView(questionButton)
                                 }
                             }
                             view.findViewById<TextView>(R.id.resultScoreText).text = scoreText
@@ -842,7 +795,7 @@ class TestActivity : AppCompatActivity() {
                 return true
             }
             R.id.submit -> {
-                submit()
+                onSubmitClick()
                 return true
             }
         }

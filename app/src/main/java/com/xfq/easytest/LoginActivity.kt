@@ -8,6 +8,7 @@ import androidx.core.view.WindowCompat
 import cn.leancloud.AVUser
 import com.xfq.bottomdialog.BottomDialog
 import com.xfq.bottomdialog.EditDialog
+import com.xfq.easytest.MyClass.INSET_TOP
 import com.xfq.easytest.MyClass.getResString
 import com.xfq.easytest.MyClass.setInset
 import com.xfq.easytest.databinding.ActivityLoginBinding
@@ -24,8 +25,7 @@ class LoginActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setInset(MyClass.INSET_TOP, binding.toolbar)
-        setInset(MyClass.INSET_BOTTOM, binding.root)
+        binding.toolbar.setInset(INSET_TOP)
         binding.login.setOnClickListener {
             if (binding.username.text.toString() != "" && binding.password.text.toString() != "") {
                 AVUser.logIn(binding.username.text.toString(), binding.password.text.toString()).subscribe(object : Observer<AVUser?> {

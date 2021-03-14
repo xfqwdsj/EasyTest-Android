@@ -19,6 +19,7 @@ import cn.leancloud.AVObject
 import cn.leancloud.AVUser
 import com.alibaba.fastjson.JSON
 import com.xfq.bottomdialog.BottomDialog
+import com.xfq.easytest.MyClass.INSET_TOP
 import com.xfq.easytest.MyClass.getResString
 import com.xfq.easytest.MyClass.setInset
 import com.xfq.easytest.databinding.ActivityMwordsBinding
@@ -430,13 +431,12 @@ class MwordsActivity : AppCompatActivity() {
             root
          */
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        setInset(MyClass.INSET_BOTTOM, binding.root)
         /*
             Toolbar
          */
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setInset(MyClass.INSET_TOP, binding.toolbar)
+        binding.appbar.setInset(INSET_TOP)
         /*
             Button
          */
