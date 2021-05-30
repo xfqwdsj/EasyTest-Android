@@ -7,20 +7,17 @@
     app:consumeSystemWindowsInsets="start|end"
     app:edgeToEdge="true"
     app:fitsSystemWindowsInsets="start|end"
-
     tools:context=".SelectQuestionBankActivity">
-
 
     <rikka.widget.borderview.BorderRecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clipToPadding="false"
-
-        android:paddingTop="?attr/actionBarSize"
+        android:paddingTop="?actionBarSize"
+        app:borderTopVisibility="whenTop"
         app:borderBottomVisibility="never"
         app:borderTopDrawable="@null"
-        app:borderTopVisibility="whenTop"
         app:fitsSystemWindowsInsets="top|bottom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,5 +41,17 @@
             app:subtitleTextAppearance="@android:style/TextAppearance.Material.Widget.Toolbar.Subtitle"
             app:title="@string/question_bank_selection"
             app:titleTextAppearance="@android:style/TextAppearance.Material.Widget.Toolbar.Title" />
+
     </rikka.material.widget.AppBarLayout>
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:hideAnimationBehavior="outward"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appbar" />
 </androidx.constraintlayout.widget.ConstraintLayout>

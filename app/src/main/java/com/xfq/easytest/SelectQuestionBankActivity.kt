@@ -4,8 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.webkit.WebView
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.fastjson.JSON
 import com.xfq.bottomdialog.BottomDialog
@@ -29,22 +29,35 @@ class SelectQuestionBankActivity : MaterialActivity() {
         binding.recyclerView.borderViewDelegate.setBorderVisibilityChangedListener { top, _, _, _ ->
             binding.appbar.isRaised = !top
         }
+        binding.progress.setVisibilityAfterHide(View.GONE)
+
         //binding.toolbar.setInset(INSET_TOP)
         //binding.recyclerView.setInset(INSET_BOTTOM)
 
-        get(getUrlList())
+        ActivityMap.addActivity(this)
+        if (intent.getStringArrayListExtra("urlList") != null) {
+            get(
+                intent.getStringArrayListExtra("urlList")!!,
+                if (intent.getIntegerArrayListExtra("index") != null) intent.getIntegerArrayListExtra(
+                    "index"
+                )!! else ArrayList()
+            )
+        }
     }
 
-    fun get(urlList: List<String>) {
-        val json: MutableList<QuestionBank> = ArrayList()
+    fun get(urlList: List<String>, index: ArrayList<Int>) {
+        runOnUiThread {
+            binding.progress.show()
+        }
+        val questionList: MutableList<QuestionBank> = ArrayList()
         for (i in urlList.indices) {
             val url = urlList[i]
             if (url != "") {
                 val request = Request.Builder()
-                        .url(url)
-                        .removeHeader("User-Agent")
-                        .addHeader("User-Agent", WebView(this).settings.userAgentString)
-                        .build()
+                    .url(url)
+                    .removeHeader("User-Agent")
+                    .addHeader("User-Agent", WebView(this).settings.userAgentString)
+                    .build()
                 OkHttpClient().newCall(request).enqueue(object : Callback {
                     override fun onFailure(call: Call, e: IOException) {
                         runOnUiThread {
@@ -63,13 +76,30 @@ class SelectQuestionBankActivity : MaterialActivity() {
                     override fun onResponse(call: Call, response: Response) {
                         if (response.code == 200) {
                             try {
-                                for (`object` in JSON.parseArray(response.body?.string(), QuestionBank::class.java)) {
-                                    json.add(`object`)
+                                var cacheList: MutableList<QuestionBank> = ArrayList()
+                                for (`object` in JSON.parseArray(
+                                    response.body?.string(),
+                                    QuestionBank::class.java
+                                )) {
+                                    cacheList.add(`object`)
                                 }
+                                for (currentIndex in index) {
+                                    cacheList = cacheList[currentIndex].children.toMutableList()
+                                }
+                                questionList.addAll(cacheList)
                                 if (i == urlList.size - 1) {
                                     runOnUiThread {
-                                        binding.recyclerView.layoutManager = LinearLayoutManager(this@SelectQuestionBankActivity)
-                                        binding.recyclerView.adapter = QuestionBankAdapter(json) { item: QuestionBank -> onItemClicked(item) }
+                                        binding.progress.hide()
+                                        binding.recyclerView.layoutManager =
+                                            LinearLayoutManager(this@SelectQuestionBankActivity)
+                                        binding.recyclerView.adapter =
+                                            QuestionBankAdapter(
+                                                questionList,
+                                                this@SelectQuestionBankActivity,
+                                                index
+                                            ) { item: QuestionBank ->
+                                                onItemClicked(item)
+                                            }
                                     }
                                 }
                             } catch (e: Exception) {
@@ -80,14 +110,6 @@ class SelectQuestionBankActivity : MaterialActivity() {
                 })
             }
         }
-    }
-
-    private fun getUrlList(): List<String> {
-        val urlList =
-            PreferenceManager.getDefaultSharedPreferences(this).getString("custom_source", "")!!
-                .split("\n").toMutableList()
-        urlList.add("https://xfqwdsj.gitee.io/easy-test/question-bank-index.json")
-        return urlList
     }
 
     private fun onItemClicked(item: QuestionBank) {
@@ -106,7 +128,14 @@ class SelectQuestionBankActivity : MaterialActivity() {
             finish()
             return true
         } else if (item.itemId == R.id.refresh) {
-            get(getUrlList())
+            if (intent.getStringArrayListExtra("urlList") != null) {
+                get(
+                    intent.getStringArrayListExtra("urlList")!!,
+                    if (intent.getIntegerArrayListExtra("index") != null) intent.getIntegerArrayListExtra(
+                        "index"
+                    )!! else ArrayList()
+                )
+            }
         }
         return false
     }

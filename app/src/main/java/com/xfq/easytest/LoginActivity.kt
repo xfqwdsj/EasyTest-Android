@@ -28,25 +28,31 @@ class LoginActivity : AppCompatActivity() {
         binding.toolbar.setInset(INSET_TOP)
         binding.login.setOnClickListener {
             if (binding.username.text.toString() != "" && binding.password.text.toString() != "") {
-                AVUser.logIn(binding.username.text.toString(), binding.password.text.toString()).subscribe(object : Observer<AVUser?> {
-                    override fun onSubscribe(d: Disposable) {}
-                    override fun onNext(t: AVUser) {
-                        finish()
-                    }
-
-                    override fun onError(throwable: Throwable) {
-                        BottomDialog().create(this@LoginActivity).apply {
-                            setTitle(R.string.failed)
-                            setContent(this@LoginActivity.resources.getString(R.string.error, throwable))
-                            setButton1(android.R.string.ok) {
-                                close()
-                            }
-                            show()
+                AVUser.logIn(binding.username.text.toString(), binding.password.text.toString())
+                    .subscribe(object : Observer<AVUser?> {
+                        override fun onSubscribe(d: Disposable) {}
+                        override fun onNext(t: AVUser) {
+                            finish()
                         }
-                    }
 
-                    override fun onComplete() {}
-                })
+                        override fun onError(throwable: Throwable) {
+                            BottomDialog().create(this@LoginActivity).apply {
+                                setTitle(R.string.failed)
+                                setContent(
+                                    this@LoginActivity.resources.getString(
+                                        R.string.error,
+                                        throwable
+                                    )
+                                )
+                                setButton1(android.R.string.ok) {
+                                    close()
+                                }
+                                show()
+                            }
+                        }
+
+                        override fun onComplete() {}
+                    })
             }
         }
         binding.signup.setOnClickListener {
@@ -71,7 +77,12 @@ class LoginActivity : AppCompatActivity() {
                             override fun onError(throwable: Throwable) {
                                 BottomDialog().create(this@LoginActivity).apply {
                                     setTitle(R.string.failed)
-                                    setContent(this@LoginActivity.resources.getString(R.string.error, throwable))
+                                    setContent(
+                                        this@LoginActivity.resources.getString(
+                                            R.string.error,
+                                            throwable
+                                        )
+                                    )
                                     setButton1(android.R.string.ok) {
                                         close()
                                     }

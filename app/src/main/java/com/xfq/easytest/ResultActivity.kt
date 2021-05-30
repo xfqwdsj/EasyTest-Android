@@ -36,7 +36,8 @@ class ResultActivity : AppCompatActivity() {
 
         val result = intent.getParcelableExtra<Result>("result")
         if (result != null) {
-            val questionList = JSON.parseArray(result.question, Question::class.java).toMutableList()
+            val questionList =
+                JSON.parseArray(result.question, Question::class.java).toMutableList()
             val markwon = Markwon.builder(this).apply {
                 usePlugin(StrikethroughPlugin.create())
                 usePlugin(TablePlugin.create(this@ResultActivity))
@@ -53,7 +54,8 @@ class ResultActivity : AppCompatActivity() {
                 val view = layoutInflater.inflate(R.layout.layout_test, LinearLayout(this), true)
                 when (question.type) {
                     1 -> {  //填空题
-                        view.findViewById<ScrollView>(R.id.fillBankQuestionLayout).visibility = View.VISIBLE
+                        view.findViewById<ScrollView>(R.id.fillBankQuestionLayout).visibility =
+                            View.VISIBLE
                         var questionText = ""  //预留即将显示的题目文本
                         var escaped = false  //转义模式
                         var isBank = false  //“空”模式
@@ -118,28 +120,48 @@ class ResultActivity : AppCompatActivity() {
                         }
                         markwon.setMarkdown(view.findViewById(R.id.fillBankQuestion), questionText)
                         for (i in bank.indices) {  //遍历“空”
-                            view.findViewById<FlexboxLayout>(R.id.fillBankEdit).addView(MaterialCardView(this).apply {
-                                layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
-                                    setMargins(MyClass.dip2PxI(5F), MyClass.dip2PxI(5F), MyClass.dip2PxI(5F), MyClass.dip2PxI(5F))
-                                }
-                                id = i
-                                cardElevation = 0F
-                                addView(TextInputEditText(this@ResultActivity).apply input@{
-                                    hint = bank[i]
-                                    minEms = 5
-                                    gravity = Gravity.CENTER
-                                    layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                                    setText(question.userAnswer[i])
+                            view.findViewById<FlexboxLayout>(R.id.fillBankEdit)
+                                .addView(MaterialCardView(this).apply {
+                                    layoutParams = FrameLayout.LayoutParams(
+                                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                                        ViewGroup.LayoutParams.WRAP_CONTENT
+                                    ).apply {
+                                        setMargins(
+                                            MyClass.dip2PxI(5F),
+                                            MyClass.dip2PxI(5F),
+                                            MyClass.dip2PxI(5F),
+                                            MyClass.dip2PxI(5F)
+                                        )
+                                    }
+                                    id = i
+                                    cardElevation = 0F
+                                    addView(TextInputEditText(this@ResultActivity).apply input@{
+                                        hint = bank[i]
+                                        minEms = 5
+                                        gravity = Gravity.CENTER
+                                        layoutParams = ViewGroup.LayoutParams(
+                                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                                            ViewGroup.LayoutParams.WRAP_CONTENT
+                                        )
+                                        setText(question.userAnswer[i])
+                                    })
                                 })
-                            })
                         }
                     }
                     2 -> {
-                        view.findViewById<ScrollView>(R.id.chooseQuestionLayout).visibility = View.VISIBLE
-                        markwon.setMarkdown(view.findViewById(R.id.chooseQuestion), question.question)
+                        view.findViewById<ScrollView>(R.id.chooseQuestionLayout).visibility =
+                            View.VISIBLE
+                        markwon.setMarkdown(
+                            view.findViewById(R.id.chooseQuestion),
+                            question.question
+                        )
                         val buttonList: MutableList<CheckBox> = ArrayList()
                         for (i in question.children.indices) {
-                            val button = (LayoutInflater.from(this).inflate(R.layout.layout_for_test_single_choose, LinearLayout(this), false) as CheckBox).apply {
+                            val button = (LayoutInflater.from(this).inflate(
+                                R.layout.layout_for_test_single_choose,
+                                LinearLayout(this),
+                                false
+                            ) as CheckBox).apply {
                                 markwon.setMarkdown(this, question.children[i].text)
                                 isChecked = when (question.userAnswer[i]) {
                                     "1" -> true
@@ -149,23 +171,39 @@ class ResultActivity : AppCompatActivity() {
                                 visibility = View.VISIBLE
                             }
                             buttonList.add(button)
-                            view.findViewById<LinearLayout>(R.id.chooseGroup).addView(MaterialCardView(this).apply {
-                                layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
-                                    setMargins(MyClass.dip2PxI(5F), MyClass.dip2PxI(5F), MyClass.dip2PxI(5F), MyClass.dip2PxI(5F))
-                                }
-                                id = i
-                                cardElevation = 0F
-                                addView(button)
-                            })
+                            view.findViewById<LinearLayout>(R.id.chooseGroup)
+                                .addView(MaterialCardView(this).apply {
+                                    layoutParams = FrameLayout.LayoutParams(
+                                        ViewGroup.LayoutParams.MATCH_PARENT,
+                                        ViewGroup.LayoutParams.WRAP_CONTENT
+                                    ).apply {
+                                        setMargins(
+                                            MyClass.dip2PxI(5F),
+                                            MyClass.dip2PxI(5F),
+                                            MyClass.dip2PxI(5F),
+                                            MyClass.dip2PxI(5F)
+                                        )
+                                    }
+                                    id = i
+                                    cardElevation = 0F
+                                    addView(button)
+                                })
                         }
                     }
                     3 -> {
-                        view.findViewById<ScrollView>(R.id.chooseQuestionLayout).visibility = View.VISIBLE
-                        markwon.setMarkdown(view.findViewById(R.id.chooseQuestion), question.question)
+                        view.findViewById<ScrollView>(R.id.chooseQuestionLayout).visibility =
+                            View.VISIBLE
+                        markwon.setMarkdown(
+                            view.findViewById(R.id.chooseQuestion),
+                            question.question
+                        )
                         val buttonList: MutableList<CheckBox> = ArrayList()
                         for (i in question.children.indices) {
                             val button = MaterialCheckBox(this).apply {
-                                layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                                layoutParams = FrameLayout.LayoutParams(
+                                    ViewGroup.LayoutParams.MATCH_PARENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT
+                                ).apply {
                                     setMargins(MyClass.dip2PxI(5F), 0, MyClass.dip2PxI(5F), 0)
                                 }
                                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 16F)
@@ -177,19 +215,32 @@ class ResultActivity : AppCompatActivity() {
                                 }
                             }
                             buttonList.add(button)
-                            view.findViewById<LinearLayout>(R.id.chooseGroup).addView(MaterialCardView(this).apply {
-                                layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
-                                    setMargins(MyClass.dip2PxI(5F), MyClass.dip2PxI(5F), MyClass.dip2PxI(5F), MyClass.dip2PxI(5F))
-                                }
-                                id = i
-                                cardElevation = 0F
-                                addView(button)
-                            })
+                            view.findViewById<LinearLayout>(R.id.chooseGroup)
+                                .addView(MaterialCardView(this).apply {
+                                    layoutParams = FrameLayout.LayoutParams(
+                                        ViewGroup.LayoutParams.MATCH_PARENT,
+                                        ViewGroup.LayoutParams.WRAP_CONTENT
+                                    ).apply {
+                                        setMargins(
+                                            MyClass.dip2PxI(5F),
+                                            MyClass.dip2PxI(5F),
+                                            MyClass.dip2PxI(5F),
+                                            MyClass.dip2PxI(5F)
+                                        )
+                                    }
+                                    id = i
+                                    cardElevation = 0F
+                                    addView(button)
+                                })
                         }
                     }
                     4 -> {
-                        view.findViewById<ScrollView>(R.id.generalQuestionLayout).visibility = View.VISIBLE
-                        markwon.setMarkdown(view.findViewById(R.id.generalQuestion), question.question)
+                        view.findViewById<ScrollView>(R.id.generalQuestionLayout).visibility =
+                            View.VISIBLE
+                        markwon.setMarkdown(
+                            view.findViewById(R.id.generalQuestion),
+                            question.question
+                        )
                         view.findViewById<EditText>(R.id.generalEdit).apply {
                             setText(question.userAnswer[0])
                         }

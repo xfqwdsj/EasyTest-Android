@@ -9,6 +9,7 @@ import android.webkit.WebView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import androidx.preference.PreferenceManager
 import cn.leancloud.AVUser
 import com.google.android.material.appbar.MaterialToolbar
 import com.xfq.bottomdialog.BottomDialog
@@ -59,13 +60,30 @@ class MainActivity : AppCompatActivity() {
         }
         binding.navigationView.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.test -> startActivity(Intent(this, SelectQuestionBankActivity::class.java))
+                R.id.test -> Intent(
+                    this,
+                    SelectQuestionBankActivity::class.java
+                ).apply {
+                    val urlList =
+                        PreferenceManager.getDefaultSharedPreferences(this@MainActivity)
+                            .getString("custom_source", "")!!
+                            .split("\n").toMutableList()
+                    urlList.add("https://xfqwdsj.gitee.io/easy-test/question-bank-index.json")
+                    putStringArrayListExtra("urlList", ArrayList(urlList))
+                    startActivity(this)
+                }
                 R.id.query -> startActivity(Intent(this, IDQueryActivity::class.java))
             }
             false
         }
         //setInset(MyClass.INSET_BOTTOM, binding.navigationView)
-        val actionBarDrawerToggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.toolbar, R.string.expanded, R.string.collapsed)
+        val actionBarDrawerToggle = ActionBarDrawerToggle(
+            this,
+            binding.drawerLayout,
+            binding.toolbar,
+            R.string.expanded,
+            R.string.collapsed
+        )
         actionBarDrawerToggle.syncState()
         binding.drawerLayout.addDrawerListener(actionBarDrawerToggle)
         try {
@@ -117,10 +135,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun get(url: URL, dialog: BottomDialog) {
         val request = Request.Builder()
-                .url(url)
-                .removeHeader("User-Agent")
-                .addHeader("User-Agent", WebView(this).settings.userAgentString)
-                .build()
+            .url(url)
+            .removeHeader("User-Agent")
+            .addHeader("User-Agent", WebView(this).settings.userAgentString)
+            .build()
         OkHttpClient().newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 dialog.close()

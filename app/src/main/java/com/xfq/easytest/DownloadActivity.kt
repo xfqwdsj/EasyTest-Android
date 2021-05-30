@@ -72,16 +72,21 @@ class DownloadActivity : AppCompatActivity() {
             downloadId = downloadManager!!.enqueue(request)
             this.registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
         } else {
-            Snackbar.make(binding.root, R.string.file_exists, Snackbar.LENGTH_LONG).setAction(android.R.string.ok) {
-                delete(getExternalFilesDir("")!!.path + "/" + fileName)
-                val request = DownloadManager.Request(Uri.parse(url))
-                request.setTitle(fileName)
-                request.setDescription(getResString(R.string.app_name))
-                request.setDestinationInExternalFilesDir(this, "", fileName)
-                downloadManager = this.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                downloadId = downloadManager!!.enqueue(request)
-                this.registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
-            }.show()
+            Snackbar.make(binding.root, R.string.file_exists, Snackbar.LENGTH_LONG)
+                .setAction(android.R.string.ok) {
+                    delete(getExternalFilesDir("")!!.path + "/" + fileName)
+                    val request = DownloadManager.Request(Uri.parse(url))
+                    request.setTitle(fileName)
+                    request.setDescription(getResString(R.string.app_name))
+                    request.setDestinationInExternalFilesDir(this, "", fileName)
+                    downloadManager =
+                        this.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                    downloadId = downloadManager!!.enqueue(request)
+                    this.registerReceiver(
+                        receiver,
+                        IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+                    )
+                }.show()
         }
     }
 
@@ -105,12 +110,18 @@ class DownloadActivity : AppCompatActivity() {
                     DownloadManager.STATUS_RUNNING -> {
                     }
                     DownloadManager.STATUS_SUCCESSFUL -> {
-                        if (unzipFile(getExternalFilesDir("")!!.path + "/" + fileName, getExternalFilesDir("")!!.path + "/") != null) {
+                        if (unzipFile(
+                                getExternalFilesDir("")!!.path + "/" + fileName,
+                                getExternalFilesDir("")!!.path + "/"
+                            ) != null
+                        ) {
                             delete(getExternalFilesDir("")!!.path + "/" + fileName)
-                            Snackbar.make(binding.root, R.string.success, Snackbar.LENGTH_LONG).show()
+                            Snackbar.make(binding.root, R.string.success, Snackbar.LENGTH_LONG)
+                                .show()
                         } else {
                             delete(getExternalFilesDir("")!!.path + "/" + fileName)
-                            Snackbar.make(binding.root, R.string.failed, Snackbar.LENGTH_LONG).show()
+                            Snackbar.make(binding.root, R.string.failed, Snackbar.LENGTH_LONG)
+                                .show()
                         }
                         cursor.close()
                         this.unregisterReceiver(receiver)

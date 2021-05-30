@@ -41,7 +41,11 @@ object MyClass {
             INSET_BOTTOM -> {
                 val padding = this.paddingBottom
                 ViewCompat.setOnApplyWindowInsetsListener(this) { myView, windowInsets ->
-                    myView.updatePadding(bottom = padding + windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).bottom)
+                    myView.updatePadding(
+                        bottom = padding + windowInsets.getInsets(
+                            WindowInsetsCompat.Type.systemBars()
+                        ).bottom
+                    )
                     windowInsets
                 }
                 this.requestApplyInsetsWhenAttached()

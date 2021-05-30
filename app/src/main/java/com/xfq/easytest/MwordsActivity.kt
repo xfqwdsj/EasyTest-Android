@@ -72,8 +72,8 @@ class MwordsActivity : AppCompatActivity() {
 
         val client = OkHttpClient()
         val request = Request.Builder()
-                .url("https://xfqwdsj.github.io/mword/words.json")
-                .build()
+            .url("https://xfqwdsj.github.io/mword/words.json")
+            .build()
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 dialog.close()
@@ -91,13 +91,22 @@ class MwordsActivity : AppCompatActivity() {
                         unitsArray[i] = json[i].displayName
                         urlList[i] = json[i].url
                     }
-                    val adapter = ArrayAdapter(this@MwordsActivity, android.R.layout.simple_spinner_item, unitsArray).apply {
+                    val adapter = ArrayAdapter(
+                        this@MwordsActivity,
+                        android.R.layout.simple_spinner_item,
+                        unitsArray
+                    ).apply {
                         setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                     }
                     runOnUiThread {
                         binding.spinner.adapter = adapter
                         binding.spinner.onItemSelectedListener = object : OnItemSelectedListener {
-                            override fun onItemSelected(parent: AdapterView<*>?, view: View?, i: Int, id: Long) {
+                            override fun onItemSelected(
+                                parent: AdapterView<*>?,
+                                view: View?,
+                                i: Int,
+                                id: Long
+                            ) {
                                 init(urlList[i])
                             }
 
@@ -127,8 +136,8 @@ class MwordsActivity : AppCompatActivity() {
                 try {
                     val client = OkHttpClient()
                     val request = Request.Builder()
-                            .url(url)
-                            .build()
+                        .url(url)
+                        .build()
                     val response = client.newCall(request).execute()
                     words = response.body?.string()
                     if (words != null) {
@@ -169,7 +178,9 @@ class MwordsActivity : AppCompatActivity() {
             while (timer) {
                 time++
                 textView.text = (textView.text.toString().toInt() + 1).toString()
-                if (textView.text.toString().toInt() != time && binding.timerStatus.text.toString() != timer.toString()) {
+                if (textView.text.toString()
+                        .toInt() != time && binding.timerStatus.text.toString() != timer.toString()
+                ) {
                     finish()
                 }
                 delay(1000)
@@ -180,7 +191,9 @@ class MwordsActivity : AppCompatActivity() {
     private fun stopTimer() {
         if (this::job.isInitialized && job.isActive) job.cancel()
         val textView = findViewById<TextView>(R.id.timer)
-        if (textView.text.toString().toInt() != time && binding.timerStatus.text.toString() != timer.toString()) {
+        if (textView.text.toString()
+                .toInt() != time && binding.timerStatus.text.toString() != timer.toString()
+        ) {
             finish()
         }
         timer = false
@@ -190,7 +203,9 @@ class MwordsActivity : AppCompatActivity() {
     }
 
     private fun stopTimerGetTime(): String? {
-        return if (index + 1 == binding.all.text.toString().toInt() && index + 1 == binding.progress.text.toString().toInt()) {
+        return if (index + 1 == binding.all.text.toString()
+                .toInt() && index + 1 == binding.progress.text.toString().toInt()
+        ) {
             stopTimer()
             val returnTime: String
             val timeMinutesString: String
@@ -227,13 +242,20 @@ class MwordsActivity : AppCompatActivity() {
             binding.editText.setText("")
             binding.progressBar.progress = binding.progressBar.progress + 1
             binding.progress.text = (binding.progress.text.toString().toInt() + 1).toString()
-            if (index + 1 == binding.all.text.toString().toInt() && index + 1 == binding.progress.text.toString().toInt()) {
+            if (index + 1 == binding.all.text.toString()
+                    .toInt() && index + 1 == binding.progress.text.toString().toInt()
+            ) {
                 if (job.isActive) {
                     GlobalScope.launch(Dispatchers.Main) {
                         binding.textTop.setText(R.string.congratulations)
                         BottomDialog().create(this@MwordsActivity).apply {
                             setTitle(R.string.congratulations)
-                            setContent(this@MwordsActivity.resources.getString(R.string.mwords_result, stopTimerGetTime()))
+                            setContent(
+                                this@MwordsActivity.resources.getString(
+                                    R.string.mwords_result,
+                                    stopTimerGetTime()
+                                )
+                            )
                             setButton1(android.R.string.ok) {
                                 close()
                                 upload()
@@ -252,7 +274,9 @@ class MwordsActivity : AppCompatActivity() {
                 } else {
                     finish()
                 }
-            } else if (index + 1 < binding.all.text.toString().toInt() && index + 1 == binding.progress.text.toString().toInt()) {
+            } else if (index + 1 < binding.all.text.toString()
+                    .toInt() && index + 1 == binding.progress.text.toString().toInt()
+            ) {
                 index++
                 binding.textTop.text = wordsList[index].trans
             } else {
@@ -264,7 +288,14 @@ class MwordsActivity : AppCompatActivity() {
         }
     }
 
-    private fun applyUpload(unit: String, time: Int, customHelp: Int, help: Int, userId: String, speed: Double/*, history: String?*/) {
+    private fun applyUpload(
+        unit: String,
+        time: Int,
+        customHelp: Int,
+        help: Int,
+        userId: String,
+        speed: Double/*, history: String?*/
+    ) {
         val avObject = AVObject("MwordsResult").apply {
             put("unit", unit)
             put("timer", time)
@@ -290,11 +321,22 @@ class MwordsActivity : AppCompatActivity() {
             override fun onError(e: Throwable) {
                 val error = e as AVException
                 if (error.code == 142) {
-                    val code = error.message?.substring(error.message!!.indexOf("(") + 1, error.message!!.indexOf(")"))?.toInt()
-                    val message = error.message?.substring(error.message!!.indexOf("[") + 1, error.message!!.indexOf("]"))
+                    val code = error.message?.substring(
+                        error.message!!.indexOf("(") + 1,
+                        error.message!!.indexOf(")")
+                    )?.toInt()
+                    val message = error.message?.substring(
+                        error.message!!.indexOf("[") + 1,
+                        error.message!!.indexOf("]")
+                    )
                     BottomDialog().create(this@MwordsActivity).apply {
                         setTitle(R.string.failed)
-                        setContent(if (code == 202) getResString(R.string.better_record) else resources.getString(R.string.error, message))
+                        setContent(
+                            if (code == 202) getResString(R.string.better_record) else resources.getString(
+                                R.string.error,
+                                message
+                            )
+                        )
                         setButton1(android.R.string.ok) {
                             close()
                             if (code == 202) {
@@ -340,7 +382,13 @@ class MwordsActivity : AppCompatActivity() {
         }
     }
 
-    private fun applyDoNotUpload(unit: String, time: Int, customHelp: Int, help: Int, userId: String?) {
+    private fun applyDoNotUpload(
+        unit: String,
+        time: Int,
+        customHelp: Int,
+        help: Int,
+        userId: String?
+    ) {
         Intent(this, ResultActivity2::class.java).apply {
             putExtra("uploaded", false)
             putExtra("unit", unit)
@@ -354,17 +402,32 @@ class MwordsActivity : AppCompatActivity() {
     }
 
     private fun upload() {
-        if (wordsList.size == index + 1 && index + 1 == binding.all.text.toString().toInt() && binding.words.text.toString() == wordsList.toString()) {
+        if (wordsList.size == index + 1 && index + 1 == binding.all.text.toString()
+                .toInt() && binding.words.text.toString() == wordsList.toString()
+        ) {
             val currentUser = AVUser.getCurrentUser()
             if (currentUser != null) {
-                applyUpload(binding.spinner.selectedItem.toString(), time, customHelp, help, currentUser.objectId, wordsList.size.toDouble() / time.toDouble())
+                applyUpload(
+                    binding.spinner.selectedItem.toString(),
+                    time,
+                    customHelp,
+                    help,
+                    currentUser.objectId,
+                    wordsList.size.toDouble() / time.toDouble()
+                )
             } else {
                 BottomDialog().create(this).apply {
                     setTitle(R.string.failed)
                     setContent(R.string.no_login)
                     setButton1(android.R.string.ok) {
                         close()
-                        applyDoNotUpload(binding.spinner.selectedItem.toString(), time, customHelp, help, null)
+                        applyDoNotUpload(
+                            binding.spinner.selectedItem.toString(),
+                            time,
+                            customHelp,
+                            help,
+                            null
+                        )
                     }
                     setCancelAble(false)
                     show()
@@ -390,14 +453,14 @@ class MwordsActivity : AppCompatActivity() {
             data = data.replace(">    ", ">")
         }
         if (
-                appearNumber(data, "<wordbook>") == appearNumber(data, "</wordbook>")
+            appearNumber(data, "<wordbook>") == appearNumber(data, "</wordbook>")
 
-                && appearNumber(data, "<item>") == appearNumber(data, "</item>")
-                && appearNumber(data, "<word>") == appearNumber(data, "</word>")
-                && appearNumber(data, "<item>") == appearNumber(data, "<word>")
+            && appearNumber(data, "<item>") == appearNumber(data, "</item>")
+            && appearNumber(data, "<word>") == appearNumber(data, "</word>")
+            && appearNumber(data, "<item>") == appearNumber(data, "<word>")
 
-                && appearNumber(data, "<trans>") == appearNumber(data, "</trans>")
-                && appearNumber(data, "<word>") == appearNumber(data, "<trans>")
+            && appearNumber(data, "<trans>") == appearNumber(data, "</trans>")
+            && appearNumber(data, "<word>") == appearNumber(data, "<trans>")
         ) {
             data = data.replace("<wordbook>", "")
             data = data.replace("</wordbook>", "")
@@ -405,8 +468,14 @@ class MwordsActivity : AppCompatActivity() {
             wordsList = MutableList(items.size - 1) { Word() }
             for (i in 0 until items.size - 1) {
                 val word = Word()
-                word.word = items[i].substring(items[i].indexOf("<word>") + "<word>".length, items[i].indexOf("</word>"))
-                word.trans = items[i].substring(items[i].indexOf("<trans><![CDATA[") + "<trans><![CDATA[".length, items[i].indexOf("]]></trans>"))
+                word.word = items[i].substring(
+                    items[i].indexOf("<word>") + "<word>".length,
+                    items[i].indexOf("</word>")
+                )
+                word.trans = items[i].substring(
+                    items[i].indexOf("<trans><![CDATA[") + "<trans><![CDATA[".length,
+                    items[i].indexOf("]]></trans>")
+                )
                 wordsList[i] = word
             }
         } else {
@@ -443,7 +512,10 @@ class MwordsActivity : AppCompatActivity() {
         binding.button1.setOnClickListener {
             binding.editText.setText("")
             if (customHelp != 0) {
-                binding.editText.hint = wordsList[index].word.substring(0, if (wordsList[index].word.length >= customHelp) customHelp else wordsList[index].word.length)
+                binding.editText.hint = wordsList[index].word.substring(
+                    0,
+                    if (wordsList[index].word.length >= customHelp) customHelp else wordsList[index].word.length
+                )
             } else {
                 binding.editText.hint = wordsList[index].word
             }

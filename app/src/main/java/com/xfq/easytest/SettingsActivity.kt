@@ -22,7 +22,8 @@ class SettingsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.appbar.setInset(INSET_TOP)
         binding.settings.setInset(MyClass.INSET_BOTTOM)
-        supportFragmentManager.beginTransaction().replace(R.id.settings, SettingsFragment()).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.settings, SettingsFragment())
+            .commit()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

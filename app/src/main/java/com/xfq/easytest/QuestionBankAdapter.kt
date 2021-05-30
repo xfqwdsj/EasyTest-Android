@@ -1,13 +1,23 @@
 package com.xfq.easytest
 
+import android.content.Context
+import android.content.Intent
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 
-class QuestionBankAdapter(private val mList: MutableList<QuestionBank>, private val mClickListener: (QuestionBank) -> Unit) : RecyclerView.Adapter<QuestionBankAdapter.ViewHolder>() {
+class QuestionBankAdapter(
+    private val mList: MutableList<QuestionBank>,
+    private val mContext: Context,
+    private val mIndex: ArrayList<Int>,
+    private val mClickListener: (QuestionBank) -> Unit
+) : RecyclerView.Adapter<QuestionBankAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -38,34 +48,59 @@ class QuestionBankAdapter(private val mList: MutableList<QuestionBank>, private 
         val itemView = holder.itemView
         itemView.findViewById<TextView>(R.id.textView).text = item.name
         itemView.findViewById<TextView>(R.id.textView2).text = item.description
+        /*
         if (item.status == 0) item.status = 1
         when (item.status) {
-            1 -> itemView.findViewById<ImageView>(R.id.imageView).animate().setDuration(0).rotation(0F).start()
-            2 -> itemView.findViewById<ImageView>(R.id.imageView).animate().setDuration(0).rotation(90F).start()
+            1 -> itemView.findViewById<ImageView>(R.id.imageView).animate().setDuration(0)
+                .rotation(0F).start()
+            2 -> itemView.findViewById<ImageView>(R.id.imageView).animate().setDuration(0)
+                .rotation(90F).start()
         }
+         */
         if (item.children.isEmpty()) {
-            itemView.findViewById<ImageView>(R.id.imageView).setImageResource(R.drawable.ic_baseline_school_24)
+            itemView.findViewById<ImageView>(R.id.imageView).apply {
+                setImageResource(R.drawable.ic_baseline_book_24)
+                setColorFilter(Color.BLACK)
+            }
             itemView.setOnClickListener { mClickListener(item) }
         } else {
-            itemView.findViewById<ImageView>(R.id.imageView).setImageResource(R.drawable.ic_baseline_arrow_right_24)
+            itemView.findViewById<ImageView>(R.id.imageView).apply {
+                setImageResource(R.drawable.ic_baseline_folder_24)
+                setColorFilter(Color.BLACK)
+            }
             itemView.setOnClickListener {
-                val viewPosition = (itemView.layoutParams as RecyclerView.LayoutParams).viewAdapterPosition
+                val urlList = PreferenceManager.getDefaultSharedPreferences(mContext)
+                    .getString("custom_source", "")!!.split("\n").toMutableList()
+                urlList.add("https://xfqwdsj.gitee.io/easy-test/question-bank-index.json")
+                val index = ArrayList(mIndex)
+                index.add(position)
+                Intent(mContext, SelectQuestionBankActivity::class.java).apply {
+                    putStringArrayListExtra("urlList", ArrayList(urlList))
+                    putIntegerArrayListExtra("index", index)
+                    startActivity(mContext, this, null)
+                }
+                /*
+                val viewPosition =
+                    (itemView.layoutParams as RecyclerView.LayoutParams).viewAdapterPosition
                 if (item.status == 1) {
                     item.status = 2
-                    itemView.findViewById<ImageView>(R.id.imageView).animate().setDuration(300).rotation(90F).start()
+                    itemView.findViewById<ImageView>(R.id.imageView).animate().setDuration(300)
+                        .rotation(90F).start()
                     for (i in mList[viewPosition].children.indices) {
                         mList.add(i + viewPosition + 1, mList[viewPosition].children[i])
                         notifyItemInserted(i + viewPosition + 1)
                     }
                 } else if (item.status == 2) {
                     item.status = 1
-                    itemView.findViewById<ImageView>(R.id.imageView).animate().setDuration(300).rotation(0F).start()
+                    itemView.findViewById<ImageView>(R.id.imageView).animate().setDuration(300)
+                        .rotation(0F).start()
                     for (i in 1..collapseCount(item)) {
                         mList.removeAt(viewPosition + 1)
                         notifyItemRemoved(viewPosition + 1)
                     }
                 }
-                }
+                 */
+            }
         }
     }
 }
