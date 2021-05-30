@@ -2,43 +2,37 @@ package com.xfq.easytest
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.WindowCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.fastjson.JSON
 import com.xfq.bottomdialog.BottomDialog
-import com.xfq.easytest.MyClass.INSET_BOTTOM
-import com.xfq.easytest.MyClass.INSET_TOP
-import com.xfq.easytest.MyClass.setInset
 import com.xfq.easytest.databinding.ActivitySelectQuestionBankBinding
 import okhttp3.*
+import rikka.material.app.MaterialActivity
 import java.io.IOException
 
-class SelectQuestionBankActivity : AppCompatActivity() {
+class SelectQuestionBankActivity : MaterialActivity() {
     private lateinit var binding: ActivitySelectQuestionBankBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySelectQuestionBankBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        setSupportActionBar(binding.toolbar)
+        //WindowCompat.setDecorFitsSystemWindows(window, false)
+        //setSupportActionBar(binding.toolbar)
+        setAppBar(binding.appbar, binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.toolbar.setInset(INSET_TOP)
-        binding.recyclerView.setInset(INSET_BOTTOM)
+        binding.appbar.isRaised = false
+        binding.recyclerView.borderViewDelegate.setBorderVisibilityChangedListener { top, _, _, _ ->
+            binding.appbar.isRaised = !top
+        }
+        //binding.toolbar.setInset(INSET_TOP)
+        //binding.recyclerView.setInset(INSET_BOTTOM)
 
-        val urlList = PreferenceManager.getDefaultSharedPreferences(this).getString("custom_source", "")!!.split("\n").toMutableList()
-        urlList.add("https://xfqwdsj.gitee.io/easy-test/question-bank-index.json")
-        binding.refresh.post {
-            binding.refresh.isRefreshing = true
-        }
-        binding.refresh.setOnRefreshListener {
-            get(urlList)
-        }
-        get(urlList)
+        get(getUrlList())
     }
 
     fun get(urlList: List<String>) {
@@ -76,9 +70,6 @@ class SelectQuestionBankActivity : AppCompatActivity() {
                                     runOnUiThread {
                                         binding.recyclerView.layoutManager = LinearLayoutManager(this@SelectQuestionBankActivity)
                                         binding.recyclerView.adapter = QuestionBankAdapter(json) { item: QuestionBank -> onItemClicked(item) }
-                                        binding.refresh.post {
-                                            binding.refresh.isRefreshing = false
-                                        }
                                     }
                                 }
                             } catch (e: Exception) {
@@ -89,6 +80,14 @@ class SelectQuestionBankActivity : AppCompatActivity() {
                 })
             }
         }
+    }
+
+    private fun getUrlList(): List<String> {
+        val urlList =
+            PreferenceManager.getDefaultSharedPreferences(this).getString("custom_source", "")!!
+                .split("\n").toMutableList()
+        urlList.add("https://xfqwdsj.gitee.io/easy-test/question-bank-index.json")
+        return urlList
     }
 
     private fun onItemClicked(item: QuestionBank) {
@@ -106,7 +105,14 @@ class SelectQuestionBankActivity : AppCompatActivity() {
         if (item.itemId == android.R.id.home) {
             finish()
             return true
+        } else if (item.itemId == R.id.refresh) {
+            get(getUrlList())
         }
         return false
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.refresh_menu, menu)
+        return true
     }
 }

@@ -84,4 +84,5 @@
     <string name="answer">答案</string>
     <string name="change_it">换一个</string>
     <string name="not_found">不存在</string>
+    <string name="refresh">刷新</string>
 </resources>

@@ -1,13 +1,13 @@
-<resources>
+<!-- resources>
 
-    <!-- Base application theme. -->
+
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
     
     <style name="ToolbarTheme">
@@ -27,4 +27,13 @@
         <item name="android:backgroundTint">@android:color/transparent</item>
     </style>
 
+</resources -->
+<resources>
+
+    <style name="AppTheme" parent="Theme.Light" />
+
+    <style name="ToolbarTheme">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
 </resources>

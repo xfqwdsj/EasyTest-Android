@@ -206,6 +206,10 @@ class ResultActivity : AppCompatActivity() {
                 positionList.add(i)
             }
 
+            val view =
+                layoutInflater.inflate(R.layout.layout_test, LinearLayout(this), true).apply {
+                    findViewById<ScrollView>(R.id.resultLayout).visibility = View.VISIBLE
+                }
 
             //viewList.add(view)
             binding.viewPager.adapter = TestPagerAdapter(viewList, positionList, this).apply {

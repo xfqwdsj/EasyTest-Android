@@ -13,6 +13,8 @@ object MyClass {
     private var context: Context? = null
     const val INSET_TOP: Int = 0
     const val INSET_BOTTOM: Int = 1
+    const val INSET_LEFT: Int = 2
+    const val INSET_RIGHT: Int = 3
 
     fun getResString(id: Int): String {
         return context!!.resources!!.getString(id)

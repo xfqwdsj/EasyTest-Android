@@ -509,6 +509,7 @@ class TestActivity : AppCompatActivity() {
                                                                 viewList[questionIndex].findViewById<CardView>(childrenIndex).setCardBackgroundColor(getResColor(R.color.colorTestCorrect))
                                                                 refreshView(questionIndex, childrenIndex, bankButton)
                                                                 it.setOnClickListener(null)
+                                                                it.isClickable = false
                                                                 close()
                                                             }
                                                             setButton2(R.string.wrong) {
@@ -525,6 +526,7 @@ class TestActivity : AppCompatActivity() {
                                                                 viewList[questionIndex].findViewById<CardView>(R.id.cardView).setCardBackgroundColor(getResColor(R.color.colorTestWrong))
                                                                 refreshView(questionIndex, childrenIndex, bankButton)
                                                                 it.setOnClickListener(null)
+                                                                it.isClickable = false
                                                                 close()
                                                             }
                                                             setButton3(android.R.string.cancel) {
@@ -664,6 +666,7 @@ class TestActivity : AppCompatActivity() {
                                                                     cardView.setCardBackgroundColor(getResColor(R.color.colorTestCorrect))
                                                                     refreshView(questionIndex, questionButton)
                                                                     it.setOnClickListener(null)
+                                                                    it.isClickable = false
                                                                     close()
                                                                 }
                                                                 setButton2(R.string.wrong) {
@@ -671,6 +674,7 @@ class TestActivity : AppCompatActivity() {
                                                                     cardView.setCardBackgroundColor(getResColor(R.color.colorTestWrong))
                                                                     refreshView(questionIndex, questionButton)
                                                                     it.setOnClickListener(null)
+                                                                    it.isClickable = false
                                                                     close()
                                                                 }
                                                                 setButton3(android.R.string.cancel) {
