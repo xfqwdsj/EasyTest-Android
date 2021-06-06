@@ -1,4 +1,4 @@
-package com.xfq.easytest
+package com.xfq.easytest.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,31 +9,30 @@ import android.webkit.WebView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.fastjson.JSON
 import com.xfq.bottomdialog.BottomDialog
+import com.xfq.easytest.QuestionBank
+import com.xfq.easytest.R
+import com.xfq.easytest.activity.base.BaseActivity
 import com.xfq.easytest.databinding.ActivitySelectQuestionBankBinding
+import com.xfq.easytest.util.ActivityMap
+import com.xfq.easytest.util.QuestionBankAdapter
 import okhttp3.*
-import rikka.material.app.MaterialActivity
+import rikka.recyclerview.fixEdgeEffect
 import java.io.IOException
 
-class SelectQuestionBankActivity : MaterialActivity() {
+class SelectQuestionBankActivity : BaseActivity() {
     private lateinit var binding: ActivitySelectQuestionBankBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySelectQuestionBankBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //WindowCompat.setDecorFitsSystemWindows(window, false)
-        //setSupportActionBar(binding.toolbar)
         setAppBar(binding.appbar, binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.appbar.isRaised = false
+        binding.recyclerView.fixEdgeEffect(false)
         binding.recyclerView.borderViewDelegate.setBorderVisibilityChangedListener { top, _, _, _ ->
             binding.appbar.isRaised = !top
         }
         binding.progress.setVisibilityAfterHide(View.GONE)
-
-        //binding.toolbar.setInset(INSET_TOP)
-        //binding.recyclerView.setInset(INSET_BOTTOM)
-
         ActivityMap.addActivity(this)
         if (intent.getStringArrayListExtra("urlList") != null) {
             get(

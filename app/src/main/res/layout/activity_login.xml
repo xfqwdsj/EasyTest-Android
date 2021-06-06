@@ -14,7 +14,7 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
-            style="@style/ToolbarTheme"
+            style="@style/ToolbarStyle"
             app:title="@string/login" />
     </com.google.android.material.appbar.AppBarLayout>
 

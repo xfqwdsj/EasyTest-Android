@@ -1,12 +1,13 @@
-package com.xfq.easytest
+package com.xfq.easytest.activity
 
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.xfq.bottomdialog.BottomDialog
-import com.xfq.easytest.MyClass.getResString
+import com.xfq.easytest.R
 import com.xfq.easytest.databinding.ActivityResult2Binding
+import com.xfq.easytest.util.MyClass.getResString
 import java.text.DateFormat.getDateInstance
 import java.text.DateFormat.getTimeInstance
 import java.util.*

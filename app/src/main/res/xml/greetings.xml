@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Greetings>
-    <FirstGreetings>
-        <ByTimeGreetings>
-            <item autoTime="afterSunrise|none" startTimeHour="7" endTimeHour="11"></item>
-        </ByTimeGreetings>
-    </FirstGreetings>
-</Greetings>

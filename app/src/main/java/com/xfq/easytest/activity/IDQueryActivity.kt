@@ -1,4 +1,4 @@
-package com.xfq.easytest
+package com.xfq.easytest.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,9 +6,11 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.google.android.material.snackbar.Snackbar
-import com.xfq.easytest.MyClass.INSET_TOP
-import com.xfq.easytest.MyClass.setInset
+import com.xfq.easytest.R
+import com.xfq.easytest.Result
 import com.xfq.easytest.databinding.ActivityIdQueryBinding
+import com.xfq.easytest.util.MyClass.INSET_TOP
+import com.xfq.easytest.util.MyClass.setInset
 import org.litepal.LitePal
 import org.litepal.extension.find
 

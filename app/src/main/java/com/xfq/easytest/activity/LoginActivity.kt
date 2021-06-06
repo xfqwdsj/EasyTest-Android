@@ -1,4 +1,4 @@
-package com.xfq.easytest
+package com.xfq.easytest.activity
 
 import android.os.Bundle
 import android.text.InputType
@@ -8,10 +8,11 @@ import androidx.core.view.WindowCompat
 import cn.leancloud.AVUser
 import com.xfq.bottomdialog.BottomDialog
 import com.xfq.bottomdialog.EditDialog
-import com.xfq.easytest.MyClass.INSET_TOP
-import com.xfq.easytest.MyClass.getResString
-import com.xfq.easytest.MyClass.setInset
+import com.xfq.easytest.R
 import com.xfq.easytest.databinding.ActivityLoginBinding
+import com.xfq.easytest.util.MyClass.INSET_TOP
+import com.xfq.easytest.util.MyClass.getResString
+import com.xfq.easytest.util.MyClass.setInset
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 

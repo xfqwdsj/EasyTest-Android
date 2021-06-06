@@ -1,12 +1,14 @@
-package com.xfq.easytest
+package com.xfq.easytest.util
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.preference.PreferenceManager
 
 @SuppressLint("StaticFieldLeak")
 object MyClass {
@@ -88,7 +90,11 @@ object MyClass {
         return (pxValue / scale + 0.5f).toInt()
     }
 
+    fun getPreferences(): SharedPreferences {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+    }
+
     fun init(context: Context) {
-        this.context = context
+        MyClass.context = context
     }
 }

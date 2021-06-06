@@ -1,10 +1,11 @@
-package com.xfq.easytest
+package com.xfq.easytest.util
 
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
-import com.xfq.easytest.MyClass.getResString
+import com.xfq.easytest.R
+import com.xfq.easytest.util.MyClass.getResString
 
 class TestPagerAdapter(
     private val mViewList: List<View>,

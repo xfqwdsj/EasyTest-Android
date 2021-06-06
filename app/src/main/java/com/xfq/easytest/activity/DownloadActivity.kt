@@ -1,4 +1,4 @@
-package com.xfq.easytest
+package com.xfq.easytest.activity
 
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
@@ -17,10 +17,11 @@ import com.blankj.utilcode.util.FileUtils.isFileExists
 import com.blankj.utilcode.util.ZipUtils.unzipFile
 import com.google.android.material.snackbar.Snackbar
 import com.xfq.bottomdialog.EditDialog
-import com.xfq.easytest.MyClass.INSET_TOP
-import com.xfq.easytest.MyClass.getResString
-import com.xfq.easytest.MyClass.setInset
+import com.xfq.easytest.R
 import com.xfq.easytest.databinding.ActivityDownloadBinding
+import com.xfq.easytest.util.MyClass.INSET_TOP
+import com.xfq.easytest.util.MyClass.getResString
+import com.xfq.easytest.util.MyClass.setInset
 
 
 class DownloadActivity : AppCompatActivity() {

@@ -18,17 +18,17 @@
   ~ Copyright (C) 2021 LSPosed Contributors
   -->
 
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-
-    <string-array name="theme_texts" translatable="false">
-        <item>@string/dark_theme_off</item>
-        <item>@string/dark_theme_on</item>
-        <item>@string/dark_theme_follow_system</item>
-    </string-array>
-
-    <string-array name="theme_values" translatable="false">
-        <item>MODE_NIGHT_NO</item>
-        <item>MODE_NIGHT_YES</item>
-        <item>MODE_NIGHT_FOLLOW_SYSTEM</item>
-    </string-array>
-</resources>
+<rikka.widget.borderview.BorderRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@android:id/list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:paddingTop="?actionBarSize"
+    app:borderBottomVisibility="never"
+    app:borderTopDrawable="@null"
+    app:borderTopVisibility="whenTop"
+    app:fitsSystemWindowsInsets="bottom|top"
+    tools:ignore="UnusedResources"
+    tools:viewBindingIgnore="true" />

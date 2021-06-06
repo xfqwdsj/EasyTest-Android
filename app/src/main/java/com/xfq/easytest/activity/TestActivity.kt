@@ -1,4 +1,4 @@
-package com.xfq.easytest
+package com.xfq.easytest.activity
 
 import android.annotation.SuppressLint
 import android.graphics.Color
@@ -12,7 +12,6 @@ import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.WindowCompat
 import androidx.transition.TransitionManager
 import androidx.viewpager.widget.ViewPager
 import com.alibaba.fastjson.JSON
@@ -26,14 +25,18 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.transition.MaterialArcMotion
 import com.google.android.material.transition.MaterialContainerTransform
 import com.xfq.bottomdialog.BottomDialog
-import com.xfq.easytest.MyClass.INSET_BOTTOM
-import com.xfq.easytest.MyClass.INSET_TOP
-import com.xfq.easytest.MyClass.dip2PxI
-import com.xfq.easytest.MyClass.getResColor
-import com.xfq.easytest.MyClass.getResString
-import com.xfq.easytest.MyClass.requestApplyInsetsWhenAttached
-import com.xfq.easytest.MyClass.setInset
+import com.xfq.easytest.Question
+import com.xfq.easytest.R
+import com.xfq.easytest.Result
 import com.xfq.easytest.databinding.ActivityTestBinding
+import com.xfq.easytest.util.ActivityMap
+import com.xfq.easytest.util.MyClass.INSET_BOTTOM
+import com.xfq.easytest.util.MyClass.dip2PxI
+import com.xfq.easytest.util.MyClass.getResColor
+import com.xfq.easytest.util.MyClass.getResString
+import com.xfq.easytest.util.MyClass.requestApplyInsetsWhenAttached
+import com.xfq.easytest.util.MyClass.setInset
+import com.xfq.easytest.util.TestPagerAdapter
 import io.noties.markwon.Markwon
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
 import io.noties.markwon.ext.tables.TablePlugin
@@ -60,10 +63,8 @@ class TestActivity : MaterialActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityTestBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        setSupportActionBar(binding.toolbar)
+        setAppBar(binding.appbar, binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.toolbar.setInset(INSET_TOP)
         ActivityMap.clear()
         url = intent.getStringExtra("url").toString()  //获取题目url
         markwon = Markwon.builder(this).apply {

@@ -7,7 +7,7 @@
     app:consumeSystemWindowsInsets="start|end"
     app:edgeToEdge="true"
     app:fitsSystemWindowsInsets="start|end"
-    tools:context=".SelectQuestionBankActivity">
+    tools:context=".activity.SelectQuestionBankActivity">
 
     <rikka.widget.borderview.BorderRecyclerView
         android:id="@+id/recyclerView"
@@ -26,22 +26,15 @@
 
     <rikka.material.widget.AppBarLayout
         android:id="@+id/appbar"
-        style="?appBarStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
+        style="@style/AppBarStyle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:subtitleTextAppearance="@android:style/TextAppearance.Material.Widget.Toolbar.Subtitle"
-            app:title="@string/question_bank_selection"
-            app:titleTextAppearance="@android:style/TextAppearance.Material.Widget.Toolbar.Title" />
-
+            style="@style/ToolbarStyle"
+            app:title="@string/question_bank_selection" />
     </rikka.material.widget.AppBarLayout>
 
     <com.google.android.material.progressindicator.LinearProgressIndicator

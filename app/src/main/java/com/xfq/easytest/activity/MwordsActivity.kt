@@ -1,4 +1,4 @@
-package com.xfq.easytest
+package com.xfq.easytest.activity
 
 import android.content.Intent
 import android.content.SharedPreferences
@@ -19,10 +19,13 @@ import cn.leancloud.AVObject
 import cn.leancloud.AVUser
 import com.alibaba.fastjson.JSON
 import com.xfq.bottomdialog.BottomDialog
-import com.xfq.easytest.MyClass.INSET_TOP
-import com.xfq.easytest.MyClass.getResString
-import com.xfq.easytest.MyClass.setInset
+import com.xfq.easytest.MyUnit
+import com.xfq.easytest.R
+import com.xfq.easytest.Word
 import com.xfq.easytest.databinding.ActivityMwordsBinding
+import com.xfq.easytest.util.MyClass.INSET_TOP
+import com.xfq.easytest.util.MyClass.getResString
+import com.xfq.easytest.util.MyClass.setInset
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.*

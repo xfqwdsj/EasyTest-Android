@@ -1,4 +1,4 @@
-package com.xfq.easytest
+package com.xfq.easytest.activity
 
 import android.os.Bundle
 import android.util.TypedValue
@@ -11,9 +11,12 @@ import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.textfield.TextInputEditText
-import com.xfq.easytest.MyClass.INSET_TOP
-import com.xfq.easytest.MyClass.setInset
+import com.xfq.easytest.*
 import com.xfq.easytest.databinding.ActivityResultBinding
+import com.xfq.easytest.util.MyClass
+import com.xfq.easytest.util.MyClass.INSET_TOP
+import com.xfq.easytest.util.MyClass.setInset
+import com.xfq.easytest.util.TestPagerAdapter
 import io.noties.markwon.Markwon
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
 import io.noties.markwon.ext.tables.TablePlugin

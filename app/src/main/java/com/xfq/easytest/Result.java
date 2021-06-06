@@ -7,7 +7,7 @@ import org.litepal.crud.LitePalSupport;
 
 import java.util.List;
 
-class Result extends LitePalSupport implements Parcelable {
+public class Result extends LitePalSupport implements Parcelable {
     public static final Creator<Result> CREATOR = new Creator<Result>() {
         @Override
         public Result createFromParcel(Parcel in) {
@@ -23,7 +23,7 @@ class Result extends LitePalSupport implements Parcelable {
     private List<String> correctnessList;
     private Long id;
 
-    Result() {
+    public Result() {
     }
 
     protected Result(Parcel in) {

@@ -2,11 +2,14 @@ package com.xfq.easytest
 
 import android.app.Application
 import cn.leancloud.AVOSCloud
+import com.xfq.easytest.util.MyClass
 import org.litepal.LitePal
 
-class ModulesInit : Application() {
+class App : Application() {
+
     override fun onCreate() {
         super.onCreate()
+
         AVOSCloud.initialize(
             this,
             "1KbhNSxDBKNOvAiGQEJqPE6B-gzGzoHsz",

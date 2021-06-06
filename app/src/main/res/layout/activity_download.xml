@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DownloadActivity">
+    tools:context=".activity.DownloadActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
@@ -16,7 +16,7 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
-            style="@style/ToolbarTheme"
+            style="@style/ToolbarStyle"
             app:title="@string/download_resources" />
 
     </com.google.android.material.appbar.AppBarLayout>

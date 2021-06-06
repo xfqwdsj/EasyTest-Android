@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
     <color name="colorTestCorrect">#60FF60</color>
     <color name="colorTestWrong">#FF6060</color>
     <color name="colorTestHalf">#FFFF60</color>
+    <color name="color_primary_light">@color/material_blue_600</color>
+    <color name="color_primary_dark">@color/material_blue_300</color>
+    <color name="color_primary">@color/color_primary_light</color>
 </resources>

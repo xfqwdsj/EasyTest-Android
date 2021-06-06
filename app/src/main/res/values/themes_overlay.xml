@@ -14,21 +14,14 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with LSPosed.  If not, see <https://www.gnu.org/licenses/>.
   ~
-  ~ Copyright (C) 2020 EdXposed Contributors
   ~ Copyright (C) 2021 LSPosed Contributors
   -->
+<resources>
 
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <style name="ThemeOverlay" />
 
-    <string-array name="theme_texts" translatable="false">
-        <item>@string/dark_theme_off</item>
-        <item>@string/dark_theme_on</item>
-        <item>@string/dark_theme_follow_system</item>
-    </string-array>
-
-    <string-array name="theme_values" translatable="false">
-        <item>MODE_NIGHT_NO</item>
-        <item>MODE_NIGHT_YES</item>
-        <item>MODE_NIGHT_FOLLOW_SYSTEM</item>
-    </string-array>
+    <style name="ThemeOverlay.Black">
+        <item name="android:colorPrimaryDark">@android:color/black</item>
+        <item name="android:colorBackground">@android:color/black</item>
+    </style>
 </resources>

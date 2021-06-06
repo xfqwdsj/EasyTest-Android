@@ -1,4 +1,4 @@
-package com.xfq.easytest
+package com.xfq.easytest.util
 
 import android.content.Context
 import android.content.Intent
@@ -11,6 +11,9 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat.startActivity
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
+import com.xfq.easytest.QuestionBank
+import com.xfq.easytest.R
+import com.xfq.easytest.activity.SelectQuestionBankActivity
 
 class QuestionBankAdapter(
     private val mList: MutableList<QuestionBank>,

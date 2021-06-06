@@ -1,4 +1,4 @@
-package com.xfq.easytest
+package com.xfq.easytest.util
 
 import android.app.Activity
 

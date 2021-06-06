@@ -1,5 +1,6 @@
-package com.xfq.easytest
+package com.xfq.easytest.activity
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -7,40 +8,36 @@ import android.view.MenuItem
 import android.view.View
 import android.webkit.WebView
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.WindowCompat
 import androidx.preference.PreferenceManager
 import cn.leancloud.AVUser
-import com.google.android.material.appbar.MaterialToolbar
 import com.xfq.bottomdialog.BottomDialog
-import com.xfq.easytest.MyClass.INSET_TOP
-import com.xfq.easytest.MyClass.setInset
+import com.xfq.easytest.R
+import com.xfq.easytest.activity.base.BaseActivity
 import com.xfq.easytest.databinding.ActivityMainBinding
+import com.xfq.easytest.databinding.LayoutMainHeaderBinding
 import okhttp3.*
 import org.litepal.LitePal
 import java.io.IOException
 import java.net.URL
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
+    private lateinit var headerBinding: LayoutMainHeaderBinding
     private var headerView: View? = null
     private var currentUser: AVUser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        headerBinding = LayoutMainHeaderBinding.inflate(layoutInflater)
         setContentView(binding.root)
         createDb()
 
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        setSupportActionBar(binding.toolbar)
+        setAppBar(binding.appbar, binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.appbar.setInset(INSET_TOP)
-        headerView = binding.navigationView.getHeaderView(0)
-        headerView!!.findViewById<MaterialToolbar>(R.id.appbar).setInset(INSET_TOP)
-        val headerToolbar = headerView!!.findViewById<MaterialToolbar>(R.id.toolbar)
-        headerToolbar.inflateMenu(R.menu.drawer_menu)
-        headerToolbar.setOnMenuItemClickListener {
+        binding.navigationView.addHeaderView(headerBinding.root)
+        headerBinding.toolbar.inflateMenu(R.menu.drawer_menu)
+        headerBinding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.account -> {
                     if (currentUser == null) {
@@ -106,16 +103,16 @@ class MainActivity : AppCompatActivity() {
         return false
     }
 
+    @SuppressLint("MissingSuperCall")
     override fun onResume() {
         super.onResume()
-        val headerToolbar = headerView!!.findViewById<MaterialToolbar>(R.id.toolbar)
         currentUser = AVUser.getCurrentUser()
         if (currentUser != null) {
-            headerToolbar.title = currentUser!!.username
-            headerToolbar.menu.findItem(R.id.logout).isVisible = true
+            headerBinding.toolbar.title = currentUser!!.username
+            headerBinding.toolbar.menu.findItem(R.id.logout).isVisible = true
         } else {
-            headerToolbar.setTitle(R.string.app_name)
-            headerToolbar.menu.findItem(R.id.logout).isVisible = false
+            headerBinding.toolbar.setTitle(R.string.app_name)
+            headerBinding.toolbar.menu.findItem(R.id.logout).isVisible = false
         }
     }
 

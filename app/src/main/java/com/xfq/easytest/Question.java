@@ -2,7 +2,7 @@ package com.xfq.easytest;
 
 import java.util.List;
 
-class Question {
+public class Question {
     private Integer type;
     private String question;
     private List<Children> children;
@@ -58,7 +58,7 @@ class Question {
         this.maxSelecting = maxSelecting;
     }
 
-    static class Children {
+    public class Children {
         private String text;
         private Float score;
         private Boolean exactMatch;

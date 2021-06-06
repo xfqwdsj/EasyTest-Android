@@ -29,8 +29,6 @@
     <string name="mwords_result">你的用时：%s 上传？</string>
     <string name="signup_failed">注册失败</string>
     <string name="email">邮箱</string>
-    <string name="write">默写</string>
-    <string name="custom_help">自定义提示字数</string>
     <string name="no_login">未登录</string>
     <string name="no_login_message">登录后，您的默写成果才能上传，但您仍可以将成果保存在本地并随时登录和上传</string>
     <string name="success">成功</string>
@@ -38,7 +36,6 @@
     <string name="error">遇到了错误：%s</string>
     <string name="loading_sources">加载资源</string>
     <string name="result_title">%s 的成果</string>
-    <string name="result_text_uploaded">昵称：%s\n用户名：%s\n默写的单元：%s\n用时：%s\n提示数：%s\n自定义提示：%s\n创建于：%s\n最后一次更新：%s</string>
     <string name="result">结果</string>
     <string name="better_record">你有一个更好的记录</string>
     <string name="copy_id">复制ID</string>
@@ -51,7 +48,6 @@
     <string name="source">源</string>
     <string name="downloaded_files_path">下载的文件存储在外部存储/Android/data/com.xfq.mwords/files</string>
     <string name="custom_source">自定义源</string>
-    <string name="result_text_no_uploaded">默写的单元：%s\n用时：%s\n提示数：%s\n自定义提示：%s\n创建于：%s</string>
     <string name="prompt_all">提示全部字符</string>
     <string name="offline_result">离线成果</string>
     <string name="view_server_data">查看服务器数据</string>
@@ -85,4 +81,9 @@
     <string name="change_it">换一个</string>
     <string name="not_found">不存在</string>
     <string name="refresh">刷新</string>
+    <string name="theme">主题</string>
+    <string name="theme_color">主题颜色</string>
+    <string name="theme_color_summary">应用中最常见的颜色</string>
+    <string name="black_dark_theme">黑色主题</string>
+    <string name="black_dark_theme_summary">当深色主题启用时使用纯黑色主题</string>
 </resources>

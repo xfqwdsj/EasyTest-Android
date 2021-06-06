@@ -7,21 +7,20 @@
     app:consumeSystemWindowsInsets="start|end"
     app:edgeToEdge="true"
     app:fitsSystemWindowsInsets="start|end"
-    tools:context="com.xfq.easytest.TestActivity">
+    tools:context="com.xfq.easytest.activity.TestActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <rikka.material.widget.AppBarLayout
         android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/AppBarStyle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.appbar.MaterialToolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            style="@style/ToolbarTheme"
+            style="@style/ToolbarStyle"
             app:title="@string/test" />
-    </com.google.android.material.appbar.AppBarLayout>
+    </rikka.material.widget.AppBarLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/start"
@@ -56,9 +55,7 @@
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </androidx.viewpager.widget.ViewPager>
+            android:layout_height="match_parent" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

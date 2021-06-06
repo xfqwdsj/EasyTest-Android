@@ -28,8 +28,6 @@
     <string name="mwords_result">Your time: %s Upload?</string>
     <string name="signup_failed">Signup failed</string>
     <string name="email">Email</string>
-    <string name="write">Write</string>
-    <string name="custom_help">Custom prompt word count</string>
     <string name="no_login">Not logged in</string>
     <string name="no_login_message">After logging in, you can continue to write online, but you can still continue to write silently without logging in</string>
     <string name="success">Success</string>
@@ -37,7 +35,6 @@
     <string name="error">Encountered an error: %s</string>
     <string name="loading_sources">Loading sources</string>
     <string name="result_title">%s\' s result</string>
-    <string name="result_text_uploaded">Nickname: %s\nUsername: %s\nWried unit: %s\nTime: %s\nHelp count: %s\nCustom help: %s\nCreated at: %s\nLatest update: %s</string>
     <string name="result">Result</string>
     <string name="better_record">You have a better record</string>
     <string name="copy_id">Copy ID</string>
@@ -50,7 +47,6 @@
     <string name="source">Source</string>
     <string name="downloaded_files_path">The downloaded files are stored in external storage/Android/data/com.xfq.mwords/files/</string>
     <string name="custom_source">Custom source</string>
-    <string name="result_text_no_uploaded">Wried unit: %s\nTime: %s\nHelp count: %s\nCustom help: %s\nCreated at: %s</string>
     <string name="prompt_all">Prompt for all characters</string>
     <string name="offline_result">Offline result</string>
     <string name="view_server_data">View server data</string>
@@ -84,4 +80,9 @@
     <string name="change_it">Change it</string>
     <string name="not_found">Not found</string>
     <string name="refresh">Refresh</string>
+    <string name="theme">Theme</string>
+    <string name="theme_color">Theme Color</string>
+    <string name="theme_color_summary">Color that appears most frequently in the app</string>
+    <string name="black_dark_theme">Black dark theme</string>
+    <string name="black_dark_theme_summary">Use the pure black theme if dark theme is enabled</string>
 </resources>

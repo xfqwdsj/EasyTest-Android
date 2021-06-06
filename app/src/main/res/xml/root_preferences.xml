@@ -1,7 +1,6 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="@string/general">
+    <com.takisoft.preferencex.PreferenceCategory android:title="@string/general">
 
         <EditTextPreference
             android:key="custom_source"
@@ -9,16 +8,25 @@
             android:singleLine="true"
             android:summary="@string/one_per_line"
             android:title="@string/custom_source" />
-    </PreferenceCategory>
-    <PreferenceCategory
-        android:title="@string/write"
-        app:enabled="false">
+    </com.takisoft.preferencex.PreferenceCategory>
 
-        <EditTextPreference
-            android:defaultValue="0"
-            android:key="custom_help"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:title="@string/custom_help" />
-    </PreferenceCategory>
+    <com.takisoft.preferencex.PreferenceCategory android:title="@string/theme">
+        <com.xfq.easytest.util.ThemeColorPreference
+            android:defaultValue=""
+            android:dialogTitle="@string/theme_color"
+            android:key="theme_color"
+            android:summary="@string/theme_color_summary"
+            android:title="@string/theme_color" />
+        <rikka.preference.SimpleMenuPreference
+            android:defaultValue="MODE_NIGHT_FOLLOW_SYSTEM"
+            android:entries="@array/theme_texts"
+            android:entryValues="@array/theme_values"
+            android:key="dark_theme"
+            android:summary="%s"
+            android:title="@string/dark_theme" />
+        <SwitchPreference
+            android:key="black_dark_theme"
+            android:summary="@string/black_dark_theme_summary"
+            android:title="@string/black_dark_theme" />
+    </com.takisoft.preferencex.PreferenceCategory>
 </PreferenceScreen>
