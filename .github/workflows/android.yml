@@ -22,7 +22,7 @@ jobs:
     - name: Setup Android SDK Tools
       uses: android-actions/setup-android@v2.0.2
     - name: Accept licenses
-      run: sdkmanager --licenses -y
+      run: yes | sdkmanager --licenses
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
