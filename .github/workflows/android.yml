@@ -21,7 +21,7 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: Accept licenses
-      run: yes | sdkmanager --licenses
-    - name: Build with Gradle
-      run: ./gradlew build
+    - name: find
+      run: find / -name "sdkmanager"
+#    - name: Build with Gradle
+#      run: ./gradlew build
