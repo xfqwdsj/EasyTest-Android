@@ -19,11 +19,9 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
 
+    - name: Setup Android SDK Tools
+      uses: android-actions/setup-android@v2.0.2
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: Accept licenses (1/2)
-      run: yes | /usr/local/lib/android/tools/bin/sdkmanager --update
-    - name: Accept licenses (2/2)
-      run: yes| /usr/local/lib/android/tools/bin/sdkmanager --licenses
     - name: Build with Gradle
       run: ./gradlew build
