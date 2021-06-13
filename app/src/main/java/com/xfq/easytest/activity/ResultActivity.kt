@@ -16,7 +16,6 @@ import com.xfq.easytest.databinding.ActivityResultBinding
 import com.xfq.easytest.util.MyClass
 import com.xfq.easytest.util.MyClass.INSET_TOP
 import com.xfq.easytest.util.MyClass.setInset
-import com.xfq.easytest.util.TestPagerAdapter
 import io.noties.markwon.Markwon
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
 import io.noties.markwon.ext.tables.TablePlugin
@@ -266,9 +265,12 @@ class ResultActivity : AppCompatActivity() {
                 }
 
             //viewList.add(view)
+            /*
             binding.viewPager.adapter = TestPagerAdapter(viewList, positionList, this).apply {
                 submitted = true
             }
+
+             */
             binding.tabLayout.setupWithViewPager(binding.viewPager)
         } else {
             finish()

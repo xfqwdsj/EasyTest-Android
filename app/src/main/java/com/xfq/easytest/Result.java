@@ -8,7 +8,7 @@ import org.litepal.crud.LitePalSupport;
 import java.util.List;
 
 public class Result extends LitePalSupport implements Parcelable {
-    public static final Creator<Result> CREATOR = new Creator<Result>() {
+    public static final Creator<Result> CREATOR = new Creator<>() {
         @Override
         public Result createFromParcel(Parcel in) {
             return new Result(in);

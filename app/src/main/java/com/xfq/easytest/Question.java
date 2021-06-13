@@ -58,7 +58,7 @@ public class Question {
         this.maxSelecting = maxSelecting;
     }
 
-    public class Children {
+    public static class Children {
         private String text;
         private Float score;
         private Boolean exactMatch;

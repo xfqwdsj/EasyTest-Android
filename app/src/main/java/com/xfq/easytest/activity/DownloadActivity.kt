@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.blankj.utilcode.util.FileUtils.delete
 import com.blankj.utilcode.util.FileUtils.isFileExists
-import com.blankj.utilcode.util.ZipUtils.unzipFile
 import com.google.android.material.snackbar.Snackbar
 import com.xfq.bottomdialog.EditDialog
 import com.xfq.easytest.R
@@ -101,6 +100,7 @@ class DownloadActivity : AppCompatActivity() {
         val query = DownloadManager.Query()
         downloadId?.let { query.setFilterById(it) }
         val cursor: Cursor? = downloadManager?.query(query)
+        /*
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 when (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
@@ -135,6 +135,8 @@ class DownloadActivity : AppCompatActivity() {
                 }
             }
         }
+
+         */
     }
 
     private fun getFileName(path: String): String? {

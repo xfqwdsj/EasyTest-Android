@@ -1,41 +1,9 @@
 package com.xfq.easytest.activity
 
-import android.content.Intent
-import android.content.SharedPreferences
-import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.MenuItem
-import android.view.View
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemSelectedListener
-import android.widget.ArrayAdapter
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.WindowCompat
-import androidx.preference.PreferenceManager
-import cn.leancloud.AVException
-import cn.leancloud.AVObject
-import cn.leancloud.AVUser
-import com.alibaba.fastjson.JSON
-import com.xfq.bottomdialog.BottomDialog
-import com.xfq.easytest.MyUnit
-import com.xfq.easytest.R
-import com.xfq.easytest.Word
-import com.xfq.easytest.databinding.ActivityMwordsBinding
-import com.xfq.easytest.util.MyClass.INSET_TOP
-import com.xfq.easytest.util.MyClass.getResString
-import com.xfq.easytest.util.MyClass.setInset
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
-import kotlinx.coroutines.*
-import okhttp3.*
-import java.io.IOException
-import java.util.*
-import java.util.regex.Pattern
-import kotlin.properties.Delegates
 
 class MwordsActivity : AppCompatActivity() {
+    /*
     private lateinit var binding: ActivityMwordsBinding
     private lateinit var sharedPreferences: SharedPreferences
     private var customHelp by Delegates.notNull<Int>()
@@ -67,7 +35,7 @@ class MwordsActivity : AppCompatActivity() {
 
     private fun getList() {
         val dialog = BottomDialog().create(this@MwordsActivity).apply {
-            setTitle("${getResString(R.string.loading_sources)} 1/2")
+            title = "${getResString(R.string.loading_sources)} 1/2"
             setContent(R.string.please_wait)
             setCancelAble(false)
             show()
@@ -84,7 +52,7 @@ class MwordsActivity : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                val data = response.body?.string()
+                val data = response.body.string()
                 dialog.close()
                 if (data != null) {
                     val json = JSON.parseArray(data, MyUnit::class.java)
@@ -128,7 +96,7 @@ class MwordsActivity : AppCompatActivity() {
         help = 0
         findViewById<TextView>(R.id.help).text = help.toString()
         val dialog = BottomDialog().create(this@MwordsActivity).apply {
-            setTitle("${getResString(R.string.loading_sources)} 2/2")
+            title = "${getResString(R.string.loading_sources)} 2/2"
             setContent(R.string.please_wait)
             setCancelAble(false)
             show()
@@ -142,7 +110,7 @@ class MwordsActivity : AppCompatActivity() {
                         .url(url)
                         .build()
                     val response = client.newCall(request).execute()
-                    words = response.body?.string()
+                    words = response.body.string()
                     if (words != null) {
                         index = 0
                         parseWordsXml(words!!)
@@ -327,7 +295,7 @@ class MwordsActivity : AppCompatActivity() {
                     val code = error.message?.substring(
                         error.message!!.indexOf("(") + 1,
                         error.message!!.indexOf(")")
-                    )?.toInt()
+                    ).toInt()
                     val message = error.message?.substring(
                         error.message!!.indexOf("[") + 1,
                         error.message!!.indexOf("]")
@@ -584,4 +552,6 @@ class MwordsActivity : AppCompatActivity() {
         super.onDestroy()
         stopTimer()
     }
+
+     */
 }

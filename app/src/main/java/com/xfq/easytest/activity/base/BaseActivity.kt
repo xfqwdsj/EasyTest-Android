@@ -1,5 +1,6 @@
 package com.xfq.easytest.activity.base
 
+import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.content.res.Resources.Theme
 import android.graphics.Color
@@ -19,6 +20,7 @@ open class BaseActivity : MaterialActivity() {
         return ThemeUtil.getColorTheme() + ThemeUtil.getNightTheme(this)
     }
 
+    @SuppressLint("MissingSuperCall")
     override fun onApplyTranslucentSystemBars() {
         super.onApplyTranslucentSystemBars()
         window.statusBarColor = Color.TRANSPARENT

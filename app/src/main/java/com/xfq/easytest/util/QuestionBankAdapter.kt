@@ -2,7 +2,7 @@ package com.xfq.easytest.util
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.xfq.easytest.QuestionBank
 import com.xfq.easytest.R
 import com.xfq.easytest.activity.SelectQuestionBankActivity
+import rikka.core.res.resolveColor
 
 class QuestionBankAdapter(
     private val mList: MutableList<QuestionBank>,
@@ -60,16 +61,19 @@ class QuestionBankAdapter(
                 .rotation(90F).start()
         }
          */
+        val typedValue = TypedValue()
+        mContext.theme.resolveAttribute(R.attr.colorControlNormal, typedValue, true)
+        val colorControl = mContext.theme.resolveColor(R.attr.colorOnBackground)
         if (item.children.isEmpty()) {
             itemView.findViewById<ImageView>(R.id.imageView).apply {
                 setImageResource(R.drawable.ic_baseline_book_24)
-                setColorFilter(Color.BLACK)
+                setColorFilter(colorControl)
             }
             itemView.setOnClickListener { mClickListener(item) }
         } else {
             itemView.findViewById<ImageView>(R.id.imageView).apply {
                 setImageResource(R.drawable.ic_baseline_folder_24)
-                setColorFilter(Color.BLACK)
+                setColorFilter(colorControl)
             }
             itemView.setOnClickListener {
                 val urlList = PreferenceManager.getDefaultSharedPreferences(mContext)

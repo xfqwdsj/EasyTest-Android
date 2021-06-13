@@ -159,6 +159,7 @@ public class ThemeUtil {
         MATERIAL_BLUE_GREY(R.color.material_blue_grey);
 
         @ColorRes
+        final
         int resourceId;
 
         CustomThemeColors(@ColorRes int resourceId) {
