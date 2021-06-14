@@ -1,30 +1,9 @@
 package com.xfq.easytest.activity
 
-import android.os.Bundle
-import android.util.TypedValue
-import android.view.*
-import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.WindowCompat
-import com.alibaba.fastjson.JSON
-import com.google.android.flexbox.FlexboxLayout
-import com.google.android.material.card.MaterialCardView
-import com.google.android.material.checkbox.MaterialCheckBox
-import com.google.android.material.textfield.TextInputEditText
-import com.xfq.easytest.*
-import com.xfq.easytest.databinding.ActivityResultBinding
-import com.xfq.easytest.util.MyClass
-import com.xfq.easytest.util.MyClass.INSET_TOP
-import com.xfq.easytest.util.MyClass.setInset
-import io.noties.markwon.Markwon
-import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
-import io.noties.markwon.ext.tables.TablePlugin
-import io.noties.markwon.ext.tasklist.TaskListPlugin
-import io.noties.markwon.html.HtmlPlugin
-import io.noties.markwon.image.ImagesPlugin
-import io.noties.markwon.linkify.LinkifyPlugin
 
 class ResultActivity : AppCompatActivity() {
+    /*
     private lateinit var binding: ActivityResultBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -286,4 +265,6 @@ class ResultActivity : AppCompatActivity() {
         }
         return false
     }
+
+     */
 }
