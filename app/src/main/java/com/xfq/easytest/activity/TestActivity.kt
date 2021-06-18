@@ -621,11 +621,7 @@ class TestActivity : BaseActivity() {
                                         ConstraintSet().apply {
                                             clone(viewList[questionIndex].findViewById<ConstraintLayout>(R.id.constraint))
                                             connect(
-                                                R.id.answerLayout,
-                                                ConstraintSet.TOP,
-                                                R.id.editGroup,
-                                                ConstraintSet.BOTTOM,
-                                                dip2PxI(8F)
+                                                R.id.answerLayout, ConstraintSet.TOP, R.id.childrenGroup, ConstraintSet.BOTTOM, dip2PxI(8F)
                                             )
                                             applyTo(viewList[questionIndex].findViewById(R.id.constraint))
                                         }
