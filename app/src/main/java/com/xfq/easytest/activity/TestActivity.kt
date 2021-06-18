@@ -197,7 +197,7 @@ class TestActivity : BaseActivity() {
                         view.findViewById<LinearLayout>(R.id.childrenGroup)
                             .addView(MaterialCardView(this).apply {
                                 layoutParams = FrameLayout.LayoutParams(
-                                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                                    ViewGroup.LayoutParams.MATCH_PARENT,
                                     ViewGroup.LayoutParams.WRAP_CONTENT
                                 ).apply {
                                     if (i != 0) {
@@ -208,10 +208,9 @@ class TestActivity : BaseActivity() {
                                 cardElevation = 0F
                                 addView(TextInputEditText(this@TestActivity).apply {
                                     hint = bank[i]
-                                    minEms = 5
                                     gravity = Gravity.CENTER
                                     layoutParams = ViewGroup.LayoutParams(
-                                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                                        ViewGroup.LayoutParams.MATCH_PARENT,
                                         ViewGroup.LayoutParams.WRAP_CONTENT
                                     )
                                     inputType = InputType.TYPE_CLASS_TEXT
@@ -709,13 +708,7 @@ class TestActivity : BaseActivity() {
                                             .addView(layout)
                                         ConstraintSet().apply {
                                             clone(viewList[questionIndex].findViewById<ConstraintLayout>(R.id.constraint))
-                                            connect(
-                                                R.id.answerLayout,
-                                                ConstraintSet.TOP,
-                                                R.id.childrenGroup,
-                                                ConstraintSet.BOTTOM,
-                                                dip2PxI(8F)
-                                            )
+                                            connect(R.id.answerLayout, ConstraintSet.TOP, R.id.childrenGroup, ConstraintSet.BOTTOM, dip2PxI(8F))
                                             applyTo(viewList[questionIndex].findViewById(R.id.constraint))
                                         }
                                         if (!hasScore) {
