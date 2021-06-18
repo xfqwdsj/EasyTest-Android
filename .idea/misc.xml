@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/androidproject/MWords/app/src/main/res/drawable/ic_baseline_book_24.xml" value="0.20885416666666667" />
         <entry key="..\:/androidproject/MWords/app/src/main/res/drawable/ic_baseline_cloud_download_24.xml" value="0.20885416666666667" />
         <entry key="..\:/androidproject/MWords/app/src/main/res/drawable/ic_baseline_done_24.xml" value="0.20885416666666667" />
         <entry key="..\:/androidproject/MWords/app/src/main/res/drawable/ic_baseline_folder_24.xml" value="0.20885416666666667" />
@@ -10,8 +11,12 @@
         <entry key="..\:/androidproject/MWords/app/src/main/res/drawable/ic_baseline_refresh_24.xml" value="0.20885416666666667" />
         <entry key="..\:/androidproject/MWords/app/src/main/res/drawable/ic_baseline_school_24.xml" value="0.20885416666666667" />
         <entry key="..\:/androidproject/MWords/app/src/main/res/drawable/ic_launcher_background.xml" value="0.20885416666666667" />
+        <entry key="..\:/androidproject/MWords/app/src/main/res/layout/activity_main.xml" value="0.5" />
+        <entry key="..\:/androidproject/MWords/app/src/main/res/layout/activity_test.xml" value="0.15" />
         <entry key="..\:/androidproject/MWords/app/src/main/res/layout/layout_answer.xml" value="0.16168478260869565" />
         <entry key="..\:/androidproject/MWords/app/src/main/res/layout/layout_for_test_single_choose.xml" value="0.16168478260869565" />
+        <entry key="..\:/androidproject/MWords/app/src/main/res/layout/layout_nested_scroll_view.xml" value="0.19270833333333334" />
+        <entry key="..\:/androidproject/MWords/app/src/main/res/layout/layout_question_bank_item.xml" value="0.75" />
         <entry key="..\:/androidproject/MWords/app/src/main/res/layout/layout_test_fill.xml" value="0.16168478260869565" />
         <entry key="..\:/androidproject/MWords/app/src/main/res/layout/layout_test_general.xml" value="0.16168478260869565" />
         <entry key="..\:/androidproject/MWords/app/src/main/res/layout/layout_test_result.xml" value="0.16168478260869565" />

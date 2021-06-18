@@ -36,10 +36,10 @@
     <string name="error">遇到了错误：%s</string>
     <string name="loading_sources">加载资源</string>
     <string name="result_title">%s 的成果</string>
-    <string name="result">结果</string>
+    <string name="result">成果</string>
     <string name="better_record">你有一个更好的记录</string>
     <string name="copy_id">复制ID</string>
-    <string name="query_by_id">通过ID查询结果</string>
+    <string name="result_query_description">查看我的成果</string>
     <string name="data_id">数据ID</string>
     <string name="download_resources">下载资源</string>
     <string name="status">当前状态：%s</string>
@@ -86,4 +86,8 @@
     <string name="theme_color_summary">应用中最常见的颜色</string>
     <string name="black_dark_theme">黑色主题</string>
     <string name="black_dark_theme_summary">当深色主题启用时使用纯黑色主题</string>
+    <string name="start_test_description">开始一段旅程</string>
+    <string name="account_description_no_logged_in">未登录</string>
+    <string name="account_description">查看我的账户</string>
+    <string name="coming_soon">即将开放</string>
 </resources>

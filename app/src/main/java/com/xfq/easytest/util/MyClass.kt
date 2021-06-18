@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -17,6 +18,14 @@ object MyClass {
     const val INSET_BOTTOM: Int = 1
     const val INSET_LEFT: Int = 2
     const val INSET_RIGHT: Int = 3
+
+    fun ViewGroup.MarginLayoutParams.setMarginTop(size: Int) {
+        setMargins(leftMargin, size, rightMargin, bottomMargin)
+    }
+
+    fun ViewGroup.MarginLayoutParams.setMarginBottom(size: Int) {
+        setMargins(leftMargin, topMargin, rightMargin, size)
+    }
 
     fun getResString(id: Int): String {
         return context!!.resources!!.getString(id)

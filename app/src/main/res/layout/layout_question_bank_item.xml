@@ -18,6 +18,7 @@
             android:layout_height="36dp"
             android:layout_marginStart="8dp"
             android:contentDescription="@string/question_bank_icon"
+            android:tint="?colorOnBackground"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

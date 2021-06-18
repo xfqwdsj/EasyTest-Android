@@ -38,7 +38,7 @@
     <string name="result">Result</string>
     <string name="better_record">You have a better record</string>
     <string name="copy_id">Copy ID</string>
-    <string name="query_by_id">Query result by ID</string>
+    <string name="result_query_description">View my results</string>
     <string name="data_id">Data ID</string>
     <string name="download_resources">Download resources</string>
     <string name="status">Current status: %s</string>
@@ -85,4 +85,8 @@
     <string name="theme_color_summary">Color that appears most frequently in the app</string>
     <string name="black_dark_theme">Black dark theme</string>
     <string name="black_dark_theme_summary">Use the pure black theme if dark theme is enabled</string>
+    <string name="start_test_description">Start a journey</string>
+    <string name="account_description_no_logged_in">No logged in</string>
+    <string name="account_description">View my account</string>
+    <string name="coming_soon">Coming soon</string>
 </resources>

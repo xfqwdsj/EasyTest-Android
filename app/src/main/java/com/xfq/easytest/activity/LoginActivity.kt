@@ -1,32 +1,29 @@
 package com.xfq.easytest.activity
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.InputType
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.WindowCompat
 import cn.leancloud.AVUser
 import com.xfq.bottomdialog.BottomDialog
 import com.xfq.bottomdialog.EditDialog
 import com.xfq.easytest.R
+import com.xfq.easytest.activity.base.BaseActivity
 import com.xfq.easytest.databinding.ActivityLoginBinding
-import com.xfq.easytest.util.MyClass.INSET_TOP
 import com.xfq.easytest.util.MyClass.getResString
-import com.xfq.easytest.util.MyClass.setInset
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseActivity() {
     private lateinit var binding: ActivityLoginBinding
 
+    @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        setSupportActionBar(binding.toolbar)
+        setAppBar(binding.appbar, binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.toolbar.setInset(INSET_TOP)
         binding.login.setOnClickListener {
             if (binding.username.text.toString() != "" && binding.password.text.toString() != "") {
                 AVUser.logIn(binding.username.text.toString(), binding.password.text.toString())

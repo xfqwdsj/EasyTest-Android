@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
+import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.webkit.WebView
@@ -15,7 +17,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.transition.TransitionManager
 import androidx.viewpager.widget.ViewPager
 import com.alibaba.fastjson.JSON
-import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.chip.Chip
@@ -30,11 +31,12 @@ import com.xfq.easytest.R
 import com.xfq.easytest.Result
 import com.xfq.easytest.activity.base.BaseActivity
 import com.xfq.easytest.databinding.ActivityTestBinding
+import com.xfq.easytest.databinding.LayoutNestedScrollViewBinding
 import com.xfq.easytest.util.ActivityMap
 import com.xfq.easytest.util.MyClass.dip2PxI
 import com.xfq.easytest.util.MyClass.getResColor
 import com.xfq.easytest.util.MyClass.getResString
-import com.xfq.easytest.util.MyClass.requestApplyInsetsWhenAttached
+import com.xfq.easytest.util.MyClass.setMarginTop
 import com.xfq.easytest.util.TestPagerAdapter
 import io.noties.markwon.Markwon
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
@@ -44,6 +46,8 @@ import io.noties.markwon.html.HtmlPlugin
 import io.noties.markwon.image.ImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import okhttp3.*
+import rikka.core.res.resolveColor
+import rikka.widget.borderview.BorderNestedScrollView
 import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
@@ -125,7 +129,7 @@ class TestActivity : BaseActivity() {
             val view: View?
             when (question.type) {
                 1 -> {  //填空题
-                    view = layoutInflater.inflate(R.layout.layout_test_fill, ScrollView(this))
+                    view = layoutInflater.inflate(R.layout.layout_test_group, LayoutNestedScrollViewBinding.inflate(layoutInflater).root)
                     var questionText = ""  //预留即将显示的题目文本
                     var escaped = false  //转义模式
                     var isBank = false  //“空”模式
@@ -190,22 +194,18 @@ class TestActivity : BaseActivity() {
                     }
                     markwon.setMarkdown(view.findViewById(R.id.question), questionText)
                     for (i in bank.indices) {  //遍历“空”
-                        view.findViewById<FlexboxLayout>(R.id.editGroup)
+                        view.findViewById<LinearLayout>(R.id.childrenGroup)
                             .addView(MaterialCardView(this).apply {
                                 layoutParams = FrameLayout.LayoutParams(
                                     ViewGroup.LayoutParams.WRAP_CONTENT,
                                     ViewGroup.LayoutParams.WRAP_CONTENT
                                 ).apply {
-                                    setMargins(
-                                        dip2PxI(5F),
-                                        dip2PxI(5F),
-                                        dip2PxI(5F),
-                                        dip2PxI(5F)
-                                    )
+                                    if (i != 0) {
+                                        setMarginTop(dip2PxI(5F))
+                                    }
                                 }
                                 id = i
                                 cardElevation = 0F
-                                background = null
                                 addView(TextInputEditText(this@TestActivity).apply {
                                     hint = bank[i]
                                     minEms = 5
@@ -214,6 +214,7 @@ class TestActivity : BaseActivity() {
                                         ViewGroup.LayoutParams.WRAP_CONTENT,
                                         ViewGroup.LayoutParams.WRAP_CONTENT
                                     )
+                                    inputType = InputType.TYPE_CLASS_TEXT
                                     setText(userAnswerList[position].userAnswer[i])
                                     addTextChangedListener(object : TextWatcher {
                                         override fun afterTextChanged(s: Editable?) {
@@ -229,7 +230,7 @@ class TestActivity : BaseActivity() {
                     }
                 }
                 2 -> {
-                    view = layoutInflater.inflate(R.layout.layout_test_choose, ScrollView(this))
+                    view = layoutInflater.inflate(R.layout.layout_test_group, LayoutNestedScrollViewBinding.inflate(layoutInflater).root)
                     markwon.setMarkdown(view.findViewById(R.id.question), question.question)
                     val buttonList: MutableList<CheckBox> = ArrayList()
                     for (i in question.children.indices) {
@@ -260,22 +261,18 @@ class TestActivity : BaseActivity() {
                             }
                         }
                         buttonList.add(button)
-                        view.findViewById<LinearLayout>(R.id.chooseGroup)
+                        view.findViewById<LinearLayout>(R.id.childrenGroup)
                             .addView(MaterialCardView(this).apply {
                                 layoutParams = FrameLayout.LayoutParams(
                                     ViewGroup.LayoutParams.MATCH_PARENT,
                                     ViewGroup.LayoutParams.WRAP_CONTENT
                                 ).apply {
-                                    setMargins(
-                                        dip2PxI(5F),
-                                        dip2PxI(5F),
-                                        dip2PxI(5F),
-                                        dip2PxI(5F)
-                                    )
+                                    if (i != 0) {
+                                        setMarginTop(dip2PxI(5F))
+                                    }
                                 }
                                 id = i
                                 cardElevation = 0F
-                                background = null
                                 setContentPadding(
                                     dip2PxI(5F),
                                     dip2PxI(5F),
@@ -287,7 +284,7 @@ class TestActivity : BaseActivity() {
                     }
                 }
                 3 -> {
-                    view = layoutInflater.inflate(R.layout.layout_test_choose, ScrollView(this), true)
+                    view = layoutInflater.inflate(R.layout.layout_test_group, LayoutNestedScrollViewBinding.inflate(layoutInflater).root)
                     markwon.setMarkdown(view.findViewById(R.id.question), question.question)
                     val buttonList: MutableList<CheckBox> = ArrayList()
                     for (i in question.children.indices) {
@@ -323,22 +320,18 @@ class TestActivity : BaseActivity() {
                             }
                         }
                         buttonList.add(button)
-                        view.findViewById<LinearLayout>(R.id.chooseGroup)
+                        view.findViewById<LinearLayout>(R.id.childrenGroup)
                             .addView(MaterialCardView(this).apply {
                                 layoutParams = FrameLayout.LayoutParams(
                                     ViewGroup.LayoutParams.MATCH_PARENT,
                                     ViewGroup.LayoutParams.WRAP_CONTENT
                                 ).apply {
-                                    setMargins(
-                                        dip2PxI(5F),
-                                        dip2PxI(5F),
-                                        dip2PxI(5F),
-                                        dip2PxI(5F)
-                                    )
+                                    if (i != 0) {
+                                        setMarginTop(dip2PxI(5F))
+                                    }
                                 }
                                 id = i
                                 cardElevation = 0F
-                                background = null
                                 setContentPadding(
                                     dip2PxI(5F),
                                     dip2PxI(5F),
@@ -350,7 +343,7 @@ class TestActivity : BaseActivity() {
                     }
                 }
                 4 -> {
-                    view = layoutInflater.inflate(R.layout.layout_test_general, ScrollView(this))
+                    view = layoutInflater.inflate(R.layout.layout_test_general, LayoutNestedScrollViewBinding.inflate(layoutInflater).root)
                     markwon.setMarkdown(view.findViewById(R.id.question), question.question)
                     view.findViewById<EditText>(R.id.edit).apply {
                         setText(userAnswerList[position].userAnswer[0])
@@ -381,32 +374,40 @@ class TestActivity : BaseActivity() {
         }
         adapter = TestPagerAdapter(viewList, positionList, this)
         binding.viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                viewList[position].requestApplyInsetsWhenAttached()
+            private var currentPosition: Int? = null
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                if (currentPosition == null) currentPosition = position
+                val newPosition: Int = if (position < currentPosition!!) position else if (positionOffsetPixels == 0) position else position + 1
+                Log.i("EasyTest", "[onPageScrolled] position: $position; currentPosition: $currentPosition; newPosition: $newPosition")
+                (viewList[currentPosition!!] as BorderNestedScrollView).borderVisibilityChangedListener = null
+                (viewList[newPosition] as BorderNestedScrollView).setBorderVisibilityChangedListener { top, _, _, _ ->
+                    binding.appbar.isRaised = !top
+                }
+                binding.appbar.isRaised = !(viewList[newPosition] as BorderNestedScrollView).isShowingTopBorder || !(viewList[currentPosition!!] as BorderNestedScrollView).isShowingTopBorder
             }
 
-            override fun onPageSelected(position: Int) {}
+            override fun onPageSelected(position: Int) {
+                currentPosition = position
+                binding.appbar.isRaised = !(viewList[position] as BorderNestedScrollView).isShowingTopBorder
+            }
 
             override fun onPageScrollStateChanged(state: Int) {}
         })
         binding.viewPager.adapter = adapter
-        binding.tabLayout.setupWithViewPager(binding.viewPager)
+        //binding.tabLayout.setupWithViewPager(binding.viewPager)
         binding.start.setOnClickListener {
             val transform = MaterialContainerTransform().apply {
                 setPathMotion(MaterialArcMotion())
                 scrimColor = Color.TRANSPARENT
                 startView = binding.start
-                endView = binding.testContainer
-                addTarget(binding.testContainer)
+                endView = binding.viewPager
+                addTarget(binding.viewPager)
+                endContainerColor = theme.resolveColor(android.R.attr.colorBackground)
             }
             TransitionManager.beginDelayedTransition(binding.root, transform)
-            binding.testContainer.visibility = View.VISIBLE
-            binding.start.visibility = View.GONE
             binding.root.removeView(binding.start)
+            binding.viewPager.visibility = View.VISIBLE
             binding.toolbar.menu.findItem(R.id.submit).isVisible = true
         }
         binding.start.isEnabled = true
@@ -427,7 +428,7 @@ class TestActivity : BaseActivity() {
             .removeHeader("User-Agent")
             .addHeader("User-Agent", WebView(this).settings.userAgentString)
             .build()
-        val view = layoutInflater.inflate(R.layout.layout_test_result, ScrollView(this@TestActivity), true)
+        val view = layoutInflater.inflate(R.layout.layout_test_result, LayoutNestedScrollViewBinding.inflate(layoutInflater).root)
         OkHttpClient().newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 runOnUiThread {
@@ -653,7 +654,7 @@ class TestActivity : BaseActivity() {
                                                     connect(
                                                         R.id.answerLayout,
                                                         ConstraintSet.TOP,
-                                                        R.id.chooseGroup,
+                                                        R.id.childrenGroup,
                                                         ConstraintSet.BOTTOM,
                                                         dip2PxI(8F)
                                                     )
@@ -715,7 +716,7 @@ class TestActivity : BaseActivity() {
                                             connect(
                                                 R.id.answerLayout,
                                                 ConstraintSet.TOP,
-                                                R.id.chooseGroup,
+                                                R.id.childrenGroup,
                                                 ConstraintSet.BOTTOM,
                                                 dip2PxI(8F)
                                             )
@@ -736,8 +737,8 @@ class TestActivity : BaseActivity() {
                                     4 -> {
                                         val cardView = viewList[questionIndex].findViewById<CardView>(R.id.cardView)
                                         cardView.getChildAt(0).isEnabled = false
-                                        (cardView.getChildAt(0) as EditText).isClickable = false
-                                        (cardView.getChildAt(0) as EditText).isLongClickable = false
+                                        cardView.getChildAt(0).isClickable = false
+                                        cardView.getChildAt(0).isLongClickable = false
                                         var correctness = 2
                                         for (child in online.children) {
                                             val correctAnswer = child.text
@@ -746,27 +747,15 @@ class TestActivity : BaseActivity() {
                                                     userAnswerList[questionIndex].userAnswer[0] == correctAnswer -> {
                                                         correctness = 1
                                                         score += online.children[0].score
-                                                        cardView.setCardBackgroundColor(
-                                                            getResColor(
-                                                                R.color.colorTestCorrect
-                                                            )
-                                                        )
+                                                        cardView.setCardBackgroundColor(getResColor(R.color.colorTestCorrect))
                                                     }
                                                     online.children[0].exactMatch == true -> {
                                                         correctness = 2
-                                                        cardView.setCardBackgroundColor(
-                                                            getResColor(
-                                                                R.color.colorTestWrong
-                                                            )
-                                                        )
+                                                        cardView.setCardBackgroundColor(getResColor(R.color.colorTestWrong))
                                                     }
                                                     else -> {
                                                         correctness = 4
-                                                        cardView.setCardBackgroundColor(
-                                                            getResColor(
-                                                                R.color.colorTestHalf
-                                                            )
-                                                        )
+                                                        cardView.setCardBackgroundColor(getResColor(R.color.colorTestHalf))
                                                         cardView.setOnClickListener {
                                                             BottomDialog().create(this@TestActivity)
                                                                 .apply {
@@ -813,15 +802,15 @@ class TestActivity : BaseActivity() {
                                                 }
                                             }
                                         }
-                                        layout.findViewById<TextView>(R.id.answer).text =
-                                            online.children[online.children.indices.random()].text
-                                        layout.findViewById<Button>(R.id.change).visibility =
-                                            View.VISIBLE
-                                        layout.findViewById<Button>(R.id.change)
-                                            .setOnClickListener {
-                                                layout.findViewById<TextView>(R.id.answer).text =
-                                                    online.children[online.children.indices.random()].text
-                                            }
+                                        layout.findViewById<TextView>(R.id.answer).text = online.children[online.children.indices.random()].text
+                                        if (online.children.size > 1) {
+                                            layout.findViewById<Button>(R.id.change).visibility = View.VISIBLE
+                                            layout.findViewById<Button>(R.id.change)
+                                                .setOnClickListener {
+                                                    layout.findViewById<TextView>(R.id.answer).text =
+                                                        online.children[online.children.indices.random()].text
+                                                }
+                                        }
                                         viewList[questionIndex].findViewById<ConstraintLayout>(R.id.constraint)
                                             .addView(layout)
                                         ConstraintSet().apply {

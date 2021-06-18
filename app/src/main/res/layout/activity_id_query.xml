@@ -17,7 +17,7 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             style="@style/ToolbarStyle"
-            app:title="@string/query_by_id" />
+            app:title="@string/result_query_description" />
 
 
     </com.google.android.material.appbar.AppBarLayout>

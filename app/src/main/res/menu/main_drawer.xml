@@ -8,6 +8,6 @@
         <item
             android:id="@+id/query"
             android:icon="@drawable/ic_baseline_playlist_add_check_24"
-            android:title="@string/query_by_id" />
+            android:title="@string/result_query_description" />
     </group>
 </menu>
