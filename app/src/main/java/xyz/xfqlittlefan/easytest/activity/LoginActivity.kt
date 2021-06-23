@@ -5,9 +5,10 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.text.InputType
 import android.view.MenuItem
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import cn.leancloud.AVUser
-import com.xfq.bottomdialog.BottomDialog
-import com.xfq.bottomdialog.EditDialog
+import com.google.android.material.textfield.TextInputEditText
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
 import xyz.xfqlittlefan.easytest.databinding.ActivityLoginBinding
@@ -16,6 +17,7 @@ import xyz.xfqlittlefan.easytest.widget.BlurBehindDialogBuilder
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import xyz.xfqlittlefan.easytest.databinding.LayoutDialogInputBinding
+import xyz.xfqlittlefan.easytest.util.MyClass
 
 class LoginActivity : BaseActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -49,18 +51,19 @@ class LoginActivity : BaseActivity() {
             }
         }
         binding.signup.setOnClickListener {
-            val inputBinding = LayoutDialogInputBinding.inflate(layoutInflater)
-            inputBinding.root.hint = getResString(R.string.email)
-            inputBinding.root.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+            val layout = layoutInflater.inflate(R.layout.layout_dialog_input, LinearLayout(this), false) as LinearLayout
+            val input = layout.getChildAt(0) as TextInputEditText
+            input.hint = getResString(R.string.email)
+            input.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
             BlurBehindDialogBuilder(this)
                 .setTitle(R.string.signup)
-                .setView(inputBinding.root)
+                .setView(layout)
                 .setPositiveButton(android.R.string.ok) { _: DialogInterface, _: Int ->
-                    if (binding.username.text.toString() != "" && binding.password.text.toString() != "" && inputBinding.root.text.toString() != "") {
+                    if (binding.username.text.toString() != "" && binding.password.text.toString() != "" && input.text.toString() != "") {
                         val avUser = AVUser()
                         avUser.username = binding.username.text.toString()
                         avUser.password = binding.password.text.toString()
-                        avUser.email = inputBinding.root.text.toString()
+                        avUser.email = input.text.toString()
                         avUser.signUpInBackground().subscribe(object : Observer<AVUser?> {
                             override fun onSubscribe(disposable: Disposable) {}
                             override fun onNext(t: AVUser) {

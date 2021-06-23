@@ -10,15 +10,14 @@ import android.view.View
 import android.webkit.WebView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alibaba.fastjson.JSON
-import com.xfq.bottomdialog.BottomDialog
+import okhttp3.*
+import rikka.recyclerview.fixEdgeEffect
 import xyz.xfqlittlefan.easytest.QuestionBank
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
 import xyz.xfqlittlefan.easytest.databinding.ActivitySelectQuestionBankBinding
 import xyz.xfqlittlefan.easytest.util.ActivityMap
 import xyz.xfqlittlefan.easytest.util.QuestionBankAdapter
-import okhttp3.*
-import rikka.recyclerview.fixEdgeEffect
 import xyz.xfqlittlefan.easytest.widget.BlurBehindDialogBuilder
 import java.io.IOException
 
@@ -63,7 +62,7 @@ class SelectQuestionBankActivity : BaseActivity() {
                                 .setTitle(R.string.failed)
                                 .setMessage(resources.getString(R.string.error, e))
                                 .setCancelable(false)
-                                .setPositiveButton(android.R.string.ok) { dialogInterface: DialogInterface, i: Int ->
+                                .setPositiveButton(android.R.string.ok) { _: DialogInterface, _: Int ->
                                     finish()
                                 }
                                 .show()

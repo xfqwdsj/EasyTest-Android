@@ -2,7 +2,6 @@ package xyz.xfqlittlefan.easytest.activity
 
 import android.annotation.SuppressLint
 import android.content.DialogInterface
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
@@ -21,8 +20,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.transition.MaterialArcMotion
-import com.google.android.material.transition.MaterialContainerTransform
+import com.google.android.material.transition.MaterialFadeThrough
 import io.noties.markwon.Markwon
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
 import io.noties.markwon.ext.tables.TablePlugin
@@ -31,7 +29,6 @@ import io.noties.markwon.html.HtmlPlugin
 import io.noties.markwon.image.ImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import okhttp3.*
-import rikka.core.res.resolveColor
 import rikka.widget.borderview.BorderNestedScrollView
 import xyz.xfqlittlefan.easytest.Question
 import xyz.xfqlittlefan.easytest.R
@@ -258,20 +255,14 @@ class TestActivity : BaseActivity() {
                     markwon.setMarkdown(view.findViewById(R.id.question), questionText)
                     if (bank.isEmpty()) {
                         view.findViewById<LinearLayout>(R.id.container).addView(MaterialCardView(this).apply {
-                            layoutParams = FrameLayout.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.WRAP_CONTENT
-                            )
+                            layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                             id = 0
                             cardElevation = 0F
                             addView(TextInputEditText(this@TestActivity).apply {
                                 setHint(R.string.your_answer)
-                                gravity = Gravity.TOP and Gravity.START
-                                layoutParams = ViewGroup.LayoutParams(
-                                    ViewGroup.LayoutParams.MATCH_PARENT,
-                                    ViewGroup.LayoutParams.WRAP_CONTENT
-                                )
-                                inputType = InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                                gravity = Gravity.TOP or Gravity.START
+                                layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                                inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
                                 setText(userAnswerList[position].userAnswer[0])
                                 addTextChangedListener(object : TextWatcher {
                                     override fun afterTextChanged(s: Editable?) {
@@ -376,16 +367,9 @@ class TestActivity : BaseActivity() {
         binding.viewPager.adapter = adapter
         operateControls(binding.viewPager.currentItem)
         binding.start.setOnClickListener {
-            val transform = MaterialContainerTransform().apply {
-                setPathMotion(MaterialArcMotion())
-                scrimColor = Color.TRANSPARENT
-                startView = binding.start
-                endView = binding.viewPager
-                addTarget(binding.viewPager)
-                endContainerColor = theme.resolveColor(android.R.attr.colorBackground)
-            }
+            val transform = MaterialFadeThrough()
             TransitionManager.beginDelayedTransition(binding.root, transform)
-            binding.root.removeView(binding.start)
+            binding.start.visibility = View.GONE
             binding.viewPager.visibility = View.VISIBLE
             binding.toolbar.menu.findItem(R.id.previous).isVisible = true
             binding.toolbar.menu.findItem(R.id.next).isVisible = true
@@ -612,22 +596,24 @@ class TestActivity : BaseActivity() {
                                                 else -> {
                                                     cardView.setCardBackgroundColor(getResColor(R.color.colorTestHalf))
                                                     cardView.setOnClickListener {
-                                                        val inputBinding = LayoutDialogInputBinding.inflate(layoutInflater)
-                                                        inputBinding.root.hint = getString(R.string.your_score, maxScore.toString())
-                                                        inputBinding.root.inputType = InputType.TYPE_NUMBER_FLAG_DECIMAL
-                                                        inputBinding.root.addTextChangedListener(object : TextWatcher {
+                                                        val inputLayout = layoutInflater.inflate(R.layout.layout_dialog_input, LinearLayout(this@TestActivity), false) as LinearLayout
+                                                        val input = inputLayout.getChildAt(0) as TextInputEditText
+                                                        input.hint = getString(R.string.your_score, maxScore.toString())
+                                                        input.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+
+                                                        input.addTextChangedListener(object : TextWatcher {
                                                             private var text = ""
                                                             private var selection = 0
                                                             private var record = true
 
                                                             fun set() {
-                                                                inputBinding.root.setText(text)
-                                                                inputBinding.root.setSelection(selection)
+                                                                input.setText(text)
+                                                                input.setSelection(selection)
                                                             }
 
                                                             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                                                                 text = p0.toString()
-                                                                if (record) selection = inputBinding.root.selectionStart else record = true
+                                                                if (record) selection = input.selectionStart else record = true
                                                             }
 
                                                             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -649,9 +635,9 @@ class TestActivity : BaseActivity() {
                                                         })
                                                         BlurBehindDialogBuilder(this@TestActivity)
                                                             .setTitle(R.string.scoring)
-                                                            .setView(inputBinding.root)
+                                                            .setView(inputLayout)
                                                             .setPositiveButton(R.string.correct) { _: DialogInterface, _: Int ->
-                                                                scoreList[questionIndex] += inputBinding.root.text.toString().toFloat()
+                                                                scoreList[questionIndex] += (input.text.toString().toFloatOrNull() ?: 0).toFloat()
                                                                 val questionCorrectnessList = correctnessList[questionIndex].split("")
                                                                 var questionCorrectnessString = ""
                                                                 for (correctnessIndex in 1..(questionCorrectnessList.size - 2)) {
@@ -664,7 +650,6 @@ class TestActivity : BaseActivity() {
                                                                 it.isClickable = false
                                                             }
                                                             .setNegativeButton(R.string.wrong) { _: DialogInterface, _: Int ->
-                                                                inputBinding.root.setText(0)
                                                                 val questionCorrectnessList = correctnessList[questionIndex].split("")
                                                                 var questionCorrectnessString = ""
                                                                 for (correctnessIndex in 1..(questionCorrectnessList.size - 2)) {

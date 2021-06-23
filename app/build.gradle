@@ -11,8 +11,8 @@ android {
         applicationId "xyz.xfqlittlefan.easytest"
         minSdk 23
         targetSdk 30
-        versionCode 8
-        versionName '0.2.4'
+        versionCode 9
+        versionName '0.3.0'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
