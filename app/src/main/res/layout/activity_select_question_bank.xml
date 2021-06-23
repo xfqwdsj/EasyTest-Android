@@ -7,7 +7,7 @@
     app:consumeSystemWindowsInsets="start|end"
     app:edgeToEdge="true"
     app:fitsSystemWindowsInsets="start|end"
-    tools:context=".activity.SelectQuestionBankActivity">
+    tools:context="xyz.xfqlittlefan.easytest.activity.SelectQuestionBankActivity">
 
     <rikka.widget.borderview.BorderRecyclerView
         android:id="@+id/recyclerView"

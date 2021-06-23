@@ -7,7 +7,7 @@
     app:consumeSystemWindowsInsets="start|end"
     app:edgeToEdge="true"
     app:fitsSystemWindowsInsets="start|end"
-    tools:context=".activity.LoginActivity">
+    tools:context="xyz.xfqlittlefan.easytest.activity.LoginActivity">
 
     <rikka.material.widget.AppBarLayout
         android:id="@+id/appbar"

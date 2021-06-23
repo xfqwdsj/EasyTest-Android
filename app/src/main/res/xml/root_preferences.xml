@@ -1,7 +1,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <com.takisoft.preferencex.PreferenceCategory android:title="@string/general">
-
         <EditTextPreference
             android:key="custom_source"
             android:selectAllOnFocus="true"
@@ -11,7 +10,7 @@
     </com.takisoft.preferencex.PreferenceCategory>
 
     <com.takisoft.preferencex.PreferenceCategory android:title="@string/theme">
-        <com.xfq.easytest.util.ThemeColorPreference
+        <xyz.xfqlittlefan.easytest.util.ThemeColorPreference
             android:defaultValue=""
             android:dialogTitle="@string/theme_color"
             android:key="theme_color"
@@ -28,5 +27,9 @@
             android:key="black_dark_theme"
             android:summary="@string/black_dark_theme_summary"
             android:title="@string/black_dark_theme" />
+        <SwitchPreference
+            android:key="enable_blur"
+            android:summary="@string/enable_blur_summary"
+            android:title="@string/enable_blur" />
     </com.takisoft.preferencex.PreferenceCategory>
 </PreferenceScreen>

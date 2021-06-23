@@ -9,7 +9,7 @@
     app:consumeSystemWindowsInsets="start|end"
     app:edgeToEdge="true"
     app:fitsSystemWindowsInsets="start|end"
-    tools:context=".activity.MainActivity">
+    tools:context="xyz.xfqlittlefan.easytest.activity.MainActivity">
 
     <rikka.widget.borderview.BorderNestedScrollView
         android:id="@+id/scroll"
@@ -29,7 +29,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="?actionBarSize">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card1"
@@ -80,7 +81,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="4dp"
-                        android:text="@string/start_test_description"
+                        android:text="@string/start_test_summary"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="?android:attr/textColorPrimaryInverse"
                         android:textSize="12sp"
@@ -200,7 +201,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="2dp"
-                        android:text="@string/account_description_no_logged_in"
+                        android:text="@string/account_summary_no_logged_in"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="@android:color/darker_gray"
                         android:textSize="12sp"

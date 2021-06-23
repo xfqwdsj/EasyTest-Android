@@ -1,5 +1,1 @@
-build/
-debug/
-libs/
-release/
-sampledata/
+/build

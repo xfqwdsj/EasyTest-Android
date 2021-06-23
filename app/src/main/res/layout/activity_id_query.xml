@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.IDQueryActivity">
+    tools:context="xyz.xfqlittlefan.easytest.activity.IDQueryActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"

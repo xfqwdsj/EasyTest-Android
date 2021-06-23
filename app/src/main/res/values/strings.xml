@@ -85,8 +85,14 @@
     <string name="theme_color_summary">Color that appears most frequently in the app</string>
     <string name="black_dark_theme">Black dark theme</string>
     <string name="black_dark_theme_summary">Use the pure black theme if dark theme is enabled</string>
-    <string name="start_test_description">Start a journey</string>
-    <string name="account_description_no_logged_in">No logged in</string>
-    <string name="account_description">View my account</string>
+    <string name="start_test_summary">Start a journey</string>
+    <string name="account_summary_no_logged_in">No logged in</string>
+    <string name="account_summary">View my account</string>
     <string name="coming_soon">Coming soon</string>
+    <string name="enable_blur">Enable blur effect</string>
+    <string name="enable_blur_summary">Allow blur effect to be enabled in some scenes</string>
+    <string name="previous">Previous</string>
+    <string name="ask_exit">Your anser will not be saved</string>
+    <string name="exit">Exit</string>
+    <string name="your_score">Your score (0 ~ %s)</string>
 </resources>
