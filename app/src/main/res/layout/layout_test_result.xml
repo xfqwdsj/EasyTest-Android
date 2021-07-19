@@ -11,6 +11,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:cardCornerRadius="10dp"
         app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,12 +26,9 @@
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="24dp"
-                android:text="@string/score"
-                android:textAppearance="?android:attr/textAppearance"
-                android:textSize="24sp" />
+                android:background="#0D000000"
+                android:padding="5dp"
+                android:text="@string/score" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/resultScoreText"
@@ -61,13 +60,10 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="24dp"
-                android:text="@string/wrong_question"
-                android:textAppearance="?android:attr/textAppearance"
-                android:textSize="24sp" />
+                android:layout_height="match_parent"
+                android:background="#0D000000"
+                android:padding="5dp"
+                android:text="@string/wrong_question" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/resultWrongGroup"
@@ -98,13 +94,10 @@
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="24dp"
-                android:text="@string/no_points"
-                android:textAppearance="?android:attr/textAppearance"
-                android:textSize="24sp" />
+                android:layout_height="match_parent"
+                android:background="#0D000000"
+                android:padding="5dp"
+                android:text="@string/no_points" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/resultNoPointsGroup"
@@ -127,6 +120,7 @@
         android:layout_marginBottom="16dp"
         android:enabled="false"
         android:text="@string/submit"
+        app:cornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

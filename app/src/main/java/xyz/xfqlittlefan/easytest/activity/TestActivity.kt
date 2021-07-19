@@ -35,7 +35,6 @@ import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.Result
 import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
 import xyz.xfqlittlefan.easytest.databinding.ActivityTestBinding
-import xyz.xfqlittlefan.easytest.databinding.LayoutDialogInputBinding
 import xyz.xfqlittlefan.easytest.databinding.LayoutNestedScrollViewBinding
 import xyz.xfqlittlefan.easytest.util.ActivityMap
 import xyz.xfqlittlefan.easytest.util.MyClass.dip2PxI
@@ -431,7 +430,7 @@ class TestActivity : BaseActivity() {
                             "2" -> R.string.wrong
                             "3" -> R.string.half_correct
                             "4" -> R.string.no_points
-                            else -> R.string.unknown
+                            else -> 114514
                         }
                     )
                     scoreText += ")"
@@ -633,15 +632,20 @@ class TestActivity : BaseActivity() {
 
                                                             override fun afterTextChanged(p0: Editable?) {}
                                                         })
-                                                        BlurBehindDialogBuilder(this@TestActivity)
+                                                        BlurBehindDialogBuilder(this@TestActivity)     //赋分窗口
                                                             .setTitle(R.string.scoring)
                                                             .setView(inputLayout)
                                                             .setPositiveButton(R.string.correct) { _: DialogInterface, _: Int ->
-                                                                scoreList[questionIndex] += (input.text.toString().toFloatOrNull() ?: 0).toFloat()
-                                                                val questionCorrectnessList = correctnessList[questionIndex].split("")
+                                                                val userScore = (input.text.toString().toFloatOrNull() ?: 0).toFloat()
+                                                                scoreList[questionIndex] += userScore
+                                                                val questionCorrectnessList = correctnessList[questionIndex].split("")   //当前题目的正确情况
                                                                 var questionCorrectnessString = ""
-                                                                for (correctnessIndex in 1..(questionCorrectnessList.size - 2)) {
-                                                                    questionCorrectnessString += if (correctnessIndex - 1 == answerIndex) "1" else questionCorrectnessList[correctnessIndex]
+                                                                for (correctnessIndex in 1..(questionCorrectnessList.size - 2)) {   //因为用""分割出来的列表头尾都是空的
+                                                                    questionCorrectnessString += if (correctnessIndex - 1 == answerIndex) {
+                                                                        if (userScore == maxScore) "1" else if (userScore < maxScore) "3" else "5"
+                                                                    } else {
+                                                                        questionCorrectnessList[correctnessIndex]
+                                                                    }
                                                                 }
                                                                 correctnessList[questionIndex] = questionCorrectnessString
                                                                 viewList[questionIndex].findViewById<CardView>(answerIndex).setCardBackgroundColor(getResColor(R.color.colorTestCorrect))
@@ -703,7 +707,7 @@ class TestActivity : BaseActivity() {
                                         "2" -> R.string.wrong
                                         "3" -> R.string.half_correct
                                         "4" -> R.string.no_points
-                                        else -> R.string.unknown
+                                        else -> 114514
                                     }
                                 )
                                 scoreText += ")"
