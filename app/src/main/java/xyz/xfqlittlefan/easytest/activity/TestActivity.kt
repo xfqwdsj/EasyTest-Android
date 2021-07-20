@@ -12,9 +12,11 @@ import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.view.children
 import androidx.transition.TransitionManager
 import androidx.viewpager.widget.ViewPager
 import com.alibaba.fastjson.JSON
+import com.blankj.utilcode.util.ArrayUtils
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -29,6 +31,7 @@ import io.noties.markwon.html.HtmlPlugin
 import io.noties.markwon.image.ImagesPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import okhttp3.*
+import rikka.core.util.ClipboardUtils
 import rikka.widget.borderview.BorderNestedScrollView
 import xyz.xfqlittlefan.easytest.Question
 import xyz.xfqlittlefan.easytest.R
@@ -37,6 +40,7 @@ import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
 import xyz.xfqlittlefan.easytest.databinding.ActivityTestBinding
 import xyz.xfqlittlefan.easytest.databinding.LayoutNestedScrollViewBinding
 import xyz.xfqlittlefan.easytest.util.ActivityMap
+import xyz.xfqlittlefan.easytest.util.MyClass.dip2PxF
 import xyz.xfqlittlefan.easytest.util.MyClass.dip2PxI
 import xyz.xfqlittlefan.easytest.util.MyClass.getResColor
 import xyz.xfqlittlefan.easytest.util.MyClass.getResString
@@ -177,6 +181,7 @@ class TestActivity : BaseActivity() {
                                 }
                                 id = i
                                 cardElevation = 0F
+                                radius = dip2PxF(10F)
                                 setContentPadding(
                                     dip2PxI(5F),
                                     dip2PxI(5F),
@@ -257,6 +262,7 @@ class TestActivity : BaseActivity() {
                             layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                             id = 0
                             cardElevation = 0F
+                            radius = dip2PxF(10F)
                             addView(TextInputEditText(this@TestActivity).apply {
                                 setHint(R.string.your_answer)
                                 gravity = Gravity.TOP or Gravity.START
@@ -287,6 +293,7 @@ class TestActivity : BaseActivity() {
                                 }
                                 id = i
                                 cardElevation = 0F
+                                radius = dip2PxF(10F)
                                 addView(TextInputEditText(this@TestActivity).apply {
                                     hint = bank[i]
                                     gravity = Gravity.CENTER
@@ -417,6 +424,7 @@ class TestActivity : BaseActivity() {
                         correctness = when {
                             originalCorrectness.contains('4') -> "4"
                             originalCorrectness.contains('1') && originalCorrectness.contains('2') -> "3"
+                            originalCorrectness.contains('3') -> "3"
                             originalCorrectness.contains('1') -> "1"
                             else -> "2"
                         }
@@ -455,7 +463,15 @@ class TestActivity : BaseActivity() {
                 if (correctness == "2" || correctness == "3") {
                     view.findViewById<CardView>(R.id.resultWrong).visibility = View.VISIBLE
                     view.findViewById<ChipGroup>(R.id.resultWrongGroup).addView(button)
+                    sort(view.findViewById(R.id.resultWrongGroup))
                 }
+            }
+
+            fun sort(view: ChipGroup) {
+                val children = view.children.toMutableList()
+                view.removeAllViews()
+                children.sortBy { it.id }
+                children.forEach { view.addView(it) }
             }
 
             @SuppressLint("ClickableViewAccessibility")
@@ -478,6 +494,7 @@ class TestActivity : BaseActivity() {
                                         binding.viewPager.currentItem = questionIndex
                                     }
                                     text = resources.getString(R.string.question_number, questionIndex + 1)
+                                    tag = questionIndex
                                 }
                                 when (online.type) {
                                     1 -> {
@@ -566,6 +583,7 @@ class TestActivity : BaseActivity() {
                                                     binding.viewPager.currentItem = questionIndex
                                                 }
                                                 text = resources.getString(R.string.question_number, questionIndex + 1)
+                                                tag = questionIndex
                                             }
                                             val correctAnswers = online.answers[answerIndex].text
                                             answer += "$correctAnswers; "
@@ -638,17 +656,19 @@ class TestActivity : BaseActivity() {
                                                             .setPositiveButton(R.string.correct) { _: DialogInterface, _: Int ->
                                                                 val userScore = (input.text.toString().toFloatOrNull() ?: 0).toFloat()
                                                                 scoreList[questionIndex] += userScore
+                                                                val finalCorrectness = if (userScore == maxScore) "1" else if (userScore == 0F) "2" else if (userScore < maxScore) "3" else "5"
                                                                 val questionCorrectnessList = correctnessList[questionIndex].split("")   //当前题目的正确情况
                                                                 var questionCorrectnessString = ""
                                                                 for (correctnessIndex in 1..(questionCorrectnessList.size - 2)) {   //因为用""分割出来的列表头尾都是空的
-                                                                    questionCorrectnessString += if (correctnessIndex - 1 == answerIndex) {
-                                                                        if (userScore == maxScore) "1" else if (userScore < maxScore) "3" else "5"
-                                                                    } else {
-                                                                        questionCorrectnessList[correctnessIndex]
-                                                                    }
+                                                                    questionCorrectnessString += (if (correctnessIndex - 1 == answerIndex) finalCorrectness else questionCorrectnessList[correctnessIndex])
                                                                 }
                                                                 correctnessList[questionIndex] = questionCorrectnessString
-                                                                viewList[questionIndex].findViewById<CardView>(answerIndex).setCardBackgroundColor(getResColor(R.color.colorTestCorrect))
+                                                                viewList[questionIndex].findViewById<CardView>(answerIndex).setCardBackgroundColor(getResColor(when (finalCorrectness) {
+                                                                    "1" -> R.color.colorTestCorrect
+                                                                    "2" -> R.color.colorTestWrong
+                                                                    "3" -> R.color.colorTestHalf
+                                                                    else -> 114514
+                                                                }))
                                                                 refreshView(questionIndex, answerIndex, bankButton)
                                                                 it.setOnClickListener(null)
                                                                 it.isClickable = false
@@ -694,6 +714,7 @@ class TestActivity : BaseActivity() {
                                     correctness = when {
                                         originalCorrectness.contains('4') -> "4"
                                         originalCorrectness.contains('1') && originalCorrectness.contains('2') -> "3"
+                                        originalCorrectness.contains('3') -> "3"
                                         originalCorrectness.contains('1') -> "1"
                                         else -> "2"
                                     }
@@ -712,7 +733,7 @@ class TestActivity : BaseActivity() {
                                 )
                                 scoreText += ")"
                                 scoreText += if (questionIndex != questionList.size - 1) " + " else " = $total"
-                                if (originalCorrectness == "2" || originalCorrectness == "3") {
+                                if ((originalCorrectness == "2" || originalCorrectness == "3") && online.type == 1) {
                                     view.findViewById<ChipGroup>(R.id.resultWrongGroup).addView(questionButton)
                                 }
                             }
@@ -729,7 +750,11 @@ class TestActivity : BaseActivity() {
                                     result.question = JSON.toJSONString(questionList)
                                     result.correctnessList = correctnessList
                                     if (result.save()) {
-                                        Snackbar.make(binding.root, resources.getString(R.string.upload_success, result.id), Snackbar.LENGTH_LONG).show()
+                                        Snackbar.make(binding.root, resources.getString(R.string.upload_success, result.id), Snackbar.LENGTH_LONG)
+                                            .setAction(android.R.string.copy) {
+                                                ClipboardUtils.put(this@TestActivity, result.id.toString())
+                                            }
+                                            .show()
                                         it.visibility = View.GONE
                                     }
                                 }

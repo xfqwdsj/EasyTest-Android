@@ -67,17 +67,12 @@ public class ThemeUtil {
         colorThemeMap.put("MATERIAL_BLUE_GREY", R.style.ThemeOverlay_material_blue_grey);
     }
 
-    private static boolean isBlackNightTheme() {
-        return preferences.getBoolean("black_dark_theme", false);
-    }
-
     private static boolean isSystemAccent() {
         return preferences.getBoolean("follow_system_accent", true);
     }
 
     public static String getNightTheme(Context context) {
-        if (isBlackNightTheme()
-                && ResourceUtils.isNightMode(context.getResources().getConfiguration()))
+        if (ResourceUtils.isNightMode(context.getResources().getConfiguration()))
             return THEME_BLACK;
 
         return THEME_DEFAULT;
@@ -85,12 +80,10 @@ public class ThemeUtil {
 
     @StyleRes
     public static int getNightThemeStyleRes(Context context) {
-        switch (getNightTheme(context)) {
-            case THEME_BLACK:
-                return R.style.ThemeOverlay_Black;
-            case THEME_DEFAULT:
-            default:
-                return R.style.ThemeOverlay;
+        if (ResourceUtils.isNightMode(context.getResources().getConfiguration())) {
+            return R.style.ThemeOverlay_Black;
+        } else {
+            return R.style.ThemeOverlay;
         }
     }
 

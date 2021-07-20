@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.ViewGroup
-import androidx.preference.SwitchPreference
 import androidx.recyclerview.widget.RecyclerView
 import com.takisoft.preferencex.PreferenceFragmentCompat
 import xyz.xfqlittlefan.easytest.R
@@ -16,7 +15,6 @@ import xyz.xfqlittlefan.easytest.databinding.ActivitySettingsBinding
 import xyz.xfqlittlefan.easytest.util.MyClass
 import xyz.xfqlittlefan.easytest.util.ThemeColorPreference
 import xyz.xfqlittlefan.easytest.util.ThemeUtil
-import rikka.core.util.ResourceUtils
 import rikka.material.app.DayNightDelegate
 import rikka.preference.SimpleMenuPreference
 import rikka.recyclerview.fixEdgeEffect
@@ -26,18 +24,24 @@ import rikka.widget.borderview.BorderRecyclerView
 class SettingsActivity : BaseActivity() {
     private val prefixKey = SettingsActivity::class.java.name + '.'
     private val savedInstanceStateExtra = prefixKey + "SAVED_INSTANCE_STATE"
-    private lateinit var binding: ActivitySettingsBinding
+    lateinit var binding: ActivitySettingsBinding
 
     @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        var instanceState = savedInstanceState
+        if (instanceState == null) {
+            instanceState = intent.getBundleExtra(savedInstanceStateExtra)
+        }
+        super.onCreate(instanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setAppBar(binding.appbar, binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        supportFragmentManager.beginTransaction().replace(R.id.settings, SettingsFragment(binding))
-            .commit()
+        if (instanceState == null) {
+            supportFragmentManager.beginTransaction().replace(R.id.settings, SettingsFragment())
+                .commit()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -48,7 +52,7 @@ class SettingsActivity : BaseActivity() {
         return false
     }
 
-    class SettingsFragment(val binding: ActivitySettingsBinding) : PreferenceFragmentCompat() {
+    class SettingsFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferencesFix(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
@@ -58,40 +62,23 @@ class SettingsActivity : BaseActivity() {
                         ?.equals(newValue)!!
                 ) {
                     DayNightDelegate.setDefaultNightMode(ThemeUtil.getDarkTheme(newValue as String))
-                    val activity = activity as SettingsActivity
-                    activity.restart()
-                }
-                true
-            }
-
-            findPreference<SwitchPreference>("black_dark_theme")?.setOnPreferenceChangeListener { _, _ ->
-                val activity = activity as SettingsActivity
-                if (ResourceUtils.isNightMode(resources.configuration)) {
-                    activity.restart()
+                    (activity as SettingsActivity).restart()
                 }
                 true
             }
 
             findPreference<ThemeColorPreference>("theme_color")?.setOnPreferenceChangeListener { _, _ ->
-                val activity = activity as SettingsActivity
-                activity.restart()
+                (activity as SettingsActivity).restart()
                 true
             }
         }
 
-        override fun onCreateRecyclerView(
-            inflater: LayoutInflater?,
-            parent: ViewGroup?,
-            savedInstanceState: Bundle?
-        ): RecyclerView {
-            val recyclerView: BorderRecyclerView = super.onCreateRecyclerView(
-                inflater,
-                parent,
-                savedInstanceState
-            ) as BorderRecyclerView
+        override fun onCreateRecyclerView(inflater: LayoutInflater?, parent: ViewGroup?, savedInstanceState: Bundle?): RecyclerView {
+            val recyclerView: BorderRecyclerView = super.onCreateRecyclerView(inflater, parent, savedInstanceState) as BorderRecyclerView
             recyclerView.fixEdgeEffect(false)
+
             recyclerView.borderViewDelegate.setBorderVisibilityChangedListener { top, _, _, _ ->
-                binding.appbar.isRaised = !top
+                (activity as SettingsActivity).binding.appbar.isRaised = !top
             }
             return recyclerView
         }

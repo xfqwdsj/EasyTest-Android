@@ -84,8 +84,6 @@
     <string name="theme">主题</string>
     <string name="theme_color">主题颜色</string>
     <string name="theme_color_summary">应用中最常见的颜色</string>
-    <string name="black_dark_theme">黑色主题</string>
-    <string name="black_dark_theme_summary">当深色主题启用时使用纯黑色主题</string>
     <string name="start_test_summary">开始一段旅程</string>
     <string name="account_summary_no_logged_in">未登录</string>
     <string name="account_summary">查看我的账户</string>

@@ -62,78 +62,12 @@ class MainActivity : BaseActivity() {
         binding.card4.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
-        /*
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.navigationView.addHeaderView(headerBinding.root)
-        headerBinding.toolbar.inflateMenu(R.menu.drawer_menu)
-        headerBinding.toolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.account -> {
-                    if (currentUser == null) {
-                        startActivity(Intent(this, LoginActivity::class.java))
-                    } else {
-
-                    }
-                    return@setOnMenuItemClickListener true
-                }
-                R.id.logout -> {
-                    AVUser.logOut()
-                    onResume()
-                    return@setOnMenuItemClickListener true
-                }
-            }
-            false
-        }
-        binding.navigationView.setNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.test -> Intent(
-                    this,
-                    SelectQuestionBankActivity::class.java
-                ).apply {
-                    val urlList =
-                        PreferenceManager.getDefaultSharedPreferences(this@MainActivity)
-                            .getString("custom_source", "")!!
-                            .split("\n").toMutableList()
-                    urlList.add("https://xfqwdsj.gitee.io/easy-test/question-bank-index.json")
-                    putStringArrayListExtra("urlList", ArrayList(urlList))
-                    startActivity(this)
-                }
-                R.id.query -> startActivity(Intent(this, IDQueryActivity::class.java))
-            }
-            false
-        }
-        //setInset(MyClass.INSET_BOTTOM, binding.navigationView)
-        val actionBarDrawerToggle = ActionBarDrawerToggle(
-            this,
-            binding.drawerLayout,
-            binding.toolbar,
-            R.string.expanded,
-            R.string.collapsed
-        )
-        actionBarDrawerToggle.syncState()
-        binding.drawerLayout.addDrawerListener(actionBarDrawerToggle)
-         */
         try {
             getNetworkStatus(URL("https://xfqwdsj.gitee.io/easy-test/"))
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
-
-    /*
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.settings) {
-            startActivity(Intent(this, SettingsActivity::class.java))
-            return true
-        }
-        return false
-    }
-     */
 
     @SuppressLint("MissingSuperCall")
     override fun onResume() {

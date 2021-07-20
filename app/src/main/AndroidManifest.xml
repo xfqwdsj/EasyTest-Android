@@ -13,31 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="xyz.xfqlittlefan.easytest.activity.ResultActivity"
-            android:configChanges="orientation|screenSize"
-            android:exported="true" />
-        <activity
             android:name="xyz.xfqlittlefan.easytest.activity.TestActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true" />
         <activity
             android:name="xyz.xfqlittlefan.easytest.activity.SelectQuestionBankActivity"
-            android:configChanges="orientation|screenSize"
-            android:exported="true" />
-        <activity
-            android:name="xyz.xfqlittlefan.easytest.activity.DownloadActivity"
-            android:configChanges="orientation|screenSize"
-            android:exported="true" />
-        <activity
-            android:name="xyz.xfqlittlefan.easytest.activity.IDQueryActivity"
-            android:configChanges="orientation|screenSize"
-            android:exported="true" />
-        <activity
-            android:name="xyz.xfqlittlefan.easytest.activity.ResultActivity2"
-            android:configChanges="orientation|screenSize"
-            android:exported="true" />
-        <activity
-            android:name="xyz.xfqlittlefan.easytest.activity.MwordsActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true" />
         <activity

@@ -92,14 +92,14 @@ object MyClass {
         return (pxValue / scale + 0.5f).toInt()
     }
 
-    fun dip2PxF(dpValue: Float): Int {
+    fun dip2PxF(dpValue: Float): Float {
         val scale = context!!.resources.displayMetrics.density
-        return (dpValue * scale + 0.5f).toInt()
+        return (dpValue * scale + 0.5f)
     }
 
-    fun px2DipF(pxValue: Float): Int {
+    fun px2DipF(pxValue: Float): Float {
         val scale = context!!.resources.displayMetrics.density
-        return (pxValue / scale + 0.5f).toInt()
+        return (pxValue / scale + 0.5f)
     }
 
     fun getPreferences(): SharedPreferences {
