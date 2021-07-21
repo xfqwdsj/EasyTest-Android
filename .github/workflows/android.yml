@@ -27,3 +27,8 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
+    - name: Upload our APK
+      uses: actions/upload-artifact@v2.2.0
+      with:
+        name: Release artifact
+        path: app/build/outputs/apk/release/*.apk
