@@ -11,6 +11,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 
 @SuppressLint("StaticFieldLeak")
 object MyClass {
@@ -40,48 +42,6 @@ object MyClass {
         return ContextCompat.getColor(context!!, id)
     }
 
-    /*
-    fun View.setInset(type: Int) {
-        when (type) {
-            INSET_TOP -> {
-                val padding = this.paddingTop
-                ViewCompat.setOnApplyWindowInsetsListener(this) { myView, windowInsets ->
-                    myView.updatePadding(top = padding + windowInsets.getInsets(WindowInsetsCompat.Type.systemBars()).top)
-                    windowInsets
-                }
-                this.requestApplyInsetsWhenAttached()
-            }
-            INSET_BOTTOM -> {
-                val padding = this.paddingBottom
-                ViewCompat.setOnApplyWindowInsetsListener(this) { myView, windowInsets ->
-                    myView.updatePadding(
-                        bottom = padding + windowInsets.getInsets(
-                            WindowInsetsCompat.Type.systemBars()
-                        ).bottom
-                    )
-                    windowInsets
-                }
-                this.requestApplyInsetsWhenAttached()
-            }
-        }
-    }
-
-    fun View.requestApplyInsetsWhenAttached() {
-        if (isAttachedToWindow) {
-            requestApplyInsets()
-        } else {
-            addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-                override fun onViewAttachedToWindow(v: View) {
-                    v.removeOnAttachStateChangeListener(this)
-                    v.requestApplyInsets()
-                }
-
-                override fun onViewDetachedFromWindow(v: View) = Unit
-            })
-        }
-    }
-     */
-
     fun dip2PxI(dpValue: Float): Int {
         val scale = context!!.resources.displayMetrics.density
         return (dpValue * scale + 0.5f).toInt()
@@ -108,5 +68,14 @@ object MyClass {
 
     fun init(context: Context) {
         MyClass.context = context
+    }
+
+    fun RecyclerView.smoothScroll(position: Int, mode: Int = LinearSmoothScroller.SNAP_TO_START) {
+        val smoothScroller = object : LinearSmoothScroller(this.context) {
+            override fun getVerticalSnapPreference(): Int = mode
+            override fun getHorizontalSnapPreference(): Int = mode
+        }
+        smoothScroller.targetPosition = position
+        layoutManager?.startSmoothScroll(smoothScroller)
     }
 }

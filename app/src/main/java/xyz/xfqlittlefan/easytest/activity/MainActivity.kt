@@ -7,7 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.webkit.WebView
 import androidx.preference.PreferenceManager
-import cn.leancloud.AVUser
+import cn.leancloud.LCUser
 import com.google.android.material.snackbar.Snackbar
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
@@ -20,7 +20,7 @@ import java.net.URL
 
 class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
-    private var currentUser: AVUser? = null
+    private var currentUser: LCUser? = null
 
     @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +39,7 @@ class MainActivity : BaseActivity() {
                 val urlList = PreferenceManager.getDefaultSharedPreferences(this@MainActivity)
                     .getString("custom_source", "")!!
                     .split("\n").toMutableList()
-                urlList.add("https://xfqwdsj.gitee.io/easy-test/question-bank-index.json")
+                urlList.add(0, "https://gitee.com/xfqwdsj/easy-test/raw/master/question-bank-index.json")
                 putStringArrayListExtra("urlList", ArrayList(urlList))
                 startActivity(this)
             }
@@ -53,7 +53,7 @@ class MainActivity : BaseActivity() {
             } else {
                 Snackbar.make(binding.root, R.string.coming_soon, Snackbar.LENGTH_SHORT)
                     .setAction(R.string.logout) {
-                        AVUser.logOut()
+                        LCUser.logOut()
                         onResume()
                     }
                     .show()
@@ -72,7 +72,7 @@ class MainActivity : BaseActivity() {
     @SuppressLint("MissingSuperCall")
     override fun onResume() {
         super.onResume()
-        currentUser = AVUser.getCurrentUser()
+        currentUser = LCUser.getCurrentUser()
         if (currentUser != null) {
             binding.text32.setText(R.string.account_summary)
         } else {

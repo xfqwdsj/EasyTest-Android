@@ -1,4 +1,4 @@
-package xyz.xfqlittlefan.easytest;
+package xyz.xfqlittlefan.easytest.data;
 
 import java.util.ArrayList;
 import java.util.List;

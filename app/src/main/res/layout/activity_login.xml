@@ -22,6 +22,7 @@
             app:title="@string/login" />
     </rikka.material.widget.AppBarLayout>
 
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text1"
         android:layout_width="0dp"
@@ -37,7 +38,6 @@
             android:id="@+id/username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:autofillHints=""
             android:hint="@string/username"
             android:inputType="textPersonName" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -57,11 +57,9 @@
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:autofillHints=""
             android:hint="@string/password"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
-
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/login"

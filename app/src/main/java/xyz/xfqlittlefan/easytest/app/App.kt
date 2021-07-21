@@ -1,7 +1,7 @@
-package xyz.xfqlittlefan.easytest
+package xyz.xfqlittlefan.easytest.app
 
 import android.app.Application
-import cn.leancloud.AVOSCloud
+import cn.leancloud.LeanCloud
 import xyz.xfqlittlefan.easytest.util.MyClass
 import xyz.xfqlittlefan.easytest.util.ThemeUtil
 import org.litepal.LitePal
@@ -12,7 +12,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        AVOSCloud.initialize(
+        LeanCloud.initialize(
             this,
             "1KbhNSxDBKNOvAiGQEJqPE6B-gzGzoHsz",
             "aWxGGJwdeWE7rmxyLWIbkuyT",

@@ -1,4 +1,4 @@
-package xyz.xfqlittlefan.easytest.util
+package xyz.xfqlittlefan.easytest.adapter
 
 import android.content.Context
 import android.view.View
@@ -8,29 +8,29 @@ import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.util.MyClass.getResString
 
 class TestPagerAdapter(
-    private val mViewList: List<View>,
-    private val mPositionList: List<Int>,
-    private val mContext: Context
+    private val viewList: List<View>,
+    private val positionList: List<Int>,
+    private val context: Context
 ) : PagerAdapter() {
     var submitted = false
 
-    override fun getCount(): Int = mViewList.size
+    override fun getCount(): Int = viewList.size
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean = view == `object`
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        container.removeView(mViewList[position])
-        container.addView(mViewList[position])
-        return mViewList[position]
+        container.removeView(viewList[position])
+        container.addView(viewList[position])
+        return viewList[position]
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-        container.removeView(mViewList[position])
+        container.removeView(viewList[position])
     }
 
     override fun getPageTitle(position: Int): CharSequence =
-        if (!submitted || position != mViewList.size - 1) mContext.resources.getString(
+        if (!submitted || position != viewList.size - 1) context.resources.getString(
             R.string.question_number,
-            mPositionList[position] + 1
+            positionList[position] + 1
         ) else getResString(R.string.result)
 }

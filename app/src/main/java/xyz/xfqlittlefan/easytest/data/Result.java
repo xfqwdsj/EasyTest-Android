@@ -1,4 +1,4 @@
-package xyz.xfqlittlefan.easytest;
+package xyz.xfqlittlefan.easytest.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;

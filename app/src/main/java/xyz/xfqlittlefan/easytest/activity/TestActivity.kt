@@ -16,7 +16,6 @@ import androidx.core.view.children
 import androidx.transition.TransitionManager
 import androidx.viewpager.widget.ViewPager
 import com.alibaba.fastjson.JSON
-import com.blankj.utilcode.util.ArrayUtils
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -33,9 +32,9 @@ import io.noties.markwon.linkify.LinkifyPlugin
 import okhttp3.*
 import rikka.core.util.ClipboardUtils
 import rikka.widget.borderview.BorderNestedScrollView
-import xyz.xfqlittlefan.easytest.Question
+import xyz.xfqlittlefan.easytest.data.Question
 import xyz.xfqlittlefan.easytest.R
-import xyz.xfqlittlefan.easytest.Result
+import xyz.xfqlittlefan.easytest.data.Result
 import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
 import xyz.xfqlittlefan.easytest.databinding.ActivityTestBinding
 import xyz.xfqlittlefan.easytest.databinding.LayoutNestedScrollViewBinding
@@ -45,7 +44,7 @@ import xyz.xfqlittlefan.easytest.util.MyClass.dip2PxI
 import xyz.xfqlittlefan.easytest.util.MyClass.getResColor
 import xyz.xfqlittlefan.easytest.util.MyClass.getResString
 import xyz.xfqlittlefan.easytest.util.MyClass.setMarginTop
-import xyz.xfqlittlefan.easytest.util.TestPagerAdapter
+import xyz.xfqlittlefan.easytest.adapter.TestPagerAdapter
 import xyz.xfqlittlefan.easytest.widget.BlurBehindDialogBuilder
 import java.io.IOException
 import java.util.*
@@ -484,6 +483,7 @@ class TestActivity : BaseActivity() {
                             binding.toolbar.menu.findItem(R.id.result).isVisible = true
                             binding.toolbar.menu.findItem(R.id.submit).isVisible = false
                             var scoreText = ""
+                            var total = 0F
                             for (questionIndex in questionList.indices) {
                                 questionList[questionIndex].userAnswer = userAnswerList[questionIndex].userAnswer
                                 var score = 0F
@@ -709,7 +709,6 @@ class TestActivity : BaseActivity() {
                                 scoreList.add(score)
                                 var correctness = correctnessList[questionIndex]
                                 val originalCorrectness = correctness
-                                var total = 0F
                                 if (originalCorrectness.length > 1) {
                                     correctness = when {
                                         originalCorrectness.contains('4') -> "4"

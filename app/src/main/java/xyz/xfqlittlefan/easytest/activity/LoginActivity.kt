@@ -5,9 +5,8 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.text.InputType
 import android.view.MenuItem
-import android.widget.FrameLayout
 import android.widget.LinearLayout
-import cn.leancloud.AVUser
+import cn.leancloud.LCUser
 import com.google.android.material.textfield.TextInputEditText
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
@@ -16,8 +15,6 @@ import xyz.xfqlittlefan.easytest.util.MyClass.getResString
 import xyz.xfqlittlefan.easytest.widget.BlurBehindDialogBuilder
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
-import xyz.xfqlittlefan.easytest.databinding.LayoutDialogInputBinding
-import xyz.xfqlittlefan.easytest.util.MyClass
 
 class LoginActivity : BaseActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -31,10 +28,9 @@ class LoginActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.login.setOnClickListener {
             if (binding.username.text.toString() != "" && binding.password.text.toString() != "") {
-                AVUser.logIn(binding.username.text.toString(), binding.password.text.toString())
-                    .subscribe(object : Observer<AVUser?> {
+                LCUser.logIn(binding.username.text.toString(), binding.password.text.toString()).subscribe(object : Observer<LCUser?> {
                         override fun onSubscribe(d: Disposable) {}
-                        override fun onNext(t: AVUser) {
+                        override fun onNext(t: LCUser) {
                             finish()
                         }
 
@@ -60,14 +56,14 @@ class LoginActivity : BaseActivity() {
                 .setView(layout)
                 .setPositiveButton(android.R.string.ok) { _: DialogInterface, _: Int ->
                     if (binding.username.text.toString() != "" && binding.password.text.toString() != "" && input.text.toString() != "") {
-                        val avUser = AVUser()
-                        avUser.username = binding.username.text.toString()
-                        avUser.password = binding.password.text.toString()
-                        avUser.email = input.text.toString()
-                        avUser.signUpInBackground().subscribe(object : Observer<AVUser?> {
+                        val lcUser = LCUser()
+                        lcUser.username = binding.username.text.toString()
+                        lcUser.password = binding.password.text.toString()
+                        lcUser.email = input.text.toString()
+                        lcUser.signUpInBackground().subscribe(object : Observer<LCUser?> {
                             override fun onSubscribe(disposable: Disposable) {}
-                            override fun onNext(t: AVUser) {
-                                AVUser.logOut()
+                            override fun onNext(t: LCUser) {
+                                LCUser.logOut()
                                 finish()
                             }
 

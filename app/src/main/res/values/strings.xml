@@ -60,7 +60,7 @@
     <string name="unknown_error">Unknown error</string>
     <string name="account">Account</string>
     <string name="test">Test</string>
-    <string name="question_bank_selection">Question bank selection</string>
+    <string name="title_select_question_bank">Select question bank</string>
     <string name="one_per_line">One per line</string>
     <string name="question_bank_icon">Question bank icon</string>
     <string name="your_answer">Your answer</string>
