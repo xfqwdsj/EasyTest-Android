@@ -34,7 +34,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             style="@style/ToolbarStyle"
-            app:title="@string/title_select_question_bank" />
+            app:title="@string/select_question_bank" />
     </rikka.material.widget.AppBarLayout>
 
     <com.google.android.material.progressindicator.LinearProgressIndicator

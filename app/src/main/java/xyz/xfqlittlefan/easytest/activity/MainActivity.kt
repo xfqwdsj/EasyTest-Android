@@ -82,7 +82,7 @@ class MainActivity : BaseActivity() {
 
     private fun getNetworkStatus(url: URL) {
         val dialog = BlurBehindDialogBuilder(this)
-            .setTitle(R.string.network_getting)
+            .setTitle(R.string.network_detecting)
             .setMessage(R.string.please_wait)
             .setCancelable(false)
             .show()

@@ -3,13 +3,8 @@ package xyz.xfqlittlefan.easytest.util
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.view.MarginLayoutParamsCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -17,10 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 @SuppressLint("StaticFieldLeak")
 object MyClass {
     private var context: Context? = null
-    const val INSET_TOP: Int = 0
-    const val INSET_BOTTOM: Int = 1
-    const val INSET_LEFT: Int = 2
-    const val INSET_RIGHT: Int = 3
+    const val CORRECTNESS = 0
+    const val SCORE = 1
 
     fun ViewGroup.MarginLayoutParams.setMarginTop(size: Int) {
         setMargins(leftMargin, size, rightMargin, bottomMargin)
@@ -77,5 +70,41 @@ object MyClass {
         }
         smoothScroller.targetPosition = position
         layoutManager?.startSmoothScroll(smoothScroller)
+    }
+
+    fun getQuestionStateMap(map: Map<Int, Map<Int, Map<Int, Float>>>): Map<Int, Map<Int, Float>> {
+        val returnMap = mutableMapOf<Int, Map<Int, Float>>()
+        map.forEach { (i, valueI) ->
+            val questionMap = mutableMapOf<Int, Float>()
+            var count1 = 0
+            var count2 = 0
+            var count3 = 0
+            var count4 = 0
+            valueI.forEach { (_, valueJ) ->
+                when (valueJ[CORRECTNESS]?.toInt()) {
+                    1 -> count1++
+                    2 -> count2++
+                    3 -> count3++
+                    4 -> count4++
+                    else -> {
+                        count1 = 114514
+                        count2 = 114514
+                        count3 = 114514
+                        count4 = 114514
+                    }
+                }
+                questionMap[SCORE] = questionMap[SCORE]?.plus(valueJ[SCORE] ?: 0F) ?: -114514F
+            }
+            if (!(count1 < 0 && count2 < 0 && count3 < 0 && count4 < 0)) {
+                when {
+                    count4 > 0 -> questionMap[CORRECTNESS] = 4F
+                    count1 > 0 && count2 > 0 || count3 > 0 -> questionMap[CORRECTNESS] = 3F
+                    count1 > 0 -> questionMap[CORRECTNESS] = 1F
+                    else -> questionMap[CORRECTNESS] = 2F
+                }
+            }
+            returnMap[i] = questionMap
+        }
+        return returnMap
     }
 }

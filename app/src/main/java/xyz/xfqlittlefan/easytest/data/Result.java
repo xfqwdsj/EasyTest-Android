@@ -1,48 +1,17 @@
 package xyz.xfqlittlefan.easytest.data;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import org.litepal.crud.LitePalSupport;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
-public class Result extends LitePalSupport implements Parcelable {
-    public static final Creator<Result> CREATOR = new Creator<>() {
-        @Override
-        public Result createFromParcel(Parcel in) {
-            return new Result(in);
-        }
+public class Result extends LitePalSupport {
 
-        @Override
-        public Result[] newArray(int size) {
-            return new Result[size];
-        }
-    };
     private String question;
-    private List<String> correctnessList;
+    //          题目索引     “空”索引       类型     数值
+    private Map<Integer, Map<Integer, Map<Integer, Float>>> state;
     private Long id;
-
-    public Result() {
-    }
-
-    protected Result(Parcel in) {
-        if (in.readByte() == 0) {
-            id = null;
-        } else {
-            id = in.readLong();
-        }
-        question = in.readString();
-        correctnessList = in.createStringArrayList();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getQuestion() {
         return question;
@@ -52,28 +21,19 @@ public class Result extends LitePalSupport implements Parcelable {
         this.question = question;
     }
 
-    public List<String> getCorrectnessList() {
-        return correctnessList;
+    public Map<Integer, Map<Integer, Map<Integer, Float>>> getState() {
+        return state;
     }
 
-    public void setCorrectnessList(List<String> correctnessList) {
-        this.correctnessList = correctnessList;
+    public void setState(Map<Integer, Map<Integer, Map<Integer, Float>>> state) {
+        this.state = state;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public Long getId() {
+        return id;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        if (id == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeLong(id);
-        }
-        dest.writeString(question);
-        dest.writeStringList(correctnessList);
+    public void setId(Long id) {
+        this.id = id;
     }
 }

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="network_getting">网络检查中</string>
+    <string name="network_detecting">网络检查中</string>
     <string name="please_wait">请稍候</string>
     <string name="failed">失败</string>
-    <string name="ask_offline_mode">启用离线模式？</string>
     <string name="no_function">敬请期待</string>
     <string name="settings">设置</string>
     <string name="offline_mode">离线模式</string>
@@ -20,20 +19,16 @@
     <string name="logout">注销</string>
     <string name="ask_logout">注销？</string>
     <string name="start_test">开始测试</string>
-    <string name="prompt">提示</string>
     <string name="next">下一个</string>
     <string name="retry">重试</string>
-    <string name="zero">0</string>
-    <string name="incorrect_write">错误的默写！</string>
     <string name="congratulations">恭喜！</string>
-    <string name="mwords_result">你的用时：%s 上传？</string>
     <string name="signup_failed">注册失败</string>
     <string name="email">邮箱</string>
     <string name="no_login">未登录</string>
-    <string name="no_login_message">登录后，您的默写成果才能上传，但您仍可以将成果保存在本地并随时登录和上传</string>
+    <string name="no_login_summary">登录后，您的默写成果才能上传，但您仍可以将成果保存在本地并随时登录和上传</string>
     <string name="success">成功</string>
-    <string name="upload_success">成功，ID：%d</string>
-    <string name="error">遇到了错误：%s</string>
+    <string name="upload_success">成功，ID: %d</string>
+    <string name="error">遇到了错误: %s</string>
     <string name="loading_sources">加载资源</string>
     <string name="result_title">%s 的成果</string>
     <string name="result">成果</string>
@@ -48,12 +43,10 @@
     <string name="source">源</string>
     <string name="downloaded_files_path">下载的文件存储在外部存储/Android/data/com.xfq.mwords/files</string>
     <string name="custom_source">自定义源</string>
-    <string name="prompt_all">提示全部字符</string>
     <string name="offline_result">离线成果</string>
     <string name="view_server_data">查看服务器数据</string>
     <string name="file_exists">文件已存在，重新下载?</string>
     <string name="save_to_local">保存到本地</string>
-    <string name="local_uploaded_data_warning">由本地数据保存并上传的数据，只允许保存、查看、删除而无法加入排行榜</string>
     <string name="upload">上传到服务器</string>
     <string name="online_result">在线成果</string>
     <string name="uploaded_local_result">已上传的本地成果</string>
@@ -61,14 +54,14 @@
     <string name="unknown_error">未知错误</string>
     <string name="account">账户</string>
     <string name="test">测试</string>
-    <string name="title_select_question_bank">题库选择</string>
+    <string name="select_question_bank">题库选择</string>
     <string name="one_per_line">一行一个</string>
     <string name="question_bank_icon">题库图标</string>
     <string name="your_answer">你的答案</string>
     <string name="question_number">第%d题</string>
     <string name="submit">提交</string>
     <string name="start">开始</string>
-    <string name="wrong_question">错题</string>
+    <string name="wrong_questions">错题</string>
     <string name="score">分数</string>
     <string name="no_points">未赋分</string>
     <string name="correct">正确</string>
@@ -91,7 +84,9 @@
     <string name="enable_blur">启用模糊效果</string>
     <string name="enable_blur_summary">允许在部分场景中启用模糊效果</string>
     <string name="previous">上一个</string>
-    <string name="ask_exit">你的答案不会被保存</string>
+    <string name="exit_testing_summary">你的答案不会被保存</string>
     <string name="exit">退出</string>
-    <string name="your_score">你的分数（0~%s）</string>
+    <string name="scoring_hint">你的分数 (0 ~ %f)</string>
+    <string name="score_chip">%1$s (%2$s, %3$f / %4$f)</string>
+    <string name="total_score">总分 (%1$f, %2$f)</string>
 </resources>
