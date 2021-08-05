@@ -32,22 +32,22 @@ import io.noties.markwon.linkify.LinkifyPlugin
 import okhttp3.*
 import rikka.core.util.ClipboardUtils
 import rikka.widget.borderview.BorderNestedScrollView
-import xyz.xfqlittlefan.easytest.data.Question
 import xyz.xfqlittlefan.easytest.R
-import xyz.xfqlittlefan.easytest.data.Result
 import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
+import xyz.xfqlittlefan.easytest.adapter.TestPagerAdapter
+import xyz.xfqlittlefan.easytest.data.Question
+import xyz.xfqlittlefan.easytest.data.Result
 import xyz.xfqlittlefan.easytest.databinding.ActivityTestBinding
 import xyz.xfqlittlefan.easytest.databinding.LayoutNestedScrollViewBinding
 import xyz.xfqlittlefan.easytest.util.ActivityMap
+import xyz.xfqlittlefan.easytest.util.MyClass.CORRECTNESS
+import xyz.xfqlittlefan.easytest.util.MyClass.SCORE
 import xyz.xfqlittlefan.easytest.util.MyClass.dip2PxF
 import xyz.xfqlittlefan.easytest.util.MyClass.dip2PxI
+import xyz.xfqlittlefan.easytest.util.MyClass.getQuestionStateMap
 import xyz.xfqlittlefan.easytest.util.MyClass.getResColor
 import xyz.xfqlittlefan.easytest.util.MyClass.getResString
 import xyz.xfqlittlefan.easytest.util.MyClass.setMarginTop
-import xyz.xfqlittlefan.easytest.adapter.TestPagerAdapter
-import xyz.xfqlittlefan.easytest.util.MyClass.CORRECTNESS
-import xyz.xfqlittlefan.easytest.util.MyClass.SCORE
-import xyz.xfqlittlefan.easytest.util.MyClass.getQuestionStateMap
 import xyz.xfqlittlefan.easytest.widget.BlurBehindDialogBuilder
 import java.io.IOException
 import java.util.*
@@ -387,9 +387,9 @@ class TestActivity : BaseActivity() {
     }
 
     private fun onSubmitClick() {
-        //                 题目索引            类型
+        //                        题目索引                          类型
         val stateMap = mutableMapOf<Int, MutableMap<Int, MutableMap<Int, Float>>>()
-        //                          “空”索引         数值
+        //                                        答案索引                数值
 
         /*
          * 1 -> 正确
@@ -417,19 +417,21 @@ class TestActivity : BaseActivity() {
                 }
             }
 
-            fun refreshView(questionIndex: Int, bankIndex: Int, button: Chip) {
+            fun refreshView(questionIndex: Int, button: Chip) {
                 val questionStateMap = getQuestionStateMap(stateMap)
                 val correctness = questionStateMap[questionIndex]?.get(CORRECTNESS)
                 var userTotal = 0F
                 var questionTotal = 0F
                 questionStateMap.forEach {
-                    val correctnessString = getResString(when (it.value[CORRECTNESS]?.toInt()) {
-                        1 -> R.string.correct
-                        2 -> R.string.wrong
-                        3 -> R.string.half_correct
-                        4 -> R.string.no_points
-                        else -> 114514
-                    })
+                    val correctnessString = getResString(
+                        when (it.value[CORRECTNESS]?.toInt()) {
+                            1 -> R.string.correct
+                            2 -> R.string.wrong
+                            3 -> R.string.half_correct
+                            4 -> R.string.no_points
+                            else -> 114514
+                        }
+                    )
                     view.findViewById<ChipGroup>(R.id.resultScoreGroup).addView(Chip(this@TestActivity).apply {
                         val map = it
                         val questionScore = getQuestionScore(questionList[questionIndex])
@@ -505,12 +507,13 @@ class TestActivity : BaseActivity() {
                             recoveryList()
                             binding.toolbar.menu.findItem(R.id.result).isVisible = true
                             binding.toolbar.menu.findItem(R.id.submit).isVisible = false
-                            var scoreText = ""
-                            var total = 0F
+                            var userTotal = 0F
+                            var questionTotal = 0F
                             for (questionIndex in questionList.indices) {
+                                val online = questionList[questionIndex]
+                                stateMap[questionIndex] = mutableMapOf<Int, MutableMap<Int, Float>>().apply { online.answers.forEachIndexed { i, _ -> this[i] = mutableMapOf() } }
                                 questionList[questionIndex].userAnswer = userAnswerList[questionIndex].userAnswer
                                 val layout = layoutInflater.inflate(R.layout.layout_test_answer, LinearLayout(this@TestActivity), false)
-                                val online = questionList[questionIndex]
                                 val questionButton = Chip(this@TestActivity).apply {
                                     setOnClickListener {
                                         binding.viewPager.currentItem = questionIndex
@@ -581,19 +584,21 @@ class TestActivity : BaseActivity() {
                                         if (!hasScore) {
                                             stateMap[questionIndex]?.get(0)?.set(SCORE, 0F)
                                         }
-                                        correctness[0] = if (online.maxSelecting == null) {
-                                            when (actuallyCorrect) {
-                                                1 -> 1
-                                                else -> 2
+                                        stateMap[questionIndex]?.get(0)?.set(
+                                            CORRECTNESS, if (online.maxSelecting == null) {
+                                                when (actuallyCorrect) {
+                                                    1 -> 1F
+                                                    else -> 2F
+                                                }
+                                            } else {
+                                                when {
+                                                    !hasScore -> 2F
+                                                    shouldCorrect == actuallyCorrect -> 1F
+                                                    actuallyCorrect == 0 -> 2F
+                                                    else -> 3F
+                                                }
                                             }
-                                        } else {
-                                            when {
-                                                !hasScore -> 2
-                                                shouldCorrect == actuallyCorrect -> 1
-                                                actuallyCorrect == 0 -> 2
-                                                else -> 3
-                                            }
-                                        }
+                                        )
                                     }
                                     2 -> {
                                         var answer = ""
@@ -620,13 +625,13 @@ class TestActivity : BaseActivity() {
                                             }
                                             when {
                                                 correct != -1 -> {
-                                                    score += online.answers[answerIndex].score[correct]
+                                                    stateMap[questionIndex]?.get(answerIndex)?.set(SCORE, online.answers[answerIndex].score[correct])
+                                                    stateMap[questionIndex]?.get(answerIndex)?.set(CORRECTNESS, 1F)
                                                     cardView.setCardBackgroundColor(getResColor(R.color.colorTestCorrect))
-                                                    correctness[answerIndex] = 1
                                                 }
                                                 online.answers[answerIndex].exactMatch -> {
+                                                    stateMap[questionIndex]?.get(answerIndex)?.set(CORRECTNESS, 2F)
                                                     cardView.setCardBackgroundColor(getResColor(R.color.colorTestWrong))
-                                                    correctness[answerIndex] = 2
                                                     view.findViewById<ChipGroup>(R.id.resultWrongGroup).addView(bankButton)
                                                 }
                                                 else -> {
@@ -672,13 +677,17 @@ class TestActivity : BaseActivity() {
                                                                 stateMap[questionIndex]?.get(answerIndex)?.set(SCORE, userScore)
                                                                 val finalCorrectness = if (userScore == maxScore) 1F else if (userScore == 0F) 2F else if (userScore < maxScore) 3F else 5F
                                                                 stateMap[questionIndex]?.get(answerIndex)?.set(CORRECTNESS, finalCorrectness)
-                                                                viewList[questionIndex].findViewById<CardView>(answerIndex).setCardBackgroundColor(getResColor(when (finalCorrectness) {
-                                                                    1F -> R.color.colorTestCorrect
-                                                                    2F -> R.color.colorTestWrong
-                                                                    3F -> R.color.colorTestHalf
-                                                                    else -> 114514
-                                                                }))
-                                                                refreshView(questionIndex, answerIndex, bankButton)
+                                                                viewList[questionIndex].findViewById<CardView>(answerIndex).setCardBackgroundColor(
+                                                                    getResColor(
+                                                                        when (finalCorrectness) {
+                                                                            1F -> R.color.colorTestCorrect
+                                                                            2F -> R.color.colorTestWrong
+                                                                            3F -> R.color.colorTestHalf
+                                                                            else -> 114514
+                                                                        }
+                                                                    )
+                                                                )
+                                                                refreshView(questionIndex, bankButton)
                                                                 it.setOnClickListener(null)
                                                                 it.isClickable = false
                                                             }
@@ -686,7 +695,7 @@ class TestActivity : BaseActivity() {
                                                                 stateMap[questionIndex]?.get(answerIndex)?.set(SCORE, 0F)
                                                                 stateMap[questionIndex]?.get(answerIndex)?.set(CORRECTNESS, 2F)
                                                                 viewList[questionIndex].findViewById<CardView>(answerIndex).setCardBackgroundColor(getResColor(R.color.colorTestWrong))
-                                                                refreshView(questionIndex, answerIndex, bankButton)
+                                                                refreshView(questionIndex, bankButton)
                                                                 it.setOnClickListener(null)
                                                                 it.isClickable = false
                                                             }
@@ -694,7 +703,7 @@ class TestActivity : BaseActivity() {
                                                             .show()
                                                     }
                                                     view.findViewById<ChipGroup>(R.id.resultNoPointsGroup).addView(bankButton)
-                                                    correctness[answerIndex] = 4
+                                                    stateMap[questionIndex]?.get(answerIndex)?.set(CORRECTNESS, 4F)
                                                 }
                                             }
                                         }
@@ -708,51 +717,51 @@ class TestActivity : BaseActivity() {
                                             connect(R.id.answerLayout, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, dip2PxI(16F))
                                             applyTo(viewList[questionIndex].findViewById(R.id.constraint))
                                         }
-                                        stateMap.add(correctness)
                                     }
                                 }
-                                scoreList.add(score)
-                                var correctness = stateMap[questionIndex]
-                                val originalCorrectness = correctness
-                                if (originalCorrectness.length > 1) {
-                                    correctness = when {
-                                        originalCorrectness.contains('4') -> "4"
-                                        originalCorrectness.contains('1') && originalCorrectness.contains('2') -> "3"
-                                        originalCorrectness.contains('3') -> "3"
-                                        originalCorrectness.contains('1') -> "1"
-                                        else -> "2"
-                                    }
-                                }
-                                total += scoreList[questionIndex]
-                                scoreText += scoreList[questionIndex]
-                                scoreText += "("
-                                scoreText += getResString(
-                                    when (correctness) {
-                                        "1" -> R.string.correct
-                                        "2" -> R.string.wrong
-                                        "3" -> R.string.half_correct
-                                        "4" -> R.string.no_points
-                                        else -> 114514
-                                    }
-                                )
-                                scoreText += ")"
-                                scoreText += if (questionIndex != questionList.size - 1) " + " else " = $total"
-                                if ((originalCorrectness == "2" || originalCorrectness == "3") && online.type == 1) {
+                                val questionStateMap = getQuestionStateMap(stateMap)
+                                val correctness = questionStateMap[questionIndex]?.get(CORRECTNESS)
+                                    val correctnessString = getResString(
+                                        when (questionStateMap[questionIndex]?.get(CORRECTNESS)?.toInt()) {
+                                            1 -> R.string.correct
+                                            2 -> R.string.wrong
+                                            3 -> R.string.half_correct
+                                            4 -> R.string.no_points
+                                            else -> 114514
+                                        }
+                                    )
+                                    view.findViewById<ChipGroup>(R.id.resultScoreGroup).addView(Chip(this@TestActivity).apply {
+                                        val questionScore = getQuestionScore(questionList[questionIndex])
+                                        userTotal += questionStateMap[questionIndex]?.get(SCORE) ?: -114514F
+                                        questionTotal += questionScore
+                                        setOnClickListener {
+                                            binding.viewPager.currentItem = questionIndex
+                                        }
+                                        tag = questionIndex
+                                        this.text = resources.getString(R.string.score_chip, resources.getString(R.string.question_number, questionIndex + 1), correctnessString, questionStateMap[questionIndex]?.get(SCORE), questionScore)
+                                    })
+                                if ((correctness == 2F || correctness == 3F || correctness == null) && online.type == 1) {
                                     view.findViewById<ChipGroup>(R.id.resultWrongGroup).addView(questionButton)
                                 }
                             }
-                            view.findViewById<TextView>(R.id.resultScoreText).text = scoreText
+                            view.findViewById<ChipGroup>(R.id.resultScoreGroup).addView(Chip(this@TestActivity).apply {
+                                tag = stateMap.size
+                                this.text = resources.getString(R.string.total_score, userTotal, questionTotal)
+                            })
+                            sort(view.findViewById(R.id.resultScoreGroup))
                             if (view.findViewById<ChipGroup>(R.id.resultWrongGroup).childCount > 0) {
                                 view.findViewById<CardView>(R.id.resultWrong).visibility = View.VISIBLE
+                                sort(view.findViewById(R.id.resultWrongGroup))
                             }
                             if (view.findViewById<ChipGroup>(R.id.resultNoPointsGroup).childCount > 0) {
                                 view.findViewById<CardView>(R.id.resultNoPoints).visibility = View.VISIBLE
+                                sort(view.findViewById(R.id.resultNoPointsGroup))
                             } else {
                                 view.findViewById<Button>(R.id.submit).isEnabled = true
                                 view.findViewById<Button>(R.id.submit).setOnClickListener {
                                     val result = Result()
                                     result.question = JSON.toJSONString(questionList)
-                                    result.correctnessList = stateMap
+                                    result.state = stateMap
                                     if (result.save()) {
                                         Snackbar.make(binding.root, resources.getString(R.string.upload_success, result.id), Snackbar.LENGTH_LONG)
                                             .setAction(android.R.string.copy) {
@@ -842,18 +851,22 @@ class TestActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        if (submitted) { super.onBackPressed() } else { exit() }
+        if (submitted) {
+            super.onBackPressed()
+        } else {
+            exit()
+        }
     }
 
     private fun exit() {
-            BlurBehindDialogBuilder(this)
-                .setTitle(R.string.exit)
-                .setMessage(R.string.exit_testing_summary)
-                .setPositiveButton(android.R.string.ok) { _: DialogInterface, _: Int ->
-                    super.onBackPressed()
-                }
-                .setNegativeButton(android.R.string.cancel) { _: DialogInterface, _: Int -> }
-                .show()
+        BlurBehindDialogBuilder(this)
+            .setTitle(R.string.exit)
+            .setMessage(R.string.exit_testing_summary)
+            .setPositiveButton(android.R.string.ok) { _: DialogInterface, _: Int ->
+                super.onBackPressed()
+            }
+            .setNegativeButton(android.R.string.cancel) { _: DialogInterface, _: Int -> }
+            .show()
     }
 }
 
