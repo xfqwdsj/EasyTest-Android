@@ -1,6 +1,7 @@
 package xyz.xfqlittlefan.easytest.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Question {
@@ -16,27 +17,27 @@ public class Question {
         return type;
     }
 
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
     public String getQuestion() {
         return question;
-    }
-
-    public void setQuestion(String question) {
-        this.question = question;
     }
 
     public Integer getScoreType() {
         return scoreType;
     }
 
-    public void setScoreType(Integer scoreType) {
-        if (scoreType != null) this.scoreType = scoreType;
-    }
-
     public List<String> getUserAnswer() {
+        if (userAnswer == null) {
+            List<Object> list = new ArrayList<>();
+            if (answers != null && options == null) {
+                list = Collections.singletonList(answers);
+            } else if (options != null && answers == null) {
+                list = Collections.singletonList(options);
+            }
+            userAnswer = new ArrayList<>();
+            for (int i = 0; i < ((List<Object>) list.get(0)).size(); i ++) {
+                userAnswer.add("");
+            }
+        }
         return userAnswer;
     }
 
@@ -48,36 +49,12 @@ public class Question {
         return maxSelecting;
     }
 
-    public void setMaxSelecting(Integer maxSelecting) {
-        this.maxSelecting = maxSelecting;
-    }
-
     public List<Answer> getAnswers() {
         return answers;
     }
 
-    public void setAnswers(List<Answer> answers) {
-        this.answers = answers;
-        if (userAnswer == null) {
-            userAnswer = new ArrayList<>();
-            for (int i = 0; i < answers.size(); i ++) {
-                userAnswer.add("");
-            }
-        }
-    }
-
     public List<Option> getOptions() {
         return options;
-    }
-
-    public void setOptions(List<Option> options) {
-        this.options = options;
-        if (userAnswer == null) {
-            userAnswer = new ArrayList<>();
-            for (int i = 0; i < options.size(); i ++) {
-                userAnswer.add("");
-            }
-        }
     }
 
     public static class Answer {
@@ -102,16 +79,8 @@ public class Question {
             return score;
         }
 
-        public void setScore(List<Float> score) {
-            this.score = score;
-        }
-
         public Boolean getExactMatch() {
             return exactMatch;
-        }
-
-        public void setExactMatch(Boolean exactMatch) {
-            if (exactMatch != null ) this.exactMatch = exactMatch;
         }
     }
 
@@ -132,16 +101,8 @@ public class Question {
             return isCorrect;
         }
 
-        public void setCorrect(Boolean correct) {
-            if (correct != null) isCorrect = correct;
-        }
-
         public Float getScore() {
             return score;
-        }
-
-        public void setScore(Float score) {
-            if (score != null) this.score = score;
         }
     }
 }

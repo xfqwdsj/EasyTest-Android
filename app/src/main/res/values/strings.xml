@@ -86,6 +86,6 @@
     <string name="exit_testing_summary">Your anser will not be saved</string>
     <string name="exit">Exit</string>
     <string name="scoring_hint">Your score (0 ~ %f)</string>
-    <string name="score_chip">%1$s (%2$s, %3$f / %4$f)</string>
-    <string name="total_score">Total score (%1$f, %2$f)</string>
+    <string name="score_chip">%1$s (%2$s, %3$.1f / %4$.1f)</string>
+    <string name="total_score">Total score (%1$.1f / %2$.1f)</string>
 </resources>

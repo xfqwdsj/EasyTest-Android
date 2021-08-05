@@ -75,7 +75,7 @@ object MyClass {
     fun getQuestionStateMap(map: Map<Int, Map<Int, Map<Int, Float>>>): Map<Int, Map<Int, Float>> {
         val returnMap = mutableMapOf<Int, Map<Int, Float>>()
         map.forEach { (i, valueI) ->
-            val questionMap = mutableMapOf<Int, Float>()
+            val questionMap = mutableMapOf(SCORE to 0F, CORRECTNESS to 2F)
             var count1 = 0
             var count2 = 0
             var count3 = 0

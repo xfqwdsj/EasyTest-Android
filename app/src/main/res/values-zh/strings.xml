@@ -87,6 +87,6 @@
     <string name="exit_testing_summary">你的答案不会被保存</string>
     <string name="exit">退出</string>
     <string name="scoring_hint">你的分数 (0 ~ %f)</string>
-    <string name="score_chip">%1$s (%2$s, %3$f / %4$f)</string>
-    <string name="total_score">总分 (%1$f, %2$f)</string>
+    <string name="score_chip">%1$s (%2$s, %3$.1f / %4$.1f)</string>
+    <string name="total_score">总分 (%1$.1f / %2$.1f)</string>
 </resources>
