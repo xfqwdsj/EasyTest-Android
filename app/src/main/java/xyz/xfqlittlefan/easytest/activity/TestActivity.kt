@@ -511,7 +511,6 @@ class TestActivity : BaseActivity() {
                             var questionTotal = 0F
                             for (questionIndex in questionList.indices) {
                                 val online = questionList[questionIndex]
-                                stateMap[questionIndex] = mutableMapOf<Int, MutableMap<Int, Float>>().apply { online.answers.forEachIndexed { i, _ -> this[i] = mutableMapOf() } }
                                 questionList[questionIndex].userAnswer = userAnswerList[questionIndex].userAnswer
                                 val layout = layoutInflater.inflate(R.layout.layout_test_answer, LinearLayout(this@TestActivity), false)
                                 val questionButton = Chip(this@TestActivity).apply {
@@ -523,6 +522,7 @@ class TestActivity : BaseActivity() {
                                 }
                                 when (online.type) {
                                     1 -> {
+                                        stateMap[questionIndex] = mutableMapOf<Int, MutableMap<Int, Float>>().apply { this[0] = mutableMapOf() }
                                         var hasScore = true
                                         var shouldCorrect = 0
                                         var actuallyCorrect = 0
@@ -601,6 +601,7 @@ class TestActivity : BaseActivity() {
                                         )
                                     }
                                     2 -> {
+                                        stateMap[questionIndex] = mutableMapOf<Int, MutableMap<Int, Float>>().apply { online.answers.forEachIndexed { i, _ -> this[i] = mutableMapOf() } }
                                         var answer = ""
                                         for (answerIndex in online.answers.indices) {
                                             val bankButton = Chip(this@TestActivity).apply {
