@@ -484,8 +484,37 @@ class TestActivity : BaseActivity() {
 
             fun getQuestionScore(question: Question): Float {
                 var questionScore = 0F
-                for (i in question.answers.indices) {
-                    questionScore += getMaxScore(question, i)
+                when (question.type) {
+                    1 -> {
+                        when (question.scoreType) {
+                            1 -> {
+                                if (question.maxSelecting == null) {
+                                    question.options.forEach {
+                                        if (it.score > questionScore) questionScore = it.score
+                                    }
+                                } else {
+                                    val list = question.options.sortedByDescending  { it.score }
+                                    for (i in 0 until question.maxSelecting) {
+                                        questionScore += list[i].score
+                                    }
+                                }
+                            }
+                            2 -> {
+                                if (question.maxSelecting != null) {
+                                    val list = question.options.filter { it.isCorrect } .sortedByDescending { it.score }
+                                    for (i in 0 until question.maxSelecting) {
+                                        questionScore += list[i].score
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    2 -> {
+                        for (i in question.answers.indices) {
+                            questionScore += getMaxScore(question, i)
+                        }
+                    }
+                    else -> questionScore = 114514F
                 }
                 return questionScore
             }
