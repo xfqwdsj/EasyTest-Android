@@ -1,9 +1,12 @@
 package xyz.xfqlittlefan.easytest.data;
 
+import androidx.annotation.Keep;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Keep
 public class Question {
     private Integer type;
     private String question;
@@ -57,6 +60,7 @@ public class Question {
         return options;
     }
 
+    @Keep
     public static class Answer {
         private List<String> text;
         private List<Float> score;
@@ -84,6 +88,7 @@ public class Question {
         }
     }
 
+    @Keep
     public static class Option {
         private String text;
         private Boolean isCorrect = false;

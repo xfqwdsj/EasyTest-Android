@@ -325,12 +325,9 @@ class TestActivity : BaseActivity() {
             }
             viewList.add(view)
         }
+        positionList.addAll(viewList.indices)
         if (random) {
             randomSort()
-        } else {
-            for (i in viewList.indices) {
-                positionList.add(i)
-            }
         }
         adapter = TestPagerAdapter(viewList, positionList, this)
         fun operateControls(position: Int) {
@@ -518,7 +515,6 @@ class TestActivity : BaseActivity() {
                 return maxScore
             }
 
-            @SuppressLint("ClickableViewAccessibility")
             override fun onResponse(call: Call, response: Response) {
                 if (response.code == 200) {
                     try {
@@ -809,21 +805,7 @@ class TestActivity : BaseActivity() {
 
     private fun randomSort() {
         val originalList = viewList.toMutableList()
-        for (i in viewList.indices) {
-            while (true) {
-                val random = (0 until viewList.size).random()
-                var isOnly = true
-                for (number in positionList) {
-                    if (number == random) {
-                        isOnly = false
-                    }
-                }
-                if (isOnly) {
-                    positionList.add(random)
-                    break
-                }
-            }
-        }
+        positionList.shuffle()
         for (i in positionList.indices) {
             viewList[i] = originalList[positionList[i]]
         }
@@ -872,22 +854,22 @@ class TestActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        if (submitted) {
-            super.onBackPressed()
-        } else {
-            exit()
-        }
+        exit()
     }
 
     private fun exit() {
-        BlurBehindDialogBuilder(this)
-            .setTitle(R.string.exit)
-            .setMessage(R.string.exit_testing_summary)
-            .setPositiveButton(android.R.string.ok) { _: DialogInterface, _: Int ->
-                super.onBackPressed()
-            }
-            .setNegativeButton(android.R.string.cancel) { _: DialogInterface, _: Int -> }
-            .show()
+        if (submitted) {
+            super.onBackPressed()
+        } else {
+            BlurBehindDialogBuilder(this)
+                .setTitle(R.string.exit)
+                .setMessage(R.string.exit_testing_summary)
+                .setPositiveButton(android.R.string.ok) { _: DialogInterface, _: Int ->
+                    super.onBackPressed()
+                }
+                .setNegativeButton(android.R.string.cancel) { _: DialogInterface, _: Int -> }
+                .show()
+        }
     }
 }
 

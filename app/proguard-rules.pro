@@ -20,4 +20,4 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class xyz.xfqlittlefan.easytest.data.*
+-keep class org.litepal.**

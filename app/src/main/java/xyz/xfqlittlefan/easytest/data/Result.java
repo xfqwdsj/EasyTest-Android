@@ -1,11 +1,14 @@
 package xyz.xfqlittlefan.easytest.data;
 
+import androidx.annotation.Keep;
+
 import org.litepal.crud.LitePalSupport;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+@Keep
 public class Result extends LitePalSupport {
 
     private String question;

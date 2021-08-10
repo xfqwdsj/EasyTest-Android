@@ -1,11 +1,12 @@
 package xyz.xfqlittlefan.easytest.data;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Keep;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Keep
 public class QuestionSet {
     private String name;
     private String id;
@@ -28,10 +29,6 @@ public class QuestionSet {
         this.id = id;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
     public void setUrl(String url) {
         this.url = url;
     }
@@ -40,13 +37,14 @@ public class QuestionSet {
         return set;
     }
 
-    public void setSet(List<Set> set) {
+    public void init() {
         for (int i = 0; i < set.size(); i++) {
             set.get(i).savedQuestionSet = this;
+            set.get(i).init();
         }
-        this.set = set;
     }
 
+    @Keep
     public static class Set {
         private QuestionSet savedQuestionSet;
         private Set savedSet;
@@ -69,16 +67,8 @@ public class QuestionSet {
             return description;
         }
 
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
         public String getUrl() {
             return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
         }
 
         public String getId() {
@@ -93,20 +83,16 @@ public class QuestionSet {
             return random;
         }
 
-        public void setRandom(Boolean random) {
-            if (random != null) this.random = random;
-        }
-
         public List<Set> getChildren() {
             return children;
         }
 
-        public void setChildren(List<Set> children) {
+        public void init() {
             if (children != null) {
                 for (int i = 0; i < children.size(); i++) {
                     children.get(i).savedSet = this;
+                    children.get(i).init();
                 }
-                this.children = children;
             }
         }
 
@@ -140,10 +126,10 @@ public class QuestionSet {
         }
 
         public String getOuterUrl() {
-                if (getQuestionSet() == null) {
-                    return "";
-                }
-                return getQuestionSet().url;
+            if (getQuestionSet() == null) {
+                return "";
+            }
+            return getQuestionSet().url;
         }
 
         public Integer getIndex() {
@@ -165,7 +151,6 @@ public class QuestionSet {
             Set set = (Set) o;
             return Objects.equals(name, set.name) && Objects.equals(description, set.description) && Objects.equals(url, set.url) && Objects.equals(id, set.id) && Objects.equals(random, set.random) && Objects.equals(children, set.children);
         }
-
 
     }
 }

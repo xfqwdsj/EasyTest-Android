@@ -9,15 +9,15 @@ import android.view.MenuItem
 import android.view.View
 import android.webkit.WebView
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.alibaba.fastjson.JSON
+import com.google.gson.Gson
 import okhttp3.*
 import rikka.recyclerview.fixEdgeEffect
-import xyz.xfqlittlefan.easytest.data.QuestionSet
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
+import xyz.xfqlittlefan.easytest.adapter.QuestionBankAdapter
+import xyz.xfqlittlefan.easytest.data.QuestionSet
 import xyz.xfqlittlefan.easytest.databinding.ActivitySelectQuestionBankBinding
 import xyz.xfqlittlefan.easytest.util.ActivityMap
-import xyz.xfqlittlefan.easytest.adapter.QuestionBankAdapter
 import xyz.xfqlittlefan.easytest.util.MyClass.smoothScroll
 import xyz.xfqlittlefan.easytest.widget.BlurBehindDialogBuilder
 import java.io.IOException
@@ -87,8 +87,9 @@ class SelectQuestionBankActivity : BaseActivity() {
                     override fun onResponse(call: Call, response: Response) {
                         if (response.code == 200) {
                             try {
-                                val set = JSON.parseObject(response.body?.string(), QuestionSet::class.java)
-                                set.url = url
+                                val set = Gson().fromJson(response.body?.string(), QuestionSet::class.java)
+                                set.init()
+                                set.setUrl(url)
                                 var cacheList: MutableList<QuestionSet.Set> = ArrayList()
                                 cacheList.addAll(set.set)
                                 for (currentIndex in index) {
@@ -135,7 +136,7 @@ class SelectQuestionBankActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                finish()
+                super.onBackPressed()
                 true
             }
             R.id.refresh -> {
