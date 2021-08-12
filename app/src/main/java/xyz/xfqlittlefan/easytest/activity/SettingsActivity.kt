@@ -35,7 +35,7 @@ class SettingsActivity : BaseActivity() {
         super.onCreate(instanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setAppBar(binding.appbar, binding.toolbar)
+        setAppBar(binding.appBar, binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (instanceState == null) {
@@ -78,7 +78,7 @@ class SettingsActivity : BaseActivity() {
             recyclerView.fixEdgeEffect(false)
 
             recyclerView.borderViewDelegate.setBorderVisibilityChangedListener { top, _, _, _ ->
-                (activity as SettingsActivity).binding.appbar.isRaised = !top
+                (activity as SettingsActivity).binding.appBar.isRaised = !top
             }
             return recyclerView
         }

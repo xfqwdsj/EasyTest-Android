@@ -27,11 +27,11 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        createDb()
+        LitePal.getDatabase()
 
-        setAppBar(binding.appbar, binding.toolbar)
+        setAppBar(binding.appBar, binding.toolbar)
         binding.scroll.borderViewDelegate.setBorderVisibilityChangedListener { top, _, _, _ ->
-            binding.appbar.isRaised = !top
+            binding.appBar.isRaised = !top
         }
 
         binding.card1.setOnClickListener {
@@ -62,11 +62,6 @@ class MainActivity : BaseActivity() {
         binding.card4.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
-        try {
-            getNetworkStatus(URL("https://xfqwdsj.gitee.io/easy-test/"))
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
     @SuppressLint("MissingSuperCall")
@@ -78,58 +73,5 @@ class MainActivity : BaseActivity() {
         } else {
             binding.text32.setText(R.string.account_summary_no_logged_in)
         }
-    }
-
-    private fun getNetworkStatus(url: URL) {
-        val dialog = BlurBehindDialogBuilder(this)
-            .setTitle(R.string.network_detecting)
-            .setMessage(R.string.please_wait)
-            .setCancelable(false)
-            .show()
-        get(url, dialog)
-    }
-
-    private fun createDb() {
-        LitePal.getDatabase()
-    }
-
-    private fun get(url: URL, dialog: Dialog) {
-        val request = Request.Builder()
-            .url(url)
-            .removeHeader("User-Agent")
-            .addHeader("User-Agent", WebView(this).settings.userAgentString)
-            .build()
-        OkHttpClient().newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                runOnUiThread {
-                    dialog.cancel()
-                    BlurBehindDialogBuilder(this@MainActivity)
-                        .setTitle(R.string.failed)
-                        .setMessage(R.string.about_to_exit)
-                        .setPositiveButton(android.R.string.ok) { _: DialogInterface, _: Int ->
-                            finish()
-                        }
-                        .setCancelable(false)
-                        .show()
-                }
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                dialog.cancel()
-                if (response.code != 200) {
-                    runOnUiThread {
-                        BlurBehindDialogBuilder(this@MainActivity)
-                            .setTitle(R.string.failed)
-                            .setMessage(R.string.about_to_exit)
-                            .setPositiveButton(android.R.string.ok) { _: DialogInterface, _: Int ->
-                                finish()
-                            }
-                            .setCancelable(false)
-                            .show()
-                    }
-                }
-                response.close()
-            }
-        })
     }
 }

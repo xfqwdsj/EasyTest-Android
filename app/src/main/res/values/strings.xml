@@ -31,7 +31,6 @@
     <string name="loading_sources">Loading sources</string>
     <string name="result_title">%s\' s result</string>
     <string name="result">Result</string>
-    <string name="better_record">You have a better record</string>
     <string name="copy_id">Copy ID</string>
     <string name="result_query_description">View my results</string>
     <string name="data_id">Data ID</string>
@@ -48,7 +47,6 @@
     <string name="save_to_local">Save to local</string>
     <string name="upload">Upload to server</string>
     <string name="online_result">Online result</string>
-    <string name="uploaded_local_result">Uploaded local result</string>
     <string name="unknown">Unknown</string>
     <string name="unknown_error">Unknown error</string>
     <string name="account">Account</string>
@@ -70,11 +68,10 @@
     <string name="ask_answer_correct">Is your answer correct?</string>
     <string name="about_to_exit">About to exit</string>
     <string name="answer">Answer</string>
-    <string name="change_it">Change it</string>
     <string name="not_found">Not found</string>
     <string name="refresh">Refresh</string>
     <string name="theme">Theme</string>
-    <string name="theme_color">Theme Color</string>
+    <string name="theme_color">Theme color</string>
     <string name="theme_color_summary">Color that appears most frequently in the app</string>
     <string name="start_test_summary">Start a journey</string>
     <string name="account_summary_no_logged_in">No logged in</string>
@@ -88,4 +85,6 @@
     <string name="scoring_hint">Your score (0 ~ %f)</string>
     <string name="score_chip">%1$s (%2$s, %3$.1f / %4$.1f)</string>
     <string name="total_score">Total score (%1$.1f / %2$.1f)</string>
+    <string name="landscape_mode">Landscape mode</string>
+    <string name="landscape_mode_summary">Use landscape mode when testing</string>
 </resources>

@@ -24,7 +24,7 @@ class LoginActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setAppBar(binding.appbar, binding.toolbar)
+        setAppBar(binding.appBar, binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.login.setOnClickListener {
             if (binding.username.text.toString() != "" && binding.password.text.toString() != "") {
@@ -47,7 +47,7 @@ class LoginActivity : BaseActivity() {
             }
         }
         binding.signup.setOnClickListener {
-            val layout = layoutInflater.inflate(R.layout.layout_dialog_input, LinearLayout(this), false) as LinearLayout
+            val layout = layoutInflater.inflate(R.layout.dialog_input, LinearLayout(this), false) as LinearLayout
             val input = layout.getChildAt(0) as TextInputEditText
             input.hint = getResString(R.string.email)
             input.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS

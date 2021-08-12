@@ -69,4 +69,10 @@ class QuestionBankAdapter(
         this.list.addAll(position, list)
         notifyItemRangeInserted(position, list.size)
     }
+
+    fun reset() {
+        val count = list.size
+        list.clear()
+        notifyItemRangeRemoved(0, count)
+    }
 }

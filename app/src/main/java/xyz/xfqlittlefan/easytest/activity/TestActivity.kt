@@ -2,6 +2,7 @@ package xyz.xfqlittlefan.easytest.activity
 
 import android.annotation.SuppressLint
 import android.content.DialogInterface
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
@@ -45,6 +46,7 @@ import xyz.xfqlittlefan.easytest.util.MyClass.CORRECTNESS
 import xyz.xfqlittlefan.easytest.util.MyClass.SCORE
 import xyz.xfqlittlefan.easytest.util.MyClass.dip2PxF
 import xyz.xfqlittlefan.easytest.util.MyClass.dip2PxI
+import xyz.xfqlittlefan.easytest.util.MyClass.getPreferences
 import xyz.xfqlittlefan.easytest.util.MyClass.getQuestionStateMap
 import xyz.xfqlittlefan.easytest.util.MyClass.getResColor
 import xyz.xfqlittlefan.easytest.util.MyClass.getResString
@@ -66,10 +68,15 @@ class TestActivity : BaseActivity() {
 
     @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
+        requestedOrientation = if (getPreferences().getBoolean("enable_landscape", false)) {
+            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        } else {
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
         super.onCreate(savedInstanceState)
         binding = ActivityTestBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setAppBar(binding.appbar, binding.toolbar)
+        setAppBar(binding.appBar, binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         ActivityMap.clear()
         url = intent.getStringExtra("url").toString()  //获取题目url
@@ -87,7 +94,7 @@ class TestActivity : BaseActivity() {
         val request = Request.Builder()
             .url(url)
             .removeHeader("User-Agent")
-            .addHeader("User-Agent", WebView(this).settings.userAgentString)  //加UA以免gitee屏蔽
+            .addHeader("User-Agent", WebView(this).settings.userAgentString)
             .build()
         OkHttpClient().newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
@@ -345,7 +352,6 @@ class TestActivity : BaseActivity() {
                     binding.toolbar.menu.findItem(R.id.next).isEnabled = true
                 }
             }
-
         }
         binding.viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             private var currentPosition: Int? = null
@@ -355,21 +361,20 @@ class TestActivity : BaseActivity() {
                 val newPosition: Int = if (position < currentPosition!!) position else if (positionOffsetPixels == 0) position else position + 1
                 (viewList[currentPosition!!] as BorderNestedScrollView).borderVisibilityChangedListener = null
                 (viewList[newPosition] as BorderNestedScrollView).setBorderVisibilityChangedListener { top, _, _, _ ->
-                    binding.appbar.isRaised = !top
+                    binding.appBar.isRaised = !top
                 }
-                binding.appbar.isRaised = !(viewList[newPosition] as BorderNestedScrollView).isShowingTopBorder || !(viewList[currentPosition!!] as BorderNestedScrollView).isShowingTopBorder
+                binding.appBar.isRaised = !((viewList[newPosition] as BorderNestedScrollView).isShowingTopBorder && (viewList[currentPosition!!] as BorderNestedScrollView).isShowingTopBorder)
             }
 
             override fun onPageSelected(position: Int) {
                 currentPosition = position
-                binding.appbar.isRaised = !(viewList[position] as BorderNestedScrollView).isShowingTopBorder
+                binding.appBar.isRaised = !(viewList[position] as BorderNestedScrollView).isShowingTopBorder
                 operateControls(position)
             }
 
             override fun onPageScrollStateChanged(state: Int) {}
         })
         binding.viewPager.adapter = adapter
-        operateControls(binding.viewPager.currentItem)
         binding.start.setOnClickListener {
             val transform = MaterialFadeThrough()
             TransitionManager.beginDelayedTransition(binding.root, transform)
@@ -378,6 +383,7 @@ class TestActivity : BaseActivity() {
             binding.toolbar.menu.findItem(R.id.previous).isVisible = true
             binding.toolbar.menu.findItem(R.id.next).isVisible = true
             binding.toolbar.menu.findItem(R.id.submit).isVisible = true
+            operateControls(binding.viewPager.currentItem)
         }
         binding.start.isEnabled = true
     }
@@ -654,7 +660,7 @@ class TestActivity : BaseActivity() {
                                                 else -> {
                                                     cardView.setCardBackgroundColor(getResColor(R.color.colorTestHalf))
                                                     cardView.setOnClickListener {
-                                                        val inputLayout = layoutInflater.inflate(R.layout.layout_dialog_input, LinearLayout(this@TestActivity), false) as LinearLayout
+                                                        val inputLayout = layoutInflater.inflate(R.layout.dialog_input, LinearLayout(this@TestActivity), false) as LinearLayout
                                                         val input = inputLayout.getChildAt(0) as TextInputEditText
                                                         input.hint = getString(R.string.scoring_hint, maxScore)
                                                         input.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL

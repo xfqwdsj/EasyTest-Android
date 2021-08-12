@@ -5,9 +5,13 @@ import android.content.res.Resources
 import android.content.res.Resources.Theme
 import android.graphics.Color
 import android.os.Build
+import android.os.Bundle
+import androidx.core.view.WindowInsetsCompat
+import rikka.core.res.resolveColor
 import xyz.xfqlittlefan.easytest.util.ThemeUtil
 import rikka.core.util.ResourceUtils.resolveColor
 import rikka.material.app.MaterialActivity
+import xyz.xfqlittlefan.easytest.R
 
 
 open class BaseActivity : MaterialActivity() {
@@ -22,10 +26,12 @@ open class BaseActivity : MaterialActivity() {
 
     @SuppressLint("MissingSuperCall")
     override fun onApplyTranslucentSystemBars() {
-        super.onApplyTranslucentSystemBars()
         window.statusBarColor = Color.TRANSPARENT
-        window.decorView.post {
-            if (window.decorView.rootWindowInsets.systemWindowInsetBottom >= Resources.getSystem().displayMetrics.density * 40) {
+        window.decorView.setOnApplyWindowInsetsListener { _, windowInsets ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && WindowInsetsCompat.toWindowInsetsCompat(windowInsets).getInsets(WindowInsetsCompat.Type.systemBars()).bottom >= Resources.getSystem().displayMetrics.density * 40) {
+                window.navigationBarDividerColor = theme.resolveColor(R.attr.navigationBarDividerColor)
+            }
+            if (WindowInsetsCompat.toWindowInsetsCompat(windowInsets).getInsets(WindowInsetsCompat.Type.systemBars()).bottom >= Resources.getSystem().displayMetrics.density * 40) {
                 window.navigationBarColor = resolveColor(
                     theme,
                     android.R.attr.navigationBarColor
@@ -39,6 +45,7 @@ open class BaseActivity : MaterialActivity() {
                     window.isNavigationBarContrastEnforced = true
                 }
             }
+            windowInsets
         }
     }
 }

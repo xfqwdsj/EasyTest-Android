@@ -3,8 +3,6 @@
     <com.takisoft.preferencex.PreferenceCategory android:title="@string/general">
         <EditTextPreference
             android:key="custom_source"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
             android:summary="@string/one_per_line"
             android:title="@string/custom_source" />
     </com.takisoft.preferencex.PreferenceCategory>
@@ -27,5 +25,12 @@
             android:key="enable_blur"
             android:summary="@string/enable_blur_summary"
             android:title="@string/enable_blur" />
+    </com.takisoft.preferencex.PreferenceCategory>
+
+    <com.takisoft.preferencex.PreferenceCategory android:title="@string/test" >
+        <SwitchPreference
+            android:key="enable_landscape"
+            android:summary="@string/landscape_mode_summary"
+            android:title="@string/landscape_mode" />
     </com.takisoft.preferencex.PreferenceCategory>
 </PreferenceScreen>

@@ -3,6 +3,7 @@ package xyz.xfqlittlefan.easytest.activity
 import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -18,6 +19,7 @@ import xyz.xfqlittlefan.easytest.adapter.QuestionBankAdapter
 import xyz.xfqlittlefan.easytest.data.QuestionSet
 import xyz.xfqlittlefan.easytest.databinding.ActivitySelectQuestionBankBinding
 import xyz.xfqlittlefan.easytest.util.ActivityMap
+import xyz.xfqlittlefan.easytest.util.MyClass
 import xyz.xfqlittlefan.easytest.util.MyClass.smoothScroll
 import xyz.xfqlittlefan.easytest.widget.BlurBehindDialogBuilder
 import java.io.IOException
@@ -30,34 +32,33 @@ class SelectQuestionBankActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySelectQuestionBankBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setAppBar(binding.appbar, binding.toolbar)
+        setAppBar(binding.appBar, binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.recyclerView.fixEdgeEffect(false)
         binding.recyclerView.borderViewDelegate.setBorderVisibilityChangedListener { top, _, _, _ ->
-            binding.appbar.isRaised = !top
+            binding.appBar.isRaised = !top
         }
         binding.progress.setVisibilityAfterHide(View.GONE)
         ActivityMap.addActivity(this)
-        intent.getStringArrayListExtra("urlList")?.let {
-            get(it, intent.getIntegerArrayListExtra("index") ?: ArrayList())
-        }
-    }
-
-    fun get(urlList: List<String>, index: ArrayList<Int>) {
-        runOnUiThread {
-            binding.progress.show()
-        }
+        val index = intent.getIntegerArrayListExtra("index") ?: ArrayList()
         val questionList: MutableList<QuestionSet.Set> = ArrayList()
-        var completedCount = 0
-        val size = mutableListOf<Int>()
-        urlList.forEach { _ ->
-            size.add(0)
-        }
         val adapter = QuestionBankAdapter(questionList, this@SelectQuestionBankActivity, index) { item: QuestionSet.Set ->
             onItemClicked(item)
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(this@SelectQuestionBankActivity)
         binding.recyclerView.adapter = adapter
+        intent.getStringArrayListExtra("urlList")?.let {
+            get(it, index)
+        }
+    }
+
+    fun get(urlList: List<String>, index: ArrayList<Int>) {
+        binding.progress.show()
+        var completedCount = 0
+        val size = mutableListOf<Int>()
+        urlList.forEach { _ ->
+            size.add(0)
+        }
         for (i in urlList.indices) {
             val url = urlList[i]
             if (url != "") {
@@ -70,9 +71,7 @@ class SelectQuestionBankActivity : BaseActivity() {
                     override fun onFailure(call: Call, e: IOException) {
                         completedCount ++
                         runOnUiThread {
-                            if (completedCount == urlList.size) {
-                                binding.progress.hide()
-                            }
+                            binding.progress.hide()
                             BlurBehindDialogBuilder(this@SelectQuestionBankActivity)
                                 .setTitle(R.string.failed)
                                 .setMessage(resources.getString(R.string.error, e))
@@ -102,7 +101,7 @@ class SelectQuestionBankActivity : BaseActivity() {
                                     position += size[j]
                                 }
                                 runOnUiThread {
-                                    adapter.add(position, cacheList)
+                                    (binding.recyclerView.adapter as QuestionBankAdapter).add(position, cacheList)
                                     binding.recyclerView.smoothScroll(0)
                                 }
                                 if (completedCount == urlList.size) {
@@ -124,6 +123,11 @@ class SelectQuestionBankActivity : BaseActivity() {
 
     private fun onItemClicked(item: QuestionSet.Set) {
         if (item.url != "" && item.url != null) {
+            requestedOrientation = if (MyClass.getPreferences().getBoolean("enable_landscape", false)) {
+                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            } else {
+                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            }
             Intent(this, TestActivity::class.java).apply {
                 putExtra("url", item.url)
                 putExtra("random", item.random)
@@ -141,6 +145,7 @@ class SelectQuestionBankActivity : BaseActivity() {
             }
             R.id.refresh -> {
                 if (intent.getStringArrayListExtra("urlList") != null) {
+                    (binding.recyclerView.adapter as QuestionBankAdapter).reset()
                     get(intent.getStringArrayListExtra("urlList")!!, intent.getIntegerArrayListExtra("index") ?: ArrayList())
                 }
                 true

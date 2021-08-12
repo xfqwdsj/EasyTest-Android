@@ -32,7 +32,6 @@
     <string name="loading_sources">加载资源</string>
     <string name="result_title">%s 的成果</string>
     <string name="result">成果</string>
-    <string name="better_record">你有一个更好的记录</string>
     <string name="copy_id">复制ID</string>
     <string name="result_query_description">查看我的成果</string>
     <string name="data_id">数据ID</string>
@@ -49,7 +48,6 @@
     <string name="save_to_local">保存到本地</string>
     <string name="upload">上传到服务器</string>
     <string name="online_result">在线成果</string>
-    <string name="uploaded_local_result">已上传的本地成果</string>
     <string name="unknown">未知</string>
     <string name="unknown_error">未知错误</string>
     <string name="account">账户</string>
@@ -71,7 +69,6 @@
     <string name="ask_answer_correct">您的答案是否正确？</string>
     <string name="about_to_exit">即将退出</string>
     <string name="answer">答案</string>
-    <string name="change_it">换一个</string>
     <string name="not_found">不存在</string>
     <string name="refresh">刷新</string>
     <string name="theme">主题</string>
@@ -89,4 +86,6 @@
     <string name="scoring_hint">你的分数 (0 ~ %f)</string>
     <string name="score_chip">%1$s (%2$s, %3$.1f / %4$.1f)</string>
     <string name="total_score">总分 (%1$.1f / %2$.1f)</string>
+    <string name="landscape_mode">横屏模式</string>
+    <string name="landscape_mode_summary">测试时使用横屏模式</string>
 </resources>
