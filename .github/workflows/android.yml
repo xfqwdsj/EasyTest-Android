@@ -33,5 +33,5 @@ jobs:
       - name: 上传
         uses: actions/upload-artifact@v2.2.0
         with:
-          name: 安装包
+          name: Release
           path: app/build/outputs/apk/release/*.apk
