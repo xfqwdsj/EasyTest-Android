@@ -38,6 +38,18 @@ android {
         viewBinding true
     }
 
+    def pro = new Properties()
+    pro.load(new FileInputStream("key.properties"))
+
+    signingConfigs {
+        config {
+            storeFile file("key/easytest.jks")
+            storePassword pro.getProperty("StorePassword")
+            keyAlias pro.getProperty("Alias")
+            keyPassword pro.getProperty("Password")
+        }
+    }
+
     kotlinOptions.useIR = true
 }
 

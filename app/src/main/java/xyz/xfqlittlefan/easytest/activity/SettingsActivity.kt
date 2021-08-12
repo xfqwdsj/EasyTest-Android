@@ -74,7 +74,7 @@ class SettingsActivity : BaseActivity() {
         }
 
         override fun onCreateRecyclerView(inflater: LayoutInflater?, parent: ViewGroup?, savedInstanceState: Bundle?): RecyclerView {
-            val recyclerView: BorderRecyclerView = super.onCreateRecyclerView(inflater, parent, savedInstanceState) as BorderRecyclerView
+            val recyclerView = super.onCreateRecyclerView(inflater, parent, savedInstanceState) as BorderRecyclerView
             recyclerView.fixEdgeEffect(false)
 
             recyclerView.borderViewDelegate.setBorderVisibilityChangedListener { top, _, _, _ ->

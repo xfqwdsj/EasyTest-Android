@@ -19,6 +19,8 @@ class ResultActivity : BaseActivity() {
 
         if (intent.getBooleanExtra("uploaded", false)) {
 
+        } else {
+
         }
 
     }

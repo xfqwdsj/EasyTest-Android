@@ -7,7 +7,7 @@
     app:consumeSystemWindowsInsets="start|end"
     app:edgeToEdge="true"
     app:fitsSystemWindowsInsets="start|end"
-    tools:context="xyz.xfqlittlefan.easytest.activity.SettingsActivity">
+    tools:context=".activity.SettingsActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/settings"

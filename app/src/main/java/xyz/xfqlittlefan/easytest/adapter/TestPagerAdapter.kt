@@ -19,7 +19,6 @@ class TestPagerAdapter(
     override fun isViewFromObject(view: View, `object`: Any): Boolean = view == `object`
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        container.removeView(viewList[position])
         container.addView(viewList[position])
         return viewList[position]
     }

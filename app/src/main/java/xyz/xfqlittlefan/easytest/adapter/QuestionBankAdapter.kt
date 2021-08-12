@@ -24,7 +24,7 @@ class QuestionBankAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.layout_question_bank_item, parent, false)
+        val view = inflater.inflate(R.layout.item_question_bank, parent, false)
         return ViewHolder(view)
     }
 
