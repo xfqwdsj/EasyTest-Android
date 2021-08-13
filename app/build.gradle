@@ -52,6 +52,10 @@ android {
         compose true
     }
 
+    composeOptions {
+        kotlinCompilerExtensionVersion "1.0.1"
+    }
+
     kotlinOptions.useIR = true
 }
 
