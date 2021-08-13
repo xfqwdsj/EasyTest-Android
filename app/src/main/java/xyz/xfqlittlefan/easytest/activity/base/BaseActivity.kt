@@ -28,14 +28,14 @@ open class BaseActivity : MaterialActivity() {
     override fun onApplyTranslucentSystemBars() {
         window.statusBarColor = Color.TRANSPARENT
         window.decorView.setOnApplyWindowInsetsListener { _, windowInsets ->
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && WindowInsetsCompat.toWindowInsetsCompat(windowInsets).getInsets(WindowInsetsCompat.Type.systemBars()).bottom >= Resources.getSystem().displayMetrics.density * 40) {
-                window.navigationBarDividerColor = theme.resolveColor(R.attr.navigationBarDividerColor)
-            }
             if (WindowInsetsCompat.toWindowInsetsCompat(windowInsets).getInsets(WindowInsetsCompat.Type.systemBars()).bottom >= Resources.getSystem().displayMetrics.density * 40) {
                 window.navigationBarColor = resolveColor(
                     theme,
                     android.R.attr.navigationBarColor
                 ) and 0x00ffffff or -0x20000000
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    window.navigationBarDividerColor = theme.resolveColor(R.attr.navigationBarDividerColor)
+                }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     window.isNavigationBarContrastEnforced = false
                 }

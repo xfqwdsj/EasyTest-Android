@@ -3,9 +3,21 @@ plugins {
     id "kotlin-android"
 }
 
+def pro = new Properties()
+pro.load(new FileInputStream("key.properties"))
+
 android {
     compileSdkVersion 31
     buildToolsVersion "31.0.0"
+
+    signingConfigs {
+        config {
+            storeFile file("key/easytest.jks")
+            storePassword pro.getProperty("StorePassword")
+            keyAlias pro.getProperty("Alias")
+            keyPassword pro.getProperty("Password")
+        }
+    }
 
     defaultConfig {
         applicationId "xyz.xfqlittlefan.easytest"
@@ -14,6 +26,7 @@ android {
         targetSdkVersion 31
         minSdkVersion 23
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.config
     }
 
     buildTypes {
@@ -36,18 +49,6 @@ android {
 
     buildFeatures {
         viewBinding true
-    }
-
-    def pro = new Properties()
-    pro.load(new FileInputStream("key.properties"))
-
-    signingConfigs {
-        config {
-            storeFile file("key/easytest.jks")
-            storePassword pro.getProperty("StorePassword")
-            keyAlias pro.getProperty("Alias")
-            keyPassword pro.getProperty("Password")
-        }
     }
 
     kotlinOptions.useIR = true
