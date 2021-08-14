@@ -33,7 +33,6 @@
     <string name="result">Result</string>
     <string name="copy_id">Copy ID</string>
     <string name="result_query_description">View my results</string>
-    <string name="data_id">Data ID</string>
     <string name="download_resources">Download resources</string>
     <string name="status">Current status: %s</string>
     <string name="download">Download</string>
@@ -87,4 +86,6 @@
     <string name="total_score">Total score (%1$.1f / %2$.1f)</string>
     <string name="landscape_mode">Landscape mode</string>
     <string name="landscape_mode_summary">Use landscape mode when testing</string>
+    <string name="back">Back</string>
+    <string name="title_activity_query" translatable="false">QueryActivity</string>
 </resources>

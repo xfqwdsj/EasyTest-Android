@@ -10,7 +10,6 @@ import android.view.MenuItem
 import android.view.View
 import android.webkit.WebView
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
 import okhttp3.*
 import rikka.recyclerview.fixEdgeEffect
 import xyz.xfqlittlefan.easytest.R
@@ -19,8 +18,9 @@ import xyz.xfqlittlefan.easytest.adapter.QuestionBankAdapter
 import xyz.xfqlittlefan.easytest.data.QuestionSet
 import xyz.xfqlittlefan.easytest.databinding.ActivitySelectQuestionBankBinding
 import xyz.xfqlittlefan.easytest.util.ActivityMap
-import xyz.xfqlittlefan.easytest.util.MyClass
-import xyz.xfqlittlefan.easytest.util.MyClass.smoothScroll
+import xyz.xfqlittlefan.easytest.util.UtilClass
+import xyz.xfqlittlefan.easytest.util.UtilClass.getGson
+import xyz.xfqlittlefan.easytest.util.UtilClass.smoothScroll
 import xyz.xfqlittlefan.easytest.widget.BlurBehindDialogBuilder
 import java.io.IOException
 
@@ -86,7 +86,7 @@ class SelectQuestionBankActivity : BaseActivity() {
                     override fun onResponse(call: Call, response: Response) {
                         if (response.code == 200) {
                             try {
-                                val set = Gson().fromJson(response.body?.string(), QuestionSet::class.java)
+                                val set = getGson().fromJson(response.body?.string(), QuestionSet::class.java)
                                 set.init()
                                 set.setUrl(url)
                                 var cacheList: MutableList<QuestionSet.Set> = ArrayList()
@@ -123,7 +123,7 @@ class SelectQuestionBankActivity : BaseActivity() {
 
     private fun onItemClicked(item: QuestionSet.Set) {
         if (item.url != "" && item.url != null) {
-            requestedOrientation = if (MyClass.getPreferences().getBoolean("enable_landscape", false)) {
+            requestedOrientation = if (UtilClass.getPreferences().getBoolean("enable_landscape", false)) {
                 ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             } else {
                 ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -131,6 +131,8 @@ class SelectQuestionBankActivity : BaseActivity() {
             Intent(this, TestActivity::class.java).apply {
                 putExtra("url", item.url)
                 putExtra("random", item.random)
+                putExtra("id", getGson().toJson(item.idMap))
+                putExtra("questionSetUrl", item.questionSetUrl)
                 startActivity(this)
             }
             finish()

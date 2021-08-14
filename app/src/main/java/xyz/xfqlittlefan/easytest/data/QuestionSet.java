@@ -1,9 +1,14 @@
 package xyz.xfqlittlefan.easytest.data;
 
+import static xyz.xfqlittlefan.easytest.util.UtilClass.QUESTION_BANK_ID;
+import static xyz.xfqlittlefan.easytest.util.UtilClass.QUESTION_SET_ID;
+
 import androidx.annotation.Keep;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Keep
@@ -91,6 +96,7 @@ public class QuestionSet {
             if (children != null) {
                 for (int i = 0; i < children.size(); i++) {
                     children.get(i).savedSet = this;
+                    children.get(i).savedQuestionSet = savedQuestionSet;
                     children.get(i).init();
                 }
             }
@@ -100,18 +106,7 @@ public class QuestionSet {
             if (savedQuestionSet != null) {
                 return savedQuestionSet;
             } else {
-                QuestionSet questionSet = null;
-                Set set = this;
-                while (questionSet == null) {
-                    if (set.savedQuestionSet != null) {
-                        questionSet = set.savedQuestionSet;
-                    } else if (set.savedSet != null) {
-                        set = set.savedSet;
-                    } else {
-                        break;
-                    }
-                }
-                return questionSet;
+                return savedSet.getQuestionSet();
             }
         }
 
@@ -125,11 +120,18 @@ public class QuestionSet {
             }
         }
 
-        public String getOuterUrl() {
+        public String getQuestionSetUrl() {
             if (getQuestionSet() == null) {
                 return "";
             }
             return getQuestionSet().url;
+        }
+
+        public Map<Integer, String> getIdMap() {
+            Map<Integer, String> map = new HashMap<>();
+            map.put(QUESTION_SET_ID, getQuestionSet().id);
+            map.put(QUESTION_BANK_ID, id);
+            return map;
         }
 
         public Integer getIndex() {

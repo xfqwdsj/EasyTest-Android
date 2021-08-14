@@ -45,7 +45,7 @@ class MainActivity : BaseActivity() {
             }
         }
         binding.card2.setOnClickListener {
-            Snackbar.make(binding.root, R.string.coming_soon, Snackbar.LENGTH_SHORT).show()
+            startActivity(Intent(this, QueryActivity::class.java))
         }
         binding.card3.setOnClickListener {
             if (currentUser == null) {

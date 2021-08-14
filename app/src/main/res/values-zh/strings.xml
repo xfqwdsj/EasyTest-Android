@@ -34,7 +34,6 @@
     <string name="result">成果</string>
     <string name="copy_id">复制ID</string>
     <string name="result_query_description">查看我的成果</string>
-    <string name="data_id">数据ID</string>
     <string name="download_resources">下载资源</string>
     <string name="status">当前状态：%s</string>
     <string name="download">下载</string>
@@ -88,4 +87,5 @@
     <string name="total_score">总分 (%1$.1f / %2$.1f)</string>
     <string name="landscape_mode">横屏模式</string>
     <string name="landscape_mode_summary">测试时使用横屏模式</string>
+    <string name="back">返回</string>
 </resources>

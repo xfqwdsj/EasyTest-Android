@@ -12,7 +12,7 @@ import com.takisoft.preferencex.PreferenceFragmentCompat
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
 import xyz.xfqlittlefan.easytest.databinding.ActivitySettingsBinding
-import xyz.xfqlittlefan.easytest.util.MyClass
+import xyz.xfqlittlefan.easytest.util.UtilClass
 import xyz.xfqlittlefan.easytest.util.ThemeColorPreference
 import xyz.xfqlittlefan.easytest.util.ThemeUtil
 import rikka.material.app.DayNightDelegate
@@ -57,7 +57,7 @@ class SettingsActivity : BaseActivity() {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
             findPreference<SimpleMenuPreference>("dark_theme")?.setOnPreferenceChangeListener { _, newValue ->
-                if (!MyClass.getPreferences()
+                if (!UtilClass.getPreferences()
                         .getString("dark_theme", ThemeUtil.MODE_NIGHT_FOLLOW_SYSTEM)
                         ?.equals(newValue)!!
                 ) {

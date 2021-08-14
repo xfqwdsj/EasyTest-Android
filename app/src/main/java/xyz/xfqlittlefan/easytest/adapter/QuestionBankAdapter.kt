@@ -53,7 +53,7 @@ class QuestionBankAdapter(
                 setImageResource(R.drawable.ic_baseline_folder_24)
             }
             itemView.findViewById<View>(R.id.card).setOnClickListener {
-                val urlList = listOf(item.outerUrl)
+                val urlList = listOf(item.questionSetUrl)
                 val index = ArrayList(index)
                 index.add(item.index)
                 Intent(context, SelectQuestionBankActivity::class.java).apply {

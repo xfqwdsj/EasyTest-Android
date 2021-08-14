@@ -22,7 +22,6 @@ import com.google.android.material.chip.ChipGroup
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.transition.MaterialFadeThrough
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.noties.markwon.Markwon
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
@@ -42,15 +41,16 @@ import xyz.xfqlittlefan.easytest.data.Result
 import xyz.xfqlittlefan.easytest.databinding.ActivityTestBinding
 import xyz.xfqlittlefan.easytest.databinding.LayoutNestedScrollViewBinding
 import xyz.xfqlittlefan.easytest.util.ActivityMap
-import xyz.xfqlittlefan.easytest.util.MyClass.CORRECTNESS
-import xyz.xfqlittlefan.easytest.util.MyClass.SCORE
-import xyz.xfqlittlefan.easytest.util.MyClass.dip2PxF
-import xyz.xfqlittlefan.easytest.util.MyClass.dip2PxI
-import xyz.xfqlittlefan.easytest.util.MyClass.getPreferences
-import xyz.xfqlittlefan.easytest.util.MyClass.getQuestionStateMap
-import xyz.xfqlittlefan.easytest.util.MyClass.getResColor
-import xyz.xfqlittlefan.easytest.util.MyClass.getResString
-import xyz.xfqlittlefan.easytest.util.MyClass.setMarginTop
+import xyz.xfqlittlefan.easytest.util.UtilClass.CORRECTNESS
+import xyz.xfqlittlefan.easytest.util.UtilClass.SCORE
+import xyz.xfqlittlefan.easytest.util.UtilClass.dip2PxF
+import xyz.xfqlittlefan.easytest.util.UtilClass.dip2PxI
+import xyz.xfqlittlefan.easytest.util.UtilClass.getGson
+import xyz.xfqlittlefan.easytest.util.UtilClass.getPreferences
+import xyz.xfqlittlefan.easytest.util.UtilClass.getQuestionStateMap
+import xyz.xfqlittlefan.easytest.util.UtilClass.getResColor
+import xyz.xfqlittlefan.easytest.util.UtilClass.getResString
+import xyz.xfqlittlefan.easytest.util.UtilClass.setMarginTop
 import xyz.xfqlittlefan.easytest.widget.BlurBehindDialogBuilder
 import java.io.IOException
 import java.util.*
@@ -113,7 +113,7 @@ class TestActivity : BaseActivity() {
             override fun onResponse(call: Call, response: Response) {
                 if (response.code == 200) {
                     try {
-                        questionList = Gson().fromJson(response.body?.string(), object : TypeToken<MutableList<Question>>() {}.type)  //把获取到的json字符串数组解析出来
+                        questionList = getGson().fromJson(response.body?.string(), object : TypeToken<MutableList<Question>>() {}.type)  //把获取到的json字符串数组解析出来
                         userAnswerList = List(questionList.size) { Question() }
                         for (i in questionList.indices) {
                             userAnswerList[i].userAnswer = questionList[i].userAnswer
@@ -447,9 +447,10 @@ class TestActivity : BaseActivity() {
                     view.findViewById<Button>(R.id.submit).isEnabled = true
                     view.findViewById<Button>(R.id.submit).setOnClickListener {
                         val result = Result()
-                        val gson = Gson()
-                        result.question = gson.toJson(questionList)
-                        result.state = gson.toJson(stateMap)
+                        result.question = getGson().toJson(questionList)
+                        result.state = getGson().toJson(stateMap)
+                        result.idMap = intent.getStringExtra("id")
+                        result.url = intent.getStringExtra("questionSetUrl")
                         if (result.save()) {
                             Snackbar.make(binding.root, resources.getString(R.string.upload_success, result.id), Snackbar.LENGTH_LONG)
                                 .setAction(android.R.string.copy) {
@@ -524,7 +525,7 @@ class TestActivity : BaseActivity() {
             override fun onResponse(call: Call, response: Response) {
                 if (response.code == 200) {
                     try {
-                        questionList = Gson().fromJson(response.body?.string(), object : TypeToken<MutableList<Question>>() {}.type)
+                        questionList = getGson().fromJson(response.body?.string(), object : TypeToken<MutableList<Question>>() {}.type)
                         runOnUiThread {
                             recoveryList()
                             binding.toolbar.menu.findItem(R.id.result).isVisible = true
@@ -782,9 +783,10 @@ class TestActivity : BaseActivity() {
                                 view.findViewById<Button>(R.id.submit).isEnabled = true
                                 view.findViewById<Button>(R.id.submit).setOnClickListener {
                                     val result = Result()
-                                    val gson = Gson()
-                                    result.question = gson.toJson(questionList)
-                                    result.state = gson.toJson(stateMap)
+                                    result.question = getGson().toJson(questionList)
+                                    result.state = getGson().toJson(stateMap)
+                                    result.idMap = intent.getStringExtra("id")
+                                    result.url = intent.getStringExtra("questionSetUrl")
                                     if (result.save()) {
                                         Snackbar.make(binding.root, resources.getString(R.string.upload_success, result.id), Snackbar.LENGTH_LONG)
                                             .setAction(android.R.string.copy) {

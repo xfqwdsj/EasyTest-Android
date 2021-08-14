@@ -11,7 +11,7 @@ import com.google.android.material.textfield.TextInputEditText
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
 import xyz.xfqlittlefan.easytest.databinding.ActivityLoginBinding
-import xyz.xfqlittlefan.easytest.util.MyClass.getResString
+import xyz.xfqlittlefan.easytest.util.UtilClass.getResString
 import xyz.xfqlittlefan.easytest.widget.BlurBehindDialogBuilder
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable

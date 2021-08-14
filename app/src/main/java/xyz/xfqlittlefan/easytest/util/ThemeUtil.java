@@ -44,7 +44,7 @@ public class ThemeUtil {
     private static final String THEME_BLACK = "BLACK";
 
     static {
-        preferences = MyClass.INSTANCE.getPreferences();
+        preferences = UtilClass.INSTANCE.getPreferences();
         colorThemeMap.put("COLOR_PRIMARY", R.style.ThemeOverlay_color_primary);
         colorThemeMap.put("MATERIAL_RED", R.style.ThemeOverlay_material_red);
         colorThemeMap.put("MATERIAL_PINK", R.style.ThemeOverlay_material_pink);

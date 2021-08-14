@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
 import xyz.xfqlittlefan.easytest.R
-import xyz.xfqlittlefan.easytest.util.MyClass.getResString
+import xyz.xfqlittlefan.easytest.util.UtilClass.getResString
 
 class TestPagerAdapter(
     private val viewList: List<View>,
