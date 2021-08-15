@@ -9,6 +9,9 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import xyz.xfqlittlefan.easytest.data.Question
+import java.lang.reflect.Type
 
 @SuppressLint("StaticFieldLeak")
 object UtilClass {
@@ -67,6 +70,10 @@ object UtilClass {
 
     fun getGson(): Gson {
         return gson
+    }
+
+    fun <T> getType(): Type {
+        return object : TypeToken<T>() {}.type
     }
 
     fun init(context: Context) {

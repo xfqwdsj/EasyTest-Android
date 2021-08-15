@@ -88,4 +88,8 @@
     <string name="landscape_mode">横屏模式</string>
     <string name="landscape_mode_summary">测试时使用横屏模式</string>
     <string name="back">返回</string>
+    <string name="query">查询</string>
+    <string name="expand_options">展开选项</string>
+    <string name="collapse_options">收起选项</string>
+    <string name="cloud_result">云端结果</string>
 </resources>

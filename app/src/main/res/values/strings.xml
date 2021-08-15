@@ -87,5 +87,8 @@
     <string name="landscape_mode">Landscape mode</string>
     <string name="landscape_mode_summary">Use landscape mode when testing</string>
     <string name="back">Back</string>
-    <string name="title_activity_query" translatable="false">QueryActivity</string>
+    <string name="query">Query</string>
+    <string name="expand_options">Expand options</string>
+    <string name="collapse_options">Collapse options</string>
+    <string name="cloud_result">Cloud result</string>
 </resources>

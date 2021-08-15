@@ -14,9 +14,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activity.QueryActivity"
-            android:exported="true"
-            android:label="@string/title_activity_query"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:exported="true" />
         <activity
             android:name=".activity.ResultActivity"
             android:exported="true" />
