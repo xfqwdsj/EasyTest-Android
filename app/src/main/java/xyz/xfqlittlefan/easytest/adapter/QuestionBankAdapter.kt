@@ -43,7 +43,7 @@ class QuestionBankAdapter(
         }
         itemView.findViewById<TextView>(R.id.textView).text = item.name
         itemView.findViewById<TextView>(R.id.textView2).text = item.description
-        if (item.children.isEmpty()) {
+        if (item.children == null || item.children.isEmpty()) {
             itemView.findViewById<ImageView>(R.id.imageView).apply {
                 setImageResource(R.drawable.ic_baseline_book_24)
             }

@@ -14,7 +14,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -58,9 +57,7 @@ class QueryActivity : BaseActivity() {
                             modifier = Modifier
                                 .fillMaxSize()
                                 .verticalScroll(rememberScrollState())
-                                .padding(contentPadding),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally,
+                                .padding(contentPadding)
                         ) {
                             var text by remember { mutableStateOf("") }
                             var expanded by remember { mutableStateOf(false) }
@@ -71,7 +68,7 @@ class QueryActivity : BaseActivity() {
                                 value = text,
                                 onValueChange = { text = it },
                                 modifier = Modifier
-                                    .padding(horizontal = 10.dp)
+                                    .padding(start = 10.dp, end = 10.dp, top = 10.dp)
                                     .fillMaxWidth(),
                                 label = {
                                     Text(stringResource(id = R.string.query))
@@ -102,7 +99,7 @@ class QueryActivity : BaseActivity() {
                                                     }
                                                     .padding(15.dp)
                                             ) {
-                                                Checkbox(checked = uploaded, onCheckedChange = { uploaded = it })
+                                                Checkbox(checked = uploaded, onCheckedChange = null)
                                                 Text(
                                                     modifier = Modifier.padding(start = 5.dp),
                                                     text = stringResource(id = R.string.cloud_result)
@@ -113,7 +110,7 @@ class QueryActivity : BaseActivity() {
                                 }
                             }
                             Button(
-                                modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 10.dp).fillMaxWidth(),
+                                modifier = Modifier.padding(10.dp).fillMaxWidth(),
                                 onClick = {
                                     startActivity(Intent(this@QueryActivity, ResultActivity::class.java).apply {
                                         putExtra("id", text)

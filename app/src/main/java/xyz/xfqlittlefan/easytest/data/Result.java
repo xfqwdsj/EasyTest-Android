@@ -13,8 +13,8 @@ public class Result extends LitePalSupport {
 
     private String question;
     private String state;
-    private String idMap;
     private String url;
+    private String setId;
     private Long id;
 
     public String getQuestion() {
@@ -41,19 +41,23 @@ public class Result extends LitePalSupport {
         this.id = id;
     }
 
-    public String getIdMap() {
-        return idMap;
-    }
-
-    public void setIdMap(String idMap) {
-        this.idMap = idMap;
-    }
-
     public String getUrl() {
         return url;
     }
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public boolean isCorrect() {
+        return (question != null && state != null && setId != null && url != null);
+    }
+
+    public String getSetId() {
+        return setId;
+    }
+
+    public void setSetId(String setId) {
+        this.setId = setId;
     }
 }

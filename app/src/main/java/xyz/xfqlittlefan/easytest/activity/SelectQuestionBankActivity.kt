@@ -131,7 +131,7 @@ class SelectQuestionBankActivity : BaseActivity() {
             Intent(this, TestActivity::class.java).apply {
                 putExtra("url", item.url)
                 putExtra("random", item.random)
-                putExtra("id", getGson().toJson(item.idMap))
+                putExtra("id", item.id)
                 putExtra("questionSetUrl", item.questionSetUrl)
                 startActivity(this)
             }

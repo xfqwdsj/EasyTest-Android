@@ -2,12 +2,13 @@
 buildscript {
     ext {
         compose_version = '1.0.1'
+        markwon_version = '4.6.2'
     }
-    ext.markwon_version = '4.6.2'
 
     repositories {
         google()
         mavenCentral()
+        maven { url "https://jitpack.io" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.1.0-alpha03'

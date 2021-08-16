@@ -4,14 +4,22 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.view.ViewGroup
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import xyz.xfqlittlefan.easytest.R
+import xyz.xfqlittlefan.easytest.activity.ui.theme.Blue200
+import xyz.xfqlittlefan.easytest.activity.ui.theme.Green200
+import xyz.xfqlittlefan.easytest.activity.ui.theme.Red200
+import xyz.xfqlittlefan.easytest.activity.ui.theme.Yellow200
 import xyz.xfqlittlefan.easytest.data.Question
 import java.lang.reflect.Type
+import kotlin.math.min
 
 @SuppressLint("StaticFieldLeak")
 object UtilClass {
@@ -72,10 +80,6 @@ object UtilClass {
         return gson
     }
 
-    fun <T> getType(): Type {
-        return object : TypeToken<T>() {}.type
-    }
-
     fun init(context: Context) {
         this.context = context
     }
@@ -87,6 +91,64 @@ object UtilClass {
         }
         smoothScroller.targetPosition = position
         layoutManager?.startSmoothScroll(smoothScroller)
+    }
+
+    fun getQuestionScore(question: Question): Float {
+        var questionScore = 0F
+        when (question.type) {
+            1 -> {
+                when (question.scoreType) {
+                    1 -> {
+                        if (question.maxSelecting == null) {
+                            question.options.forEach {
+                                if (it.score > questionScore) questionScore = it.score
+                            }
+                        } else {
+                            val list = question.options.sortedByDescending { it.score }
+                            for (i in 0 until min(question.maxSelecting, list.size)) {
+                                questionScore += list[i].score
+                            }
+
+                        }
+                    }
+                    2 -> {
+                        if (question.maxSelecting != null) {
+                            val list = question.options.filter { it.isCorrect }.sortedByDescending { it.score }
+                            for (i in 0 until min(question.maxSelecting, list.size)) {
+                                questionScore += list[i].score
+                            }
+                        }
+                    }
+                }
+            }
+            2 -> {
+                for (i in question.answers.indices) {
+                    questionScore += getMaxScore(question, i)
+                }
+            }
+            else -> questionScore = 114514F
+        }
+        return questionScore
+    }
+
+    fun getMaxScore(question: Question, answerIndex: Int): Float {
+        var maxScore = 0F
+        question.answers[answerIndex].score.forEach {
+            if (it > maxScore) maxScore = it
+        }
+        return maxScore
+    }
+
+    fun getStateContent(question: Question, map: Map<Int, Map<Int, Map<Int, Float>>>, index: Int): Pair<Color, String> {
+        val questionMap = getQuestionStateMap(map)
+        val questionNumber = index + 1
+        val userScore = questionMap[index]?.get(SCORE)
+        return when (questionMap[index]?.get(CORRECTNESS)) {
+            1F -> Pair(Green200, context.resources.getString(R.string.result_question_state, questionNumber, getResString(R.string.correct), userScore, getQuestionScore(question)))
+            3F -> Pair(Yellow200, context.resources.getString(R.string.result_question_state, questionNumber, getResString(R.string.half_correct), userScore, getQuestionScore(question)))
+            4F -> Pair(Blue200, context.resources.getString(R.string.result_question_state, questionNumber, getResString(R.string.no_points), userScore, getQuestionScore(question)))
+            else -> Pair(Red200, context.resources.getString(R.string.result_question_state, questionNumber, getResString(R.string.wrong), userScore, getQuestionScore(question)))
+        }
     }
 
     fun getQuestionStateMap(map: Map<Int, Map<Int, Map<Int, Float>>>): Map<Int, Map<Int, Float>> {
@@ -123,5 +185,74 @@ object UtilClass {
             returnMap[i] = questionMap
         }
         return returnMap
+    }
+
+    fun parseQuestion(question: Question): Pair<String, List<String>?> {
+        if (question.type == 1) {
+            return Pair(question.question, null)
+        }
+        var questionText = ""  //题目文本
+        var escaped = false  //转义模式
+        var isBank = false  //“空”模式
+        var bankText = ""  //当前“空”提示文本
+        val bank: MutableList<String> = mutableListOf()  //“空”提示文本列表
+        for (char in question.question) {
+            when (char) {
+                '&' -> {  //遇到'&'
+                    if (escaped) {
+                        escaped = false  //取消转义状态
+                        questionText += char  //给题目文本加上
+                        if (isBank) {
+                            bankText += char  //如果在“空”里还要给该空文本加上
+                        }
+                    } else {
+                        escaped = true
+                    }
+                }
+                '{' -> {
+                    if (escaped) {
+                        escaped = false
+                        questionText += char
+                        if (isBank) {
+                            bankText += char
+                        }
+                    } else if (!isBank) {
+                        isBank = true
+                        questionText += " <u>**[  "
+                    } else {  //  !escaped || isBank
+                        questionText += char
+                        if (isBank) {
+                            bankText += char
+                        }
+                    }
+                }
+                '}' -> {
+                    if (escaped) {
+                        questionText += char
+                        escaped = false
+                        if (isBank) {
+                            bankText += char
+                        }
+                    } else if (isBank) {
+                        isBank = false
+                        questionText += "  ]**</u> "
+                        bank.add(bankText)
+                        bankText = ""
+                    } else {  //  !escaped || !isBank
+                        questionText += char
+                        if (!isBank) {
+                            bankText += char
+                        }
+                    }
+                }
+                else -> {  //如果是其他字符就老实加入
+                    questionText += char
+                    if (isBank) {
+                        bankText += char
+                    }
+                }
+            }
+        }
+        return Pair(questionText, bank)
     }
 }

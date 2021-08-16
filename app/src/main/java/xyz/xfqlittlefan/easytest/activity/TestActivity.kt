@@ -449,7 +449,7 @@ class TestActivity : BaseActivity() {
                         val result = Result()
                         result.question = getGson().toJson(questionList)
                         result.state = getGson().toJson(stateMap)
-                        result.idMap = intent.getStringExtra("id")
+                        result.setId = intent.getStringExtra("id")
                         result.url = intent.getStringExtra("questionSetUrl")
                         if (result.save()) {
                             Snackbar.make(binding.root, resources.getString(R.string.upload_success, result.id), Snackbar.LENGTH_LONG)
@@ -785,7 +785,7 @@ class TestActivity : BaseActivity() {
                                     val result = Result()
                                     result.question = getGson().toJson(questionList)
                                     result.state = getGson().toJson(stateMap)
-                                    result.idMap = intent.getStringExtra("id")
+                                    result.setId = intent.getStringExtra("id")
                                     result.url = intent.getStringExtra("questionSetUrl")
                                     if (result.save()) {
                                         Snackbar.make(binding.root, resources.getString(R.string.upload_success, result.id), Snackbar.LENGTH_LONG)

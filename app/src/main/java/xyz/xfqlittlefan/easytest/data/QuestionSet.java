@@ -57,15 +57,11 @@ public class QuestionSet {
         private String description;
         private String url;
         private String id;
-        private Boolean random = false;
-        private List<Set> children = new ArrayList<>();
+        private final Boolean random = false;
+        private List<Set> children;
 
         public String getName() {
             return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
         }
 
         public String getDescription() {
@@ -111,10 +107,10 @@ public class QuestionSet {
         }
 
         public List<Set> getList() {
-            if (savedQuestionSet != null) {
-                return savedQuestionSet.set;
-            } else if (savedSet != null) {
+            if (savedSet != null) {
                 return savedSet.children;
+            } else if (savedQuestionSet != null) {
+                return savedQuestionSet.set;
             } else {
                 return new ArrayList<>();
             }
@@ -127,17 +123,10 @@ public class QuestionSet {
             return getQuestionSet().url;
         }
 
-        public Map<Integer, String> getIdMap() {
-            Map<Integer, String> map = new HashMap<>();
-            map.put(QUESTION_SET_ID, getQuestionSet().id);
-            map.put(QUESTION_BANK_ID, id);
-            return map;
-        }
-
         public Integer getIndex() {
             int index = 114514;
             List<Set> set = getList();
-            for (int i = 0; i < set.size(); i ++) {
+            for (int i = 0; i < set.size(); i++) {
                 if (set.get(i).equals(this)) {
                     index = i;
                     break;
@@ -151,8 +140,12 @@ public class QuestionSet {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Set set = (Set) o;
-            return Objects.equals(name, set.name) && Objects.equals(description, set.description) && Objects.equals(url, set.url) && Objects.equals(id, set.id) && Objects.equals(random, set.random) && Objects.equals(children, set.children);
+            return Objects.equals(name, set.name) && Objects.equals(description, set.description) && Objects.equals(url, set.url) && Objects.equals(id, set.id) && Objects.equals(random, set.random);
         }
 
+        @Override
+        public int hashCode() {
+            return Objects.hash(name, description, url, id, random);
+        }
     }
 }
