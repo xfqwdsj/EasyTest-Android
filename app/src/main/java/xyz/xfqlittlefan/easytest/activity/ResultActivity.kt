@@ -2,8 +2,12 @@ package xyz.xfqlittlefan.easytest.activity
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -11,7 +15,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import cn.leancloud.LCObject
@@ -30,15 +33,15 @@ import org.litepal.extension.find
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
 import xyz.xfqlittlefan.easytest.activity.ui.theme.EasyTestTheme
-import xyz.xfqlittlefan.easytest.activity.ui.theme.Green200
 import xyz.xfqlittlefan.easytest.data.Question
 import xyz.xfqlittlefan.easytest.data.Result
+import xyz.xfqlittlefan.easytest.util.UtilClass.getSelectionColor
 import xyz.xfqlittlefan.easytest.util.UtilClass.getGson
-import xyz.xfqlittlefan.easytest.util.UtilClass.getQuestionStateMap
 import xyz.xfqlittlefan.easytest.util.UtilClass.getStateContent
 import xyz.xfqlittlefan.easytest.util.UtilClass.parseQuestion
 
 class ResultActivity : BaseActivity() {
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -93,13 +96,66 @@ class ResultActivity : BaseActivity() {
                                                         }
                                                         Column(
                                                             modifier = Modifier
-                                                                .padding(10.dp)
                                                                 .fillMaxWidth()
                                                         ) {
                                                             MarkdownText(
+                                                                modifier = Modifier.padding(10.dp),
                                                                 markdown = parseQuestion(question).first,
                                                                 style = MaterialTheme.typography.subtitle1
                                                             )
+                                                            Column(modifier = Modifier.fillMaxWidth()) {
+                                                                if (question.type == 1) {
+                                                                    question.options.forEachIndexed { i, option ->
+                                                                        Row(
+                                                                            modifier = Modifier
+                                                                                .fillMaxWidth()
+                                                                                .clickable { }
+                                                                                .padding(15.dp)
+                                                                        ) {
+                                                                            val color = getSelectionColor(question, i)
+                                                                            if (question.maxSelecting != null) {
+                                                                                Checkbox(
+                                                                                    checked = (question.userAnswer[i] == "1"),
+                                                                                    onCheckedChange = null,
+                                                                                    colors = CheckboxDefaults.colors(
+                                                                                        checkedColor = color.first ?: MaterialTheme.colors.secondary,
+                                                                                        uncheckedColor = color.second ?: MaterialTheme.colors.onSurface.copy(alpha = 0.6f)
+                                                                                    )
+                                                                                )
+                                                                            } else {
+                                                                                RadioButton(
+                                                                                    selected = (question.userAnswer[i] == "1"),
+                                                                                    onClick = null,
+                                                                                    colors = RadioButtonDefaults.colors(
+                                                                                        selectedColor = color.first ?: MaterialTheme.colors.secondary,
+                                                                                        unselectedColor = color.second ?: MaterialTheme.colors.onSurface.copy(alpha = 0.6f)
+                                                                                    )
+                                                                                )
+                                                                            }
+                                                                            MarkdownText(
+                                                                                modifier = Modifier.padding(start = 5.dp),
+                                                                                markdown = option.text
+                                                                            )
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            Spacer(Modifier.height(10.dp))
+                                                            var expanded by remember { mutableStateOf(false) }
+                                                            Column {
+                                                                TextButton(
+                                                                    modifier = Modifier.fillMaxWidth(),
+                                                                    onClick = { expanded = !expanded },
+                                                                    shape = RoundedCornerShape(0.dp)
+                                                                ) {
+                                                                    Text(stringResource(if (expanded) R.string.collapse_details else R.string.expand_details))
+                                                                }
+                                                                Column {
+                                                                    AnimatedVisibility(visible = expanded) {
+                                                                        Text("哈哈哈")
+                                                                    }
+                                                                }
+                                                            }
                                                         }
                                                     }
                                                 }

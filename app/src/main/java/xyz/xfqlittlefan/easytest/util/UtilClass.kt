@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.view.ViewGroup
+import androidx.compose.material.CheckboxColors
+import androidx.compose.material.CheckboxDefaults
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
@@ -13,10 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import xyz.xfqlittlefan.easytest.R
-import xyz.xfqlittlefan.easytest.activity.ui.theme.Blue200
-import xyz.xfqlittlefan.easytest.activity.ui.theme.Green200
-import xyz.xfqlittlefan.easytest.activity.ui.theme.Red200
-import xyz.xfqlittlefan.easytest.activity.ui.theme.Yellow200
+import xyz.xfqlittlefan.easytest.activity.ui.theme.*
 import xyz.xfqlittlefan.easytest.data.Question
 import java.lang.reflect.Type
 import kotlin.math.min
@@ -148,6 +147,15 @@ object UtilClass {
             3F -> Pair(Yellow200, context.resources.getString(R.string.result_question_state, questionNumber, getResString(R.string.half_correct), userScore, getQuestionScore(question)))
             4F -> Pair(Blue200, context.resources.getString(R.string.result_question_state, questionNumber, getResString(R.string.no_points), userScore, getQuestionScore(question)))
             else -> Pair(Red200, context.resources.getString(R.string.result_question_state, questionNumber, getResString(R.string.wrong), userScore, getQuestionScore(question)))
+        }
+    }
+
+    fun getSelectionColor(question: Question, index: Int): Pair<Color?, Color?> {
+        val userSelected = question.userAnswer[index] == "1"
+        return if (question.options[index].isCorrect == true) {
+            Pair(if (userSelected) Green700 else null, if (!userSelected) Green700 else null)
+        } else {
+            Pair(if (userSelected) Red700 else null, null)
         }
     }
 

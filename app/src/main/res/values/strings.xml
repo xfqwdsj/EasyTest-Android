@@ -92,4 +92,6 @@
     <string name="collapse_options">Collapse options</string>
     <string name="cloud_result">Cloud result</string>
     <string name="result_question_state">Question %1$d (%2$s, %3$.1f / %4$.1f)</string>
+    <string name="expand_details">Expand details</string>
+    <string name="collapse_details">Collapse details</string>
 </resources>

@@ -93,4 +93,6 @@
     <string name="collapse_options">收起选项</string>
     <string name="cloud_result">云端结果</string>
     <string name="result_question_state">第 %1$d 题 (%2$s, %3$.1f / %4$.1f)</string>
+    <string name="expand_details">展开详情</string>
+    <string name="collapse_details">收起详情</string>
 </resources>
