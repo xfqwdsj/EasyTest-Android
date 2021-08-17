@@ -45,8 +45,9 @@ class QueryActivity : BaseActivity() {
                                         Icon(Icons.Filled.ArrowBack, stringResource(R.string.back))
                                     }
                                 },
-                                backgroundColor = MaterialTheme.colors.background,
-                                contentPadding = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.statusBars)
+                                backgroundColor = MaterialTheme.colors.background.copy(alpha = 0.95f),
+                                contentPadding = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.statusBars),
+                                elevation = 0.dp
                             )
                         },
                         bottomBar = {

@@ -6,6 +6,8 @@ import android.content.SharedPreferences
 import android.view.ViewGroup
 import androidx.compose.material.CheckboxColors
 import androidx.compose.material.CheckboxDefaults
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
@@ -138,24 +140,29 @@ object UtilClass {
         return maxScore
     }
 
+    @Composable
     fun getStateContent(question: Question, map: Map<Int, Map<Int, Map<Int, Float>>>, index: Int): Pair<Color, String> {
         val questionMap = getQuestionStateMap(map)
         val questionNumber = index + 1
         val userScore = questionMap[index]?.get(SCORE)
         return when (questionMap[index]?.get(CORRECTNESS)) {
-            1F -> Pair(Green200, context.resources.getString(R.string.result_question_state, questionNumber, getResString(R.string.correct), userScore, getQuestionScore(question)))
-            3F -> Pair(Yellow200, context.resources.getString(R.string.result_question_state, questionNumber, getResString(R.string.half_correct), userScore, getQuestionScore(question)))
-            4F -> Pair(Blue200, context.resources.getString(R.string.result_question_state, questionNumber, getResString(R.string.no_points), userScore, getQuestionScore(question)))
-            else -> Pair(Red200, context.resources.getString(R.string.result_question_state, questionNumber, getResString(R.string.wrong), userScore, getQuestionScore(question)))
+            1F -> Pair(if (MaterialTheme.colors.isLight) Green100 else Green900, context.resources.getString(R.string.result_question_state, questionNumber, getResString(R.string.correct), userScore, getQuestionScore(question)))
+            3F -> Pair(if (MaterialTheme.colors.isLight) Yellow100 else Yellow900, context.resources.getString(R.string.result_question_state, questionNumber, getResString(R.string.half_correct), userScore, getQuestionScore(question)))
+            4F -> Pair(if (MaterialTheme.colors.isLight) Blue100 else Blue900, context.resources.getString(R.string.result_question_state, questionNumber, getResString(R.string.no_points), userScore, getQuestionScore(question)))
+            else -> Pair(if (MaterialTheme.colors.isLight) Red200 else Red900, context.resources.getString(R.string.result_question_state, questionNumber, getResString(R.string.wrong), userScore, getQuestionScore(question)))
         }
     }
 
-    fun getSelectionColor(question: Question, index: Int): Pair<Color?, Color?> {
-        val userSelected = question.userAnswer[index] == "1"
-        return if (question.options[index].isCorrect == true) {
-            Pair(if (userSelected) Green700 else null, if (!userSelected) Green700 else null)
-        } else {
-            Pair(if (userSelected) Red700 else null, null)
+    fun getSelectionColor(question: Question, index: Int): Color {
+        return if (question.options[index].isCorrect) Green700 else Red700
+    }
+
+    fun getCorrectnessColor(map: Map<Int, Map<Int, Map<Int, Float>>>, questionIndex: Int, answerIndex: Int): Color {
+        return when (map[questionIndex]?.get(answerIndex)?.get(CORRECTNESS)) {
+            1F -> Green700
+            3F -> Yellow700
+            4F -> Blue700
+            else -> Red700
         }
     }
 
