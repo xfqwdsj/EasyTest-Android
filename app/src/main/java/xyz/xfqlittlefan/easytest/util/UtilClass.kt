@@ -4,22 +4,17 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.view.ViewGroup
-import androidx.compose.material.CheckboxColors
-import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import xyz.xfqlittlefan.easytest.R
-import xyz.xfqlittlefan.easytest.activity.ui.theme.*
+import xyz.xfqlittlefan.easytest.theme.*
 import xyz.xfqlittlefan.easytest.data.Question
-import java.lang.reflect.Type
 import kotlin.math.min
 
 @SuppressLint("StaticFieldLeak")

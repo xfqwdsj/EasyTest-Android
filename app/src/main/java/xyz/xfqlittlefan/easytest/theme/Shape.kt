@@ -1,4 +1,4 @@
-package xyz.xfqlittlefan.easytest.activity.ui.theme
+package xyz.xfqlittlefan.easytest.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes

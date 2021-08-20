@@ -1,5 +1,6 @@
 package xyz.xfqlittlefan.easytest.activity
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
@@ -34,9 +35,9 @@ import org.litepal.LitePal
 import org.litepal.extension.find
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
-import xyz.xfqlittlefan.easytest.activity.ui.theme.EasyTestTheme
-import xyz.xfqlittlefan.easytest.activity.ui.theme.Green700
-import xyz.xfqlittlefan.easytest.activity.ui.theme.Red700
+import xyz.xfqlittlefan.easytest.theme.EasyTestTheme
+import xyz.xfqlittlefan.easytest.theme.Green700
+import xyz.xfqlittlefan.easytest.theme.Red700
 import xyz.xfqlittlefan.easytest.data.Question
 import xyz.xfqlittlefan.easytest.data.Result
 import xyz.xfqlittlefan.easytest.util.UtilClass.getCorrectnessColor
@@ -46,6 +47,7 @@ import xyz.xfqlittlefan.easytest.util.UtilClass.getStateContent
 import xyz.xfqlittlefan.easytest.util.UtilClass.parseQuestion
 
 class ResultActivity : BaseActivity() {
+    @SuppressLint("MissingSuperCall")
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

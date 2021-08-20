@@ -1,5 +1,6 @@
 package xyz.xfqlittlefan.easytest.activity
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -26,10 +27,11 @@ import com.google.accompanist.insets.ui.Scaffold
 import com.google.accompanist.insets.ui.TopAppBar
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
-import xyz.xfqlittlefan.easytest.activity.ui.theme.EasyTestTheme
+import xyz.xfqlittlefan.easytest.theme.EasyTestTheme
 
 class QueryActivity : BaseActivity() {
     @OptIn(ExperimentalAnimationApi::class)
+    @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)

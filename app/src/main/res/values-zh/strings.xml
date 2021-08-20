@@ -33,7 +33,7 @@
     <string name="result_title">%s 的成果</string>
     <string name="result">成果</string>
     <string name="copy_id">复制ID</string>
-    <string name="result_query_description">查看我的成果</string>
+    <string name="result_query_summary">查看我的成果</string>
     <string name="download_resources">下载资源</string>
     <string name="status">当前状态：%s</string>
     <string name="download">下载</string>
@@ -95,4 +95,5 @@
     <string name="result_question_state">第 %1$d 题 (%2$s, %3$.1f / %4$.1f)</string>
     <string name="expand_details">展开详情</string>
     <string name="collapse_details">收起详情</string>
+    <string name="icon">图标</string>
 </resources>
