@@ -66,7 +66,7 @@ public class BlurBehindDialogBuilder extends AlertDialog.Builder {
                         return;
                     }
                     SurfaceControl surfaceControl = (SurfaceControl) viewRootImpl.getClass().getMethod("getSurfaceControl").invoke(viewRootImpl);
-                    Method setBackgroundBlurRadius = SurfaceControl.Transaction.class.getDeclaredMethod("setBackgroundBlurRadius", SurfaceControl.class, int.class);
+                    @SuppressLint("BlockedPrivateApi") Method setBackgroundBlurRadius = SurfaceControl.Transaction.class.getDeclaredMethod("setBackgroundBlurRadius", SurfaceControl.class, int.class);
                     animator.addUpdateListener(animation -> {
                         try {
                             SurfaceControl.Transaction transaction = new SurfaceControl.Transaction();
