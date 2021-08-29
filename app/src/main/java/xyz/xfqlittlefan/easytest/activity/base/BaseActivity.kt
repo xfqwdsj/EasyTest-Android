@@ -5,7 +5,6 @@ import android.content.res.Resources
 import android.content.res.Resources.Theme
 import android.graphics.Color
 import android.os.Build
-import android.os.Bundle
 import androidx.core.view.WindowInsetsCompat
 import rikka.core.res.resolveColor
 import xyz.xfqlittlefan.easytest.util.ThemeUtil

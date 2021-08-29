@@ -5,42 +5,31 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlaylistAddCheck
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
 import androidx.preference.PreferenceManager
 import cn.leancloud.LCUser
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.navigationBarsHeight
-import com.google.accompanist.insets.rememberInsetsPaddingValues
-import com.google.accompanist.insets.ui.Scaffold
-import com.google.accompanist.insets.ui.TopAppBar
-import com.google.android.material.snackbar.Snackbar
-import org.litepal.LitePal
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
 import xyz.xfqlittlefan.easytest.activity.viewmodel.MainActivityViewModel
 import xyz.xfqlittlefan.easytest.theme.*
-import xyz.xfqlittlefan.easytest.databinding.ActivityMainBinding
 import xyz.xfqlittlefan.easytest.widget.MaterialContainer
 
 class MainActivity : BaseActivity() {
@@ -53,10 +42,12 @@ class MainActivity : BaseActivity() {
         setContent {
             val scrollState = rememberLazyListState()
             MaterialContainer(
-                title = stringResource(R.string.home),
-                scrollValue = scrollState.firstVisibleItemScrollOffset.toFloat()
+                title = stringResource(R.string.home)
             ) { contentPadding ->
                 LazyColumn(state = scrollState, contentPadding = contentPadding) {
+                    item {
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
                     item {
                         ObviousCard(
                             icon = Icons.Filled.School,
@@ -73,6 +64,9 @@ class MainActivity : BaseActivity() {
                         }
                     }
                     item {
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
+                    item {
                         MainCard(
                             icon = Icons.Filled.PlaylistAddCheck,
                             title = stringResource(R.string.result),
@@ -80,6 +74,9 @@ class MainActivity : BaseActivity() {
                         ) {
                             startActivity(Intent(this@MainActivity, QueryActivity::class.java))
                         }
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(10.dp))
                     }
                     item {
                         MainCard(
@@ -96,12 +93,18 @@ class MainActivity : BaseActivity() {
                         }
                     }
                     item {
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
+                    item {
                         SecondaryCard(
                             icon = Icons.Filled.Settings,
                             title = stringResource(R.string.settings)
                         ) {
                             startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
                         }
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(10.dp))
                     }
                 }
             }
@@ -122,15 +125,13 @@ class MainActivity : BaseActivity() {
             contentColor = if (MaterialTheme.colors.isLight) White else Black,
             icon = icon,
             onClick = onClick,
-            elevation = 4.dp
+            elevation = 3.dp
         ) {
-            Column(Modifier.fillMaxSize()) {
-                Text(text = title, style = MaterialTheme.typography.h6)
-                if (subtitle != null) {
-                    Spacer(Modifier.height(4.dp))
-                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                        Text(text = subtitle, style = MaterialTheme.typography.subtitle1)
-                    }
+            Text(text = title, style = MaterialTheme.typography.subtitle1)
+            if (subtitle != null) {
+                Spacer(Modifier.height(4.dp))
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                    Text(text = subtitle, style = MaterialTheme.typography.subtitle2)
                 }
             }
         }
@@ -142,15 +143,13 @@ class MainActivity : BaseActivity() {
         ActionCard(
             icon = icon,
             onClick = onClick,
-            elevation = 4.dp
+            elevation = 3.dp
         ) {
-            Column(Modifier.fillMaxSize()) {
-                Text(text = title, style = MaterialTheme.typography.h6)
-                if (subtitle != null) {
-                    Spacer(Modifier.height(4.dp))
-                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                        Text(text = subtitle, style = MaterialTheme.typography.subtitle1)
-                    }
+            Text(text = title, style = MaterialTheme.typography.subtitle1)
+            if (subtitle != null) {
+                Spacer(Modifier.height(4.dp))
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                    Text(text = subtitle, style = MaterialTheme.typography.subtitle2)
                 }
             }
         }
@@ -162,16 +161,13 @@ class MainActivity : BaseActivity() {
         ActionCard(
             icon = icon,
             onClick = onClick,
-            elevation = 4.dp,
             color = Transparent
         ) {
-            Column(Modifier.fillMaxSize()) {
-                Text(text = title, style = MaterialTheme.typography.h6)
-                if (subtitle != null) {
-                    Spacer(Modifier.height(4.dp))
-                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                        Text(text = subtitle, style = MaterialTheme.typography.subtitle1)
-                    }
+            Text(text = title, style = MaterialTheme.typography.subtitle1)
+            if (subtitle != null) {
+                Spacer(Modifier.height(4.dp))
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                    Text(text = subtitle, style = MaterialTheme.typography.subtitle2)
                 }
             }
         }
@@ -180,36 +176,34 @@ class MainActivity : BaseActivity() {
     @ExperimentalMaterialApi
     @Composable
     fun ActionCard(
-        modifier: Modifier = Modifier,
         color: Color = MaterialTheme.colors.surface,
         contentColor: Color = contentColorFor(color),
         icon: ImageVector,
         elevation: Dp = 0.dp,
         onClick: () -> Unit,
-        content: @Composable () -> Unit
+        content: @Composable ColumnScope.() -> Unit
     ) {
         Card(
-            modifier = modifier,
             backgroundColor = color,
             contentColor = contentColor,
             shape = RoundedCornerShape(10.dp),
             elevation = elevation,
             onClick = onClick
         ) {
-            Row(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier
+                .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Spacer(Modifier.width(20.dp))
                 Icon(
                     imageVector = icon, contentDescription = stringResource(R.string.icon), modifier = Modifier
                         .padding(vertical = 20.dp)
                         .size(32.dp)
                 )
-                Box(
-                    Modifier
+                Column(
+                    modifier = Modifier
                         .fillMaxSize()
-                        .padding(20.dp)
-                ) {
-                    content()
-                }
+                        .padding(20.dp),
+                    content = content
+                )
             }
         }
     }
