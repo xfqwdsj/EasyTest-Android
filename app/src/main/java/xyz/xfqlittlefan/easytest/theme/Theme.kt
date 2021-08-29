@@ -41,7 +41,8 @@ fun colors(key: String, dark: Boolean = false): Colors {
 }
 
 @Composable
-fun EasyTestTheme(themeKey: String = "Blue", darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) { MaterialTheme(
+fun EasyTestTheme(themeKey: String = "Blue", darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+    MaterialTheme(
         colors = colors(themeKey, darkTheme),
         typography = Typography,
         shapes = Shapes,

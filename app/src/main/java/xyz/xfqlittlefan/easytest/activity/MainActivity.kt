@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import androidx.preference.PreferenceManager
 import cn.leancloud.LCUser
 import xyz.xfqlittlefan.easytest.R
@@ -39,12 +40,21 @@ class MainActivity : BaseActivity() {
     @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             val scrollState = rememberLazyListState()
             MaterialContainer(
                 title = stringResource(R.string.home)
             ) { contentPadding ->
-                LazyColumn(state = scrollState, contentPadding = contentPadding) {
+                LazyColumn(
+                    state = scrollState,
+                    contentPadding = PaddingValues(
+                        start = 10.dp,
+                        top = contentPadding.calculateTopPadding(),
+                        end = 10.dp,
+                        bottom = contentPadding.calculateBottomPadding()
+                    )
+                ) {
                     item {
                         Spacer(modifier = Modifier.height(10.dp))
                     }
@@ -124,8 +134,7 @@ class MainActivity : BaseActivity() {
             color = if (MaterialTheme.colors.isLight) Green900 else Green300,
             contentColor = if (MaterialTheme.colors.isLight) White else Black,
             icon = icon,
-            onClick = onClick,
-            elevation = 3.dp
+            onClick = onClick
         ) {
             Text(text = title, style = MaterialTheme.typography.subtitle1)
             if (subtitle != null) {
@@ -142,8 +151,7 @@ class MainActivity : BaseActivity() {
     fun MainCard(icon: ImageVector, title: String, subtitle: String? = null, onClick: () -> Unit) {
         ActionCard(
             icon = icon,
-            onClick = onClick,
-            elevation = 3.dp
+            onClick = onClick
         ) {
             Text(text = title, style = MaterialTheme.typography.subtitle1)
             if (subtitle != null) {
@@ -179,7 +187,6 @@ class MainActivity : BaseActivity() {
         color: Color = MaterialTheme.colors.surface,
         contentColor: Color = contentColorFor(color),
         icon: ImageVector,
-        elevation: Dp = 0.dp,
         onClick: () -> Unit,
         content: @Composable ColumnScope.() -> Unit
     ) {
@@ -187,16 +194,18 @@ class MainActivity : BaseActivity() {
             backgroundColor = color,
             contentColor = contentColor,
             shape = RoundedCornerShape(10.dp),
-            elevation = elevation,
+            elevation = 0.dp,
             onClick = onClick
         ) {
-            Row(modifier = Modifier
-                .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Spacer(Modifier.width(20.dp))
                 Icon(
-                    imageVector = icon, contentDescription = stringResource(R.string.icon), modifier = Modifier
-                        .padding(vertical = 20.dp)
-                        .size(32.dp)
+                    imageVector = icon,
+                    contentDescription = stringResource(R.string.icon),
+                    modifier = Modifier.padding(vertical = 20.dp).size(32.dp)
                 )
                 Column(
                     modifier = Modifier
