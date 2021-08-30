@@ -8,11 +8,14 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.core.view.WindowCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.takisoft.preferencex.PreferenceFragmentCompat
 import xyz.xfqlittlefan.easytest.R
@@ -27,6 +30,7 @@ import rikka.recyclerview.fixEdgeEffect
 import rikka.widget.borderview.BorderRecyclerView
 import xyz.xfqlittlefan.easytest.widget.MaterialContainer
 import xyz.xfqlittlefan.easytest.widget.PreferenceContainer
+import xyz.xfqlittlefan.easytest.widget.PreferenceScope
 
 
 class SettingsActivity : BaseActivity() {
@@ -34,6 +38,7 @@ class SettingsActivity : BaseActivity() {
     @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             MaterialContainer(
                 title = stringResource(id = R.string.settings),
@@ -43,9 +48,9 @@ class SettingsActivity : BaseActivity() {
                     }
                 }
             ) {
-                PreferenceContainer {
-                    category(title = stringResource(id = R.string.general)) {
-                        editPreference(key = "", title = "", defaultValue = "")
+                PreferenceContainer(modifier = Modifier.fillMaxSize(), context = this, contentPadding = it) {
+                    category(title = resources.getString(R.string.general)) {
+                        editPreference(key = "", title = "sdf", defaultValue = "")
                     }
                 }
             }

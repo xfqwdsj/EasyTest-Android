@@ -11,6 +11,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.LocalWindowInsets
+import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsHeight
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.ui.Scaffold
@@ -45,29 +46,31 @@ fun MaterialContainer(
     actions: @Composable RowScope.() -> Unit = { },
     content: @Composable (PaddingValues) -> Unit
 ) {
-    MaterialContainer(
-        themeKey = themeKey,
-        darkTheme = darkTheme,
-        topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text(text = title)
-                        if (subtitle != null) {
-                            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                                Text(text = subtitle, style = MaterialTheme.typography.subtitle2)
+    ProvideWindowInsets {
+        MaterialContainer(
+            themeKey = themeKey,
+            darkTheme = darkTheme,
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Column {
+                            Text(text = title)
+                            if (subtitle != null) {
+                                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                                    Text(text = subtitle, style = MaterialTheme.typography.subtitle2)
+                                }
                             }
                         }
-                    }
-                },
-                contentPadding = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.statusBars),
-                navigationIcon = navigationIcon,
-                actions = actions,
-                backgroundColor = MaterialTheme.colors.background.copy(alpha = 0.95f),
-                elevation = 0.dp
-            )
-        },
-        bottomBar = { Spacer(Modifier.navigationBarsHeight()) },
-        content = content
-    )
+                    },
+                    contentPadding = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.statusBars),
+                    navigationIcon = navigationIcon,
+                    actions = actions,
+                    backgroundColor = MaterialTheme.colors.background.copy(alpha = 0.95f),
+                    elevation = 0.dp
+                )
+            },
+            bottomBar = { Spacer(Modifier.navigationBarsHeight()) },
+            content = content
+        )
+    }
 }
