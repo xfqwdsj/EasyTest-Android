@@ -36,8 +36,12 @@ object UtilClass {
         setMargins(leftMargin, topMargin, rightMargin, size)
     }
 
-    fun getResString(id: Int): String {
-        return context.resources!!.getString(id)
+    fun getResString(id: Int, vararg formatArgs: Any = emptyArray()): String {
+        return if (formatArgs.isEmpty()) {
+            context.resources.getString(id)
+        } else {
+            context.resources.getString(id, formatArgs)
+        }
     }
 
     fun getResStringArray(id: Int): Array<String> {

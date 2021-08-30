@@ -1,12 +1,7 @@
 package xyz.xfqlittlefan.easytest.activity
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.ViewGroup
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Icon
@@ -16,22 +11,11 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
-import androidx.recyclerview.widget.RecyclerView
-import com.takisoft.preferencex.PreferenceFragmentCompat
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
-import xyz.xfqlittlefan.easytest.databinding.ActivitySettingsBinding
-import xyz.xfqlittlefan.easytest.util.UtilClass
-import xyz.xfqlittlefan.easytest.util.ThemeColorPreference
-import xyz.xfqlittlefan.easytest.util.ThemeUtil
-import rikka.material.app.DayNightDelegate
-import rikka.preference.SimpleMenuPreference
-import rikka.recyclerview.fixEdgeEffect
-import rikka.widget.borderview.BorderRecyclerView
+import xyz.xfqlittlefan.easytest.util.UtilClass.getResString
 import xyz.xfqlittlefan.easytest.widget.MaterialContainer
 import xyz.xfqlittlefan.easytest.widget.PreferenceContainer
-import xyz.xfqlittlefan.easytest.widget.PreferenceScope
-
 
 class SettingsActivity : BaseActivity() {
 
@@ -49,8 +33,20 @@ class SettingsActivity : BaseActivity() {
                 }
             ) {
                 PreferenceContainer(modifier = Modifier.fillMaxSize(), context = this, contentPadding = it) {
-                    category(title = resources.getString(R.string.general)) {
-                        editPreference(key = "", title = "sdf", defaultValue = "")
+                    category(title = getResString(R.string.general)) {
+                        editPreference(
+                            key = "custom_source",
+                            title = getResString(R.string.custom_source),
+                            summary = getResString(R.string.one_per_line)
+                        )
+                    }
+                    category(title = getResString(R.string.theme)) {
+                        colorPickerPreference(
+                            key = "theme_color",
+                            title = getResString(R.string.theme_color),
+                            summary = getResString(R.string.theme_color_summary)
+                        )
+
                     }
                 }
             }

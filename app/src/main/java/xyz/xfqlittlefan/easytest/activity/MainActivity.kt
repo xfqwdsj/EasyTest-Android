@@ -42,12 +42,11 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
-            val scrollState = rememberLazyListState()
             MaterialContainer(
                 title = stringResource(R.string.home)
             ) { contentPadding ->
                 LazyColumn(
-                    state = scrollState,
+                    state = rememberLazyListState(),
                     contentPadding = PaddingValues(
                         start = 10.dp,
                         top = contentPadding.calculateTopPadding(),

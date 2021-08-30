@@ -95,4 +95,6 @@
     <string name="expand_details">Expand details</string>
     <string name="collapse_details">Collapse details</string>
     <string name="icon">Icon</string>
+    <string name="checked">Checked</string>
+    <string name="unchecked">Unchecked</string>
 </resources>
