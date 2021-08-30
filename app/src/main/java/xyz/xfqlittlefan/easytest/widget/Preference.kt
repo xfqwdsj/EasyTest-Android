@@ -109,7 +109,7 @@ class PreferenceScope(private val context: Context) {
 class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -> Unit>, context: Context) {
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-    fun editPreference(
+    fun edit(
         icon: ImageVector? = null,
         key: String,
         title: String,
@@ -129,8 +129,9 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
             ) {
                 if (showingDialog) {
                     var value by remember { mutableStateOf(sharedPreferences.getString(key, defaultValue) ?: defaultValue) }
+                    val onDismiss = { showingDialog = false }
                     AlertDialog(
-                        onDismissRequest = { showingDialog = false },
+                        onDismissRequest = onDismiss,
                         title = { Text(text = title) },
                         text = {
                             Column(modifier = Modifier.fillMaxWidth()) {
@@ -150,9 +151,7 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                             }
                         },
                         dismissButton = {
-                            TextButton(onClick = {
-                                showingDialog = false
-                            }) {
+                            TextButton(onClick = onDismiss) {
                                 Text(text = stringResource(id = android.R.string.cancel))
                             }
                         }
@@ -180,21 +179,22 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                                     .size(32.dp)
                             )
                         }
-                        Column(modifier = Modifier.fillMaxSize()) {
+                        Column(modifier = Modifier.weight(1f)) {
                             Text(text = title, style = MaterialTheme.typography.subtitle1)
                             if (summary != null) {
                                 Spacer(modifier = Modifier.height(10.dp))
                                 Text(text = summary, style = MaterialTheme.typography.subtitle2)
                             }
                         }
+                        Spacer(modifier = Modifier.width(20.dp))
                     }
                 }
             }
         }
     }
 
-    @OptIn(ExperimentalFoundationApi::class, androidx.compose.animation.ExperimentalAnimationApi::class)
-    fun colorPickerPreference(
+    @OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+    fun colorPicker(
         icon: ImageVector? = null,
         key: String,
         title: String,
@@ -236,8 +236,12 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
             ) {
                 var value by remember { mutableStateOf(sharedPreferences.getString(key, defaultValue) ?: defaultValue) }
                 if (showingDialog) {
+                    val onDismiss = {
+                        value = sharedPreferences.getString(key, defaultValue) ?: defaultValue
+                        showingDialog = false
+                    }
                     AlertDialog(
-                        onDismissRequest = { showingDialog = false },
+                        onDismissRequest = onDismiss,
                         title = { Text(text = title) },
                         text = {
                             LazyVerticalGrid(
@@ -293,10 +297,7 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                             }
                         },
                         dismissButton = {
-                            TextButton(onClick = {
-                                value = sharedPreferences.getString(key, defaultValue) ?: defaultValue
-                                showingDialog = false
-                            }) {
+                            TextButton(onClick = onDismiss) {
                                 Text(text = stringResource(id = android.R.string.cancel))
                             }
                         }
@@ -340,6 +341,89 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                                     shape = CircleShape
                                 )
                         )
+                    }
+                }
+            }
+        }
+    }
+
+    fun switch(
+        icon: ImageVector? = null,
+        key: String,
+        title: String,
+        summary: String? = null,
+        enabled: Boolean = true,
+        defaultValue: String = ""
+    ) {
+        itemList.add {
+            var showingDialog by remember { mutableStateOf(false) }
+            Surface(
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .fillMaxWidth()
+                    .clickable(enabled = enabled) {
+                        showingDialog = true
+                    }
+            ) {
+                if (showingDialog) {
+                    var value by remember { mutableStateOf(sharedPreferences.getString(key, defaultValue) ?: defaultValue) }
+                    val onDismiss = { showingDialog = false }
+                    AlertDialog(
+                        onDismissRequest = onDismiss,
+                        title = { Text(text = title) },
+                        text = {
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                Spacer(modifier = Modifier.height(10.dp))
+                                TextField(
+                                    value = value,
+                                    onValueChange = { value = it }
+                                )
+                            }
+                        },
+                        confirmButton = {
+                            TextButton(onClick = {
+                                sharedPreferences.edit().putString(key, value).apply()
+                                showingDialog = false
+                            }) {
+                                Text(text = stringResource(id = android.R.string.ok))
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = onDismiss) {
+                                Text(text = stringResource(id = android.R.string.cancel))
+                            }
+                        }
+                    )
+                }
+                CompositionLocalProvider(
+                    values = arrayOf(LocalContentAlpha provides if (enabled) ContentAlpha.high else ContentAlpha.disabled)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (icon == null) {
+                            Spacer(
+                                modifier = Modifier
+                                    .padding(20.dp)
+                                    .size(32.dp)
+                            )
+                        } else {
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = title,
+                                modifier = Modifier
+                                    .padding(20.dp)
+                                    .size(32.dp)
+                            )
+                        }
+                        Column(modifier = Modifier.fillMaxSize()) {
+                            Text(text = title, style = MaterialTheme.typography.subtitle1)
+                            if (summary != null) {
+                                Spacer(modifier = Modifier.height(10.dp))
+                                Text(text = summary, style = MaterialTheme.typography.subtitle2)
+                            }
+                        }
                     }
                 }
             }

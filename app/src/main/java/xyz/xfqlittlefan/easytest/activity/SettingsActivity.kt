@@ -34,14 +34,14 @@ class SettingsActivity : BaseActivity() {
             ) {
                 PreferenceContainer(modifier = Modifier.fillMaxSize(), context = this, contentPadding = it) {
                     category(title = getResString(R.string.general)) {
-                        editPreference(
+                        edit(
                             key = "custom_source",
                             title = getResString(R.string.custom_source),
                             summary = getResString(R.string.one_per_line)
                         )
                     }
                     category(title = getResString(R.string.theme)) {
-                        colorPickerPreference(
+                        colorPicker(
                             key = "theme_color",
                             title = getResString(R.string.theme_color),
                             summary = getResString(R.string.theme_color_summary)
