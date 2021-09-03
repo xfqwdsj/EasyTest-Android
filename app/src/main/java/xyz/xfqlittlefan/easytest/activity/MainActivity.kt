@@ -31,6 +31,7 @@ import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
 import xyz.xfqlittlefan.easytest.activity.viewmodel.MainActivityViewModel
 import xyz.xfqlittlefan.easytest.theme.*
+import xyz.xfqlittlefan.easytest.util.UtilClass
 import xyz.xfqlittlefan.easytest.widget.MaterialContainer
 
 class MainActivity : BaseActivity() {
@@ -43,6 +44,8 @@ class MainActivity : BaseActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             MaterialContainer(
+                themeKey = UtilClass.theme,
+                darkTheme = UtilClass.getDark(),
                 title = stringResource(R.string.home)
             ) { contentPadding ->
                 LazyColumn(

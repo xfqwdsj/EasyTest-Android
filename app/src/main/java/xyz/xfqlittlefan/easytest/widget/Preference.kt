@@ -26,6 +26,9 @@ import androidx.preference.PreferenceManager
 import xyz.xfqlittlefan.easytest.theme.Black
 import xyz.xfqlittlefan.easytest.theme.colors
 
+@DslMarker
+annotation class PreferenceMarker
+
 @Composable
 fun PreferenceContainer(
     modifier: Modifier = Modifier,
@@ -51,6 +54,7 @@ fun PreferenceContainer(
     )
 }
 
+@PreferenceMarker
 class PreferenceScope(private val context: Context) {
     private val itemList = mutableListOf<@Composable () -> Unit>()
 
@@ -106,6 +110,7 @@ class PreferenceScope(private val context: Context) {
 
 }
 
+@PreferenceMarker
 class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -> Unit>, context: Context) {
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
@@ -118,18 +123,18 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
         defaultValue: String = ""
     ) {
         itemList.add {
-            var showingDialog by remember { mutableStateOf(false) }
+            var showed by remember { mutableStateOf(false) }
             Surface(
                 modifier = Modifier
                     .padding(horizontal = 10.dp)
                     .fillMaxWidth()
                     .clickable(enabled = enabled) {
-                        showingDialog = true
+                        showed = true
                     }
             ) {
-                if (showingDialog) {
+                if (showed) {
                     var value by remember { mutableStateOf(sharedPreferences.getString(key, defaultValue) ?: defaultValue) }
-                    val onDismiss = { showingDialog = false }
+                    val onDismiss = { showed = false }
                     AlertDialog(
                         onDismissRequest = onDismiss,
                         title = { Text(text = title) },
@@ -145,7 +150,7 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                         confirmButton = {
                             TextButton(onClick = {
                                 sharedPreferences.edit().putString(key, value).apply()
-                                showingDialog = false
+                                showed = false
                             }) {
                                 Text(text = stringResource(id = android.R.string.ok))
                             }
@@ -222,23 +227,24 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                 "Brown",
                 "Gray",
                 "BlueGray"
-            )
+            ),
+        onColorClick: (String) -> Unit = { }
     ) {
         itemList.add {
-            var showingDialog by remember { mutableStateOf(false) }
+            var showed by remember { mutableStateOf(false) }
             Surface(
                 modifier = Modifier
                     .padding(horizontal = 10.dp)
                     .fillMaxWidth()
                     .clickable(enabled = enabled) {
-                        showingDialog = true
+                        showed = true
                     }
             ) {
                 var value by remember { mutableStateOf(sharedPreferences.getString(key, defaultValue) ?: defaultValue) }
-                if (showingDialog) {
+                if (showed) {
                     val onDismiss = {
                         value = sharedPreferences.getString(key, defaultValue) ?: defaultValue
-                        showingDialog = false
+                        showed = false
                     }
                     AlertDialog(
                         onDismissRequest = onDismiss,
@@ -251,37 +257,44 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                                 items(colors) {
                                     Box(
                                         modifier = Modifier
-                                            .padding(10.dp)
-                                            .size(48.dp)
-                                            .clip(CircleShape)
-                                            .clickable {
-                                                value = it
-                                            }
+                                            .fillMaxSize()
+                                            .padding(10.dp),
+                                        contentAlignment = Alignment.Center
                                     ) {
-                                        Spacer(
+                                        Box(
                                             modifier = Modifier
-                                                .matchParentSize()
-                                                .background(color = colors(key = it, dark = isSystemInDarkTheme()).primary)
-                                        )
-                                        AnimatedVisibility(
-                                            visible = value == it,
-                                            modifier = Modifier.matchParentSize(),
-                                            enter = fadeIn(),
-                                            exit = fadeOut()
+                                                .size(48.dp)
+                                                .clip(CircleShape)
+                                                .clickable {
+                                                    value = it
+                                                    onColorClick(value)
+                                                }
                                         ) {
-                                            Box(
+                                            Spacer(
                                                 modifier = Modifier
                                                     .matchParentSize()
-                                                    .background(color = MaterialTheme.colors.onSurface.copy(alpha = 0.3f))
+                                                    .background(color = colors(key = it, dark = isSystemInDarkTheme()).primary)
+                                            )
+                                            AnimatedVisibility(
+                                                visible = value == it,
+                                                modifier = Modifier.matchParentSize(),
+                                                enter = fadeIn(),
+                                                exit = fadeOut()
                                             ) {
-                                                Icon(
-                                                    imageVector = Icons.Filled.Check,
-                                                    contentDescription = stringResource(android.R.string.ok),
+                                                Box(
                                                     modifier = Modifier
                                                         .matchParentSize()
-                                                        .padding(10.dp),
-                                                    tint = MaterialTheme.colors.surface
-                                                )
+                                                        .background(color = MaterialTheme.colors.onSurface.copy(alpha = 0.3f))
+                                                ) {
+                                                    Icon(
+                                                        imageVector = Icons.Filled.Check,
+                                                        contentDescription = stringResource(android.R.string.ok),
+                                                        modifier = Modifier
+                                                            .matchParentSize()
+                                                            .padding(10.dp),
+                                                        tint = MaterialTheme.colors.surface
+                                                    )
+                                                }
                                             }
                                         }
                                     }
@@ -291,7 +304,7 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                         confirmButton = {
                             TextButton(onClick = {
                                 sharedPreferences.edit().putString(key, value).apply()
-                                showingDialog = false
+                                showed = false
                             }) {
                                 Text(text = stringResource(id = android.R.string.ok))
                             }
@@ -353,48 +366,24 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
         title: String,
         summary: String? = null,
         enabled: Boolean = true,
-        defaultValue: String = ""
+        defaultValue: Boolean = false,
+        onCheckedChange: (Boolean) -> Unit = { }
     ) {
         itemList.add {
-            var showingDialog by remember { mutableStateOf(false) }
+            var value by remember { mutableStateOf(sharedPreferences.getBoolean(key, defaultValue)) }
             Surface(
                 modifier = Modifier
                     .padding(horizontal = 10.dp)
                     .fillMaxWidth()
                     .clickable(enabled = enabled) {
-                        showingDialog = true
+                        value = !value
+                        sharedPreferences
+                            .edit()
+                            .putBoolean(key, value)
+                            .apply()
+                        onCheckedChange(value)
                     }
             ) {
-                if (showingDialog) {
-                    var value by remember { mutableStateOf(sharedPreferences.getString(key, defaultValue) ?: defaultValue) }
-                    val onDismiss = { showingDialog = false }
-                    AlertDialog(
-                        onDismissRequest = onDismiss,
-                        title = { Text(text = title) },
-                        text = {
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                Spacer(modifier = Modifier.height(10.dp))
-                                TextField(
-                                    value = value,
-                                    onValueChange = { value = it }
-                                )
-                            }
-                        },
-                        confirmButton = {
-                            TextButton(onClick = {
-                                sharedPreferences.edit().putString(key, value).apply()
-                                showingDialog = false
-                            }) {
-                                Text(text = stringResource(id = android.R.string.ok))
-                            }
-                        },
-                        dismissButton = {
-                            TextButton(onClick = onDismiss) {
-                                Text(text = stringResource(id = android.R.string.cancel))
-                            }
-                        }
-                    )
-                }
                 CompositionLocalProvider(
                     values = arrayOf(LocalContentAlpha provides if (enabled) ContentAlpha.high else ContentAlpha.disabled)
                 ) {
@@ -417,12 +406,85 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                                     .size(32.dp)
                             )
                         }
-                        Column(modifier = Modifier.fillMaxSize()) {
+                        Column(modifier = Modifier.weight(1f)) {
                             Text(text = title, style = MaterialTheme.typography.subtitle1)
                             if (summary != null) {
                                 Spacer(modifier = Modifier.height(10.dp))
                                 Text(text = summary, style = MaterialTheme.typography.subtitle2)
                             }
+                        }
+                        Box(
+                            modifier = Modifier
+                                .padding(20.dp)
+                                .size(32.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Switch(checked = value, onCheckedChange = null)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun menu(
+        icon: ImageVector? = null,
+        key: String,
+        title: String,
+        enabled: Boolean = true,
+        defaultValue: Int = 0,
+        items: List<String>,
+        onSelectedChange: (Int) -> Unit = { }
+    ) {
+        itemList.add {
+            var value by remember { mutableStateOf(sharedPreferences.getInt(key, defaultValue)) }
+            var expanded by remember { mutableStateOf(false) }
+            var summary by remember { mutableStateOf(items[value]) }
+            Surface(
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .fillMaxWidth()
+                    .clickable(enabled = enabled) {
+                        expanded = true
+                    }
+            ) {
+                CompositionLocalProvider(
+                    values = arrayOf(LocalContentAlpha provides if (enabled) ContentAlpha.high else ContentAlpha.disabled)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (icon == null) {
+                            Spacer(
+                                modifier = Modifier
+                                    .padding(20.dp)
+                                    .size(32.dp)
+                            )
+                        } else {
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = title,
+                                modifier = Modifier
+                                    .padding(20.dp)
+                                    .size(32.dp)
+                            )
+                        }
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(text = title, style = MaterialTheme.typography.subtitle1)
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Text(text = summary, style = MaterialTheme.typography.subtitle2)
+                        }
+                        Spacer(modifier = Modifier.width(20.dp))
+                    }
+                }
+                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                    items.forEachIndexed { index, text ->
+                        DropdownMenuItem(onClick = {
+                            value = index
+                            onSelectedChange(value)
+                        }) {
+                            Text(text = text)
                         }
                     }
                 }

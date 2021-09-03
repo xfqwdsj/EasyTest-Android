@@ -1,14 +1,15 @@
 package xyz.xfqlittlefan.easytest.widget
 
+import android.content.Context
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.ProvideWindowInsets
@@ -16,12 +17,14 @@ import com.google.accompanist.insets.navigationBarsHeight
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.accompanist.insets.ui.Scaffold
 import com.google.accompanist.insets.ui.TopAppBar
+import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.theme.EasyTestTheme
+import kotlin.reflect.KClass
 
 @Composable
 fun MaterialContainer(
     themeKey: String = "Blue",
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean? = isSystemInDarkTheme(),
     topBar: @Composable () -> Unit = { },
     bottomBar: @Composable () -> Unit = { },
     content: @Composable (PaddingValues) -> Unit
@@ -39,7 +42,7 @@ fun MaterialContainer(
 @Composable
 fun MaterialContainer(
     themeKey: String = "Blue",
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean? = isSystemInDarkTheme(),
     title: String,
     subtitle: String? = null,
     navigationIcon: @Composable (() -> Unit)? = null,
@@ -72,5 +75,12 @@ fun MaterialContainer(
             bottomBar = { Spacer(Modifier.navigationBarsHeight()) },
             content = content
         )
+    }
+}
+
+@Composable
+fun BackIcon(onClick: () -> Unit) {
+    IconButton(onClick = onClick) {
+        Icon(Icons.Filled.ArrowBack, stringResource(R.string.back))
     }
 }

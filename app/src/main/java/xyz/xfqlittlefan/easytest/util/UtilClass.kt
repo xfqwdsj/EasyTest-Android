@@ -4,8 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.view.ViewGroup
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
@@ -27,6 +31,9 @@ object UtilClass {
 
     const val QUESTION_SET_ID = 0
     const val QUESTION_BANK_ID = 1
+
+    var dark by mutableStateOf(getPreferences().getInt("dark_theme", 0))
+    var theme by mutableStateOf(getPreferences().getString("theme_color", "Blue") ?: "Blue")
 
     fun ViewGroup.MarginLayoutParams.setMarginTop(size: Int) {
         setMargins(leftMargin, size, rightMargin, bottomMargin)
@@ -268,5 +275,13 @@ object UtilClass {
             }
         }
         return Pair(questionText, bank)
+    }
+
+    fun getDark(): Boolean? {
+        return when (dark) {
+            1 -> false
+            2 -> true
+            else -> null
+        }
     }
 }

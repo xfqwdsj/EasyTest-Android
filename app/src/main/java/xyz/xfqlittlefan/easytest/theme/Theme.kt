@@ -22,28 +22,44 @@ private val LightColorPalette = lightColors(
     background = Gray50
 )
 
-fun colors(key: String, dark: Boolean = false): Colors {
-    return if (dark) {
+fun colors(key: String, dark: Boolean? = false, system: Boolean = false): Colors {
+    return if (dark == true) {
         darkColors(
             primary = getColor700(key),
             primaryVariant = getColor900(key),
             secondary = getColor700(key),
             background = Black
         )
-    } else {
+    } else if (dark == false) {
         lightColors(
             primary = getColor500(key),
             primaryVariant = getColor700(key),
             secondary = getColor500(key),
             background = Gray50
         )
+    } else {
+        if (system) {
+            darkColors(
+                primary = getColor700(key),
+                primaryVariant = getColor900(key),
+                secondary = getColor700(key),
+                background = Black
+            )
+        } else {
+            lightColors(
+                primary = getColor500(key),
+                primaryVariant = getColor700(key),
+                secondary = getColor500(key),
+                background = Gray50
+            )
+        }
     }
 }
 
 @Composable
-fun EasyTestTheme(themeKey: String = "Blue", darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+fun EasyTestTheme(themeKey: String = "Blue", darkTheme: Boolean? = isSystemInDarkTheme(), content: @Composable () -> Unit) {
     MaterialTheme(
-        colors = colors(themeKey, darkTheme),
+        colors = colors(themeKey, darkTheme, isSystemInDarkTheme()),
         typography = Typography,
         shapes = Shapes,
         content = content
