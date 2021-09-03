@@ -32,8 +32,8 @@ object UtilClass {
     const val QUESTION_SET_ID = 0
     const val QUESTION_BANK_ID = 1
 
-    var dark by mutableStateOf(getPreferences().getInt("dark_theme", 0))
-    var theme by mutableStateOf(getPreferences().getString("theme_color", "Blue") ?: "Blue")
+    var dark by mutableStateOf(0)
+    var theme by mutableStateOf("Blue")
 
     fun ViewGroup.MarginLayoutParams.setMarginTop(size: Int) {
         setMargins(leftMargin, size, rightMargin, bottomMargin)
@@ -279,8 +279,8 @@ object UtilClass {
 
     fun getDark(): Boolean? {
         return when (dark) {
-            1 -> false
-            2 -> true
+            1 -> true
+            2 -> false
             else -> null
         }
     }

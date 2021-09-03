@@ -228,7 +228,7 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                 "Gray",
                 "BlueGray"
             ),
-        onColorClick: (String) -> Unit = { }
+        onColorChange: (String) -> Unit = { }
     ) {
         itemList.add {
             var showed by remember { mutableStateOf(false) }
@@ -244,6 +244,7 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                 if (showed) {
                     val onDismiss = {
                         value = sharedPreferences.getString(key, defaultValue) ?: defaultValue
+                        onColorChange(value)
                         showed = false
                     }
                     AlertDialog(
@@ -267,7 +268,7 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                                                 .clip(CircleShape)
                                                 .clickable {
                                                     value = it
-                                                    onColorClick(value)
+                                                    onColorChange(value)
                                                 }
                                         ) {
                                             Spacer(
@@ -455,6 +456,17 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                            items.forEachIndexed { index, text ->
+                                DropdownMenuItem(onClick = {
+                                    value = index
+                                    summary = items[index]
+                                    onSelectedChange(value)
+                                }) {
+                                    Text(text = text)
+                                }
+                            }
+                        }
                         if (icon == null) {
                             Spacer(
                                 modifier = Modifier
@@ -476,16 +488,6 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                             Text(text = summary, style = MaterialTheme.typography.subtitle2)
                         }
                         Spacer(modifier = Modifier.width(20.dp))
-                    }
-                }
-                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                    items.forEachIndexed { index, text ->
-                        DropdownMenuItem(onClick = {
-                            value = index
-                            onSelectedChange(value)
-                        }) {
-                            Text(text = text)
-                        }
                     }
                 }
             }
