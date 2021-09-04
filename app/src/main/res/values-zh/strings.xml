@@ -14,7 +14,7 @@
     <string name="login">登录</string>
     <string name="password">密码</string>
     <string name="login_failed">登录失败</string>
-    <string name="signup">注册</string>
+    <string name="sign_up">注册</string>
     <string name="username">用户名</string>
     <string name="logout">注销</string>
     <string name="ask_logout">注销？</string>
@@ -22,7 +22,7 @@
     <string name="next">下一个</string>
     <string name="retry">重试</string>
     <string name="congratulations">恭喜！</string>
-    <string name="signup_failed">注册失败</string>
+    <string name="sign_up_failed">注册失败</string>
     <string name="email">邮箱</string>
     <string name="no_login">未登录</string>
     <string name="no_login_summary">登录后，您的默写成果才能上传，但您仍可以将成果保存在本地并随时登录和上传</string>
@@ -98,4 +98,5 @@
     <string name="icon">图标</string>
     <string name="checked">已选中</string>
     <string name="unchecked">未选中</string>
+    <string name="nickname">昵称</string>
 </resources>

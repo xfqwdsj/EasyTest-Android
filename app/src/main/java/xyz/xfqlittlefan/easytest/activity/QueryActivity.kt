@@ -4,40 +4,32 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.view.WindowCompat
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.navigationBarsHeight
-import com.google.accompanist.insets.rememberInsetsPaddingValues
-import com.google.accompanist.insets.ui.Scaffold
-import com.google.accompanist.insets.ui.TopAppBar
 import xyz.xfqlittlefan.easytest.R
-import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
-import xyz.xfqlittlefan.easytest.theme.EasyTestTheme
+import xyz.xfqlittlefan.easytest.activity.base.ComposeBaseActivity
 import xyz.xfqlittlefan.easytest.util.UtilClass
 import xyz.xfqlittlefan.easytest.widget.BackIcon
 import xyz.xfqlittlefan.easytest.widget.MaterialContainer
 
-class QueryActivity : BaseActivity() {
+class QueryActivity : ComposeBaseActivity() {
     @OptIn(ExperimentalAnimationApi::class)
     @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             MaterialContainer(
                 themeKey = UtilClass.theme,
@@ -53,7 +45,6 @@ class QueryActivity : BaseActivity() {
                 ) {
                     var text by remember { mutableStateOf("") }
                     var expanded by remember { mutableStateOf(false) }
-
                     var uploaded by remember { mutableStateOf(false) }
 
                     TextField(
@@ -62,9 +53,7 @@ class QueryActivity : BaseActivity() {
                         modifier = Modifier
                             .padding(start = 10.dp, end = 10.dp, top = 10.dp)
                             .fillMaxWidth(),
-                        label = {
-                            Text(stringResource(id = R.string.query))
-                        },
+                        label = { Text(stringResource(id = R.string.query)) },
                         singleLine = true,
                         shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
                     )
@@ -77,9 +66,22 @@ class QueryActivity : BaseActivity() {
                             TextButton(
                                 modifier = Modifier.fillMaxWidth(),
                                 onClick = { expanded = !expanded },
-                                shape = RoundedCornerShape(0.dp)
+                                shape = RectangleShape
                             ) {
-                                Text(stringResource(if (expanded) R.string.collapse_options else R.string.expand_options))
+                                AnimatedContent(
+                                    targetState = expanded,
+                                    transitionSpec = {
+                                        if (targetState) {
+                                            slideInVertically({ -it }) + fadeIn() with
+                                                    slideOutVertically({ it }) + fadeOut()
+                                        } else {
+                                            slideInVertically({ it }) + fadeIn() with
+                                                    slideOutVertically({ -it }) + fadeOut()
+                                        }
+                                    }
+                                ) {
+                                    Text(stringResource(if (it) R.string.collapse_options else R.string.expand_options))
+                                }
                             }
                             Column {
                                 AnimatedVisibility(visible = expanded) {

@@ -4,31 +4,23 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.core.view.WindowCompat
 import xyz.xfqlittlefan.easytest.R
-import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
+import xyz.xfqlittlefan.easytest.activity.base.ComposeBaseActivity
 import xyz.xfqlittlefan.easytest.util.UtilClass
 import xyz.xfqlittlefan.easytest.util.UtilClass.dark
 import xyz.xfqlittlefan.easytest.util.UtilClass.getDark
 import xyz.xfqlittlefan.easytest.util.UtilClass.getResString
-import xyz.xfqlittlefan.easytest.util.UtilClass.theme
 import xyz.xfqlittlefan.easytest.widget.BackIcon
 import xyz.xfqlittlefan.easytest.widget.MaterialContainer
 import xyz.xfqlittlefan.easytest.widget.PreferenceContainer
 
-class SettingsActivity : BaseActivity() {
+class SettingsActivity : ComposeBaseActivity() {
 
     @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             MaterialContainer(
                 themeKey = UtilClass.theme,

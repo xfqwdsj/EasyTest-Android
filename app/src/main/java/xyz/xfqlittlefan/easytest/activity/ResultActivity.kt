@@ -35,6 +35,7 @@ import org.litepal.LitePal
 import org.litepal.extension.find
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
+import xyz.xfqlittlefan.easytest.activity.base.ComposeBaseActivity
 import xyz.xfqlittlefan.easytest.theme.EasyTestTheme
 import xyz.xfqlittlefan.easytest.theme.Green700
 import xyz.xfqlittlefan.easytest.theme.Red700
@@ -46,12 +47,11 @@ import xyz.xfqlittlefan.easytest.util.UtilClass.getSelectionColor
 import xyz.xfqlittlefan.easytest.util.UtilClass.getStateContent
 import xyz.xfqlittlefan.easytest.util.UtilClass.parseQuestion
 
-class ResultActivity : BaseActivity() {
+class ResultActivity : ComposeBaseActivity() {
     @SuppressLint("MissingSuperCall")
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             EasyTestTheme {
                 ProvideWindowInsets {

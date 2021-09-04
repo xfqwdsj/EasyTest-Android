@@ -1,10 +1,11 @@
 package xyz.xfqlittlefan.easytest.activity
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -22,23 +23,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.preference.PreferenceManager
 import cn.leancloud.LCUser
 import xyz.xfqlittlefan.easytest.R
-import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
+import xyz.xfqlittlefan.easytest.activity.base.ComposeBaseActivity
 import xyz.xfqlittlefan.easytest.activity.viewmodel.MainActivityViewModel
 import xyz.xfqlittlefan.easytest.theme.*
 import xyz.xfqlittlefan.easytest.util.UtilClass
 import xyz.xfqlittlefan.easytest.widget.MaterialContainer
 
-class MainActivity : BaseActivity() {
+class MainActivity : ComposeBaseActivity() {
     private val viewModel by viewModels<MainActivityViewModel>()
 
-    @OptIn(ExperimentalMaterialApi::class)
-    @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -123,13 +121,12 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    @SuppressLint("MissingSuperCall")
     override fun onResume() {
         super.onResume()
         viewModel.update()
     }
 
-    @ExperimentalMaterialApi
+    @OptIn(ExperimentalAnimationApi::class)
     @Composable
     fun ObviousCard(icon: ImageVector, title: String, subtitle: String? = null, onClick: () -> Unit) {
         ActionCard(
@@ -138,34 +135,54 @@ class MainActivity : BaseActivity() {
             icon = icon,
             onClick = onClick
         ) {
-            Text(text = title, style = MaterialTheme.typography.subtitle1)
+            AnimatedContent(
+                targetState = title,
+                transitionSpec = { fadeIn() with fadeOut() }
+            ) {
+                Text(text = it, style = MaterialTheme.typography.subtitle1)
+            }
             if (subtitle != null) {
                 Spacer(Modifier.height(4.dp))
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    Text(text = subtitle, style = MaterialTheme.typography.subtitle2)
+                    AnimatedContent(
+                        targetState = subtitle,
+                        transitionSpec = { fadeIn() with fadeOut() }
+                    ) {
+                        Text(text = it, style = MaterialTheme.typography.subtitle2)
+                    }
                 }
             }
         }
     }
 
-    @ExperimentalMaterialApi
+    @OptIn(ExperimentalAnimationApi::class)
     @Composable
     fun MainCard(icon: ImageVector, title: String, subtitle: String? = null, onClick: () -> Unit) {
         ActionCard(
             icon = icon,
             onClick = onClick
         ) {
-            Text(text = title, style = MaterialTheme.typography.subtitle1)
+            AnimatedContent(
+                targetState = title,
+                transitionSpec = { fadeIn() with fadeOut() }
+            ) {
+                Text(text = it, style = MaterialTheme.typography.subtitle1)
+            }
             if (subtitle != null) {
                 Spacer(Modifier.height(4.dp))
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    Text(text = subtitle, style = MaterialTheme.typography.subtitle2)
+                    AnimatedContent(
+                        targetState = subtitle,
+                        transitionSpec = { fadeIn() with fadeOut() }
+                    ) {
+                        Text(text = it, style = MaterialTheme.typography.subtitle2)
+                    }
                 }
             }
         }
     }
 
-    @ExperimentalMaterialApi
+    @OptIn(ExperimentalAnimationApi::class)
     @Composable
     fun SecondaryCard(icon: ImageVector, title: String, subtitle: String? = null, onClick: () -> Unit) {
         ActionCard(
@@ -173,17 +190,27 @@ class MainActivity : BaseActivity() {
             onClick = onClick,
             color = Transparent
         ) {
-            Text(text = title, style = MaterialTheme.typography.subtitle1)
+            AnimatedContent(
+                targetState = title,
+                transitionSpec = { fadeIn() with fadeOut() }
+            ) {
+                Text(text = it, style = MaterialTheme.typography.subtitle1)
+            }
             if (subtitle != null) {
                 Spacer(Modifier.height(4.dp))
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                    Text(text = subtitle, style = MaterialTheme.typography.subtitle2)
+                    AnimatedContent(
+                        targetState = subtitle,
+                        transitionSpec = { fadeIn() with fadeOut() }
+                    ) {
+                        Text(text = it, style = MaterialTheme.typography.subtitle2)
+                    }
                 }
             }
         }
     }
 
-    @ExperimentalMaterialApi
+    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun ActionCard(
         color: Color = MaterialTheme.colors.surface,
@@ -207,7 +234,9 @@ class MainActivity : BaseActivity() {
                 Icon(
                     imageVector = icon,
                     contentDescription = stringResource(R.string.icon),
-                    modifier = Modifier.padding(vertical = 20.dp).size(32.dp)
+                    modifier = Modifier
+                        .padding(vertical = 20.dp)
+                        .size(32.dp)
                 )
                 Column(
                     modifier = Modifier

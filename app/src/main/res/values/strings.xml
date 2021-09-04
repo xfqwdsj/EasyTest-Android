@@ -13,7 +13,7 @@
     <string name="login">Login</string>
     <string name="password">Password</string>
     <string name="login_failed">"Login failed"</string>
-    <string name="signup">Sign up</string>
+    <string name="sign_up">Sign up</string>
     <string name="username">Username</string>
     <string name="logout">Logout</string>
     <string name="ask_logout">Do you want to logout?</string>
@@ -21,7 +21,7 @@
     <string name="next">Next</string>
     <string name="retry">Retry</string>
     <string name="congratulations">Congratulations!</string>
-    <string name="signup_failed">Signup failed</string>
+    <string name="sign_up_failed">Signup failed</string>
     <string name="email">Email</string>
     <string name="no_login">Not logged in</string>
     <string name="no_login_summary">After logging in, you can continue to write online, but you can still continue to write silently without logging in</string>
@@ -97,4 +97,5 @@
     <string name="icon">Icon</string>
     <string name="checked">Checked</string>
     <string name="unchecked">Unchecked</string>
+    <string name="nickname">Nickname</string>
 </resources>

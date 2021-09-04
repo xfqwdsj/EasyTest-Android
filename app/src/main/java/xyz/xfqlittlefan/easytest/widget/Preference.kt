@@ -120,6 +120,7 @@ class PreferenceScope(private val context: Context) {
 class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -> Unit>, context: Context) {
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
+    @OptIn(ExperimentalAnimationApi::class)
     fun edit(
         icon: ImageVector? = null,
         key: String,
@@ -180,10 +181,20 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                             )
                         }
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(text = title, style = MaterialTheme.typography.subtitle1)
+                            AnimatedContent(
+                                targetState = title,
+                                transitionSpec = { fadeIn() with fadeOut() }
+                            ) {
+                                Text(text = it, style = MaterialTheme.typography.subtitle1)
+                            }
                             if (summary != null) {
                                 Spacer(modifier = Modifier.height(10.dp))
-                                Text(text = summary, style = MaterialTheme.typography.subtitle2)
+                                AnimatedContent(
+                                    targetState = summary,
+                                    transitionSpec = { fadeIn() with fadeOut() }
+                                ) {
+                                    Text(text = it, style = MaterialTheme.typography.subtitle2)
+                                }
                             }
                         }
                         Spacer(modifier = Modifier.width(20.dp))
@@ -262,8 +273,11 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                                             .clip(CircleShape)
                                             .clickable {
                                                 value = it
-                                                    sharedPreferences.edit().putString(key, value).apply()
-                                                    showed = false
+                                                sharedPreferences
+                                                    .edit()
+                                                    .putString(key, value)
+                                                    .apply()
+                                                showed = false
                                                 onColorChange(value)
                                             }
                                     ) {
@@ -322,10 +336,20 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                             )
                         }
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(text = title, style = MaterialTheme.typography.subtitle1)
+                            AnimatedContent(
+                                targetState = title,
+                                transitionSpec = { fadeIn() with fadeOut() }
+                            ) {
+                                Text(text = it, style = MaterialTheme.typography.subtitle1)
+                            }
                             if (summary != null) {
                                 Spacer(modifier = Modifier.height(10.dp))
-                                Text(text = summary, style = MaterialTheme.typography.subtitle2)
+                                AnimatedContent(
+                                    targetState = summary,
+                                    transitionSpec = { fadeIn() with fadeOut() }
+                                ) {
+                                    Text(text = it, style = MaterialTheme.typography.subtitle2)
+                                }
                             }
                         }
                         Spacer(
@@ -343,6 +367,7 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
         }
     }
 
+    @OptIn(ExperimentalAnimationApi::class)
     fun switch(
         icon: ImageVector? = null,
         key: String,
@@ -390,10 +415,20 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                             )
                         }
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(text = title, style = MaterialTheme.typography.subtitle1)
+                            AnimatedContent(
+                                targetState = title,
+                                transitionSpec = { fadeIn() with fadeOut() }
+                            ) {
+                                Text(text = it, style = MaterialTheme.typography.subtitle1)
+                            }
                             if (summary != null) {
                                 Spacer(modifier = Modifier.height(10.dp))
-                                Text(text = summary, style = MaterialTheme.typography.subtitle2)
+                                AnimatedContent(
+                                    targetState = summary,
+                                    transitionSpec = { fadeIn() with fadeOut() }
+                                ) {
+                                    Text(text = it, style = MaterialTheme.typography.subtitle2)
+                                }
                             }
                         }
                         Box(
@@ -410,6 +445,7 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
         }
     }
 
+    @OptIn(ExperimentalAnimationApi::class)
     fun menu(
         icon: ImageVector? = null,
         key: String,
@@ -454,9 +490,19 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                             )
                         }
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(text = title, style = MaterialTheme.typography.subtitle1)
+                            AnimatedContent(
+                                targetState = title,
+                                transitionSpec = { fadeIn() with fadeOut() }
+                            ) {
+                                Text(text = it, style = MaterialTheme.typography.subtitle1)
+                            }
                             Spacer(modifier = Modifier.height(10.dp))
-                            Text(text = summary, style = MaterialTheme.typography.subtitle2)
+                            AnimatedContent(
+                                targetState = summary,
+                                transitionSpec = { fadeIn() with fadeOut() }
+                            ) {
+                                Text(text = it, style = MaterialTheme.typography.subtitle2)
+                            }
                             DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                                 items.forEachIndexed { index, text ->
                                     DropdownMenuItem(onClick = {
@@ -503,12 +549,14 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                     ) { content() }
                     Spacer(modifier = Modifier.height(24.dp))
                     if (showButtons) {
-                        AlertDialogFlowRow(mainAxisSpacing = 8.dp, crossAxisSpacing = 12.dp) {
-                            TextButton(onClick = onDismiss) {
-                                Text(text = stringResource(id = android.R.string.cancel))
-                            }
-                            TextButton(onClick = onConfirm) {
-                                Text(text = stringResource(id = android.R.string.ok))
+                        Box(modifier = Modifier.padding(horizontal = 24.dp)) {
+                            AlertDialogFlowRow(mainAxisSpacing = 8.dp, crossAxisSpacing = 12.dp) {
+                                TextButton(onClick = onDismiss) {
+                                    Text(text = stringResource(id = android.R.string.cancel))
+                                }
+                                TextButton(onClick = onConfirm) {
+                                    Text(text = stringResource(id = android.R.string.ok))
+                                }
                             }
                         }
                         Spacer(modifier = Modifier.height(10.dp))
