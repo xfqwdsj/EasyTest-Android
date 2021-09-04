@@ -20,11 +20,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.preference.PreferenceManager
 import xyz.xfqlittlefan.easytest.theme.Black
 import xyz.xfqlittlefan.easytest.theme.colors
+import kotlin.math.max
 
 @DslMarker
 annotation class PreferenceMarker
@@ -135,32 +141,21 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                 if (showed) {
                     var value by remember { mutableStateOf(sharedPreferences.getString(key, defaultValue) ?: defaultValue) }
                     val onDismiss = { showed = false }
-                    AlertDialog(
-                        onDismissRequest = onDismiss,
-                        title = { Text(text = title) },
-                        text = {
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                Spacer(modifier = Modifier.height(10.dp))
-                                TextField(
-                                    value = value,
-                                    onValueChange = { value = it }
-                                )
-                            }
+                    PreferenceDialog(
+                        title = title,
+                        onConfirm = {
+                            sharedPreferences.edit().putString(key, value).apply()
+                            showed = false
                         },
-                        confirmButton = {
-                            TextButton(onClick = {
-                                sharedPreferences.edit().putString(key, value).apply()
-                                showed = false
-                            }) {
-                                Text(text = stringResource(id = android.R.string.ok))
-                            }
-                        },
-                        dismissButton = {
-                            TextButton(onClick = onDismiss) {
-                                Text(text = stringResource(id = android.R.string.cancel))
-                            }
+                        onDismiss = onDismiss
+                    ) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            TextField(
+                                value = value,
+                                onValueChange = { value = it }
+                            )
                         }
-                    )
+                    }
                 }
                 CompositionLocalProvider(
                     values = arrayOf(LocalContentAlpha provides if (enabled) ContentAlpha.high else ContentAlpha.disabled)
@@ -228,6 +223,7 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                 "Gray",
                 "BlueGray"
             ),
+        dark: Boolean = false,
         onColorChange: (String) -> Unit = { }
     ) {
         itemList.add {
@@ -242,80 +238,66 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
             ) {
                 var value by remember { mutableStateOf(sharedPreferences.getString(key, defaultValue) ?: defaultValue) }
                 if (showed) {
-                    val onDismiss = {
-                        value = sharedPreferences.getString(key, defaultValue) ?: defaultValue
-                        onColorChange(value)
-                        showed = false
-                    }
-                    AlertDialog(
-                        onDismissRequest = onDismiss,
-                        title = { Text(text = title) },
-                        text = {
-                            LazyVerticalGrid(
-                                cells = GridCells.Adaptive(minSize = 68.dp),
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                items(colors) {
+                    PreferenceDialog(
+                        title = title,
+                        showButtons = false,
+                        onDismiss = {
+                            showed = false
+                        }
+                    ) {
+                        LazyVerticalGrid(
+                            cells = GridCells.Adaptive(minSize = 68.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            items(colors) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(10.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
                                     Box(
                                         modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(10.dp),
-                                        contentAlignment = Alignment.Center
+                                            .size(48.dp)
+                                            .clip(CircleShape)
+                                            .clickable {
+                                                value = it
+                                                    sharedPreferences.edit().putString(key, value).apply()
+                                                    showed = false
+                                                onColorChange(value)
+                                            }
                                     ) {
-                                        Box(
+                                        Spacer(
                                             modifier = Modifier
-                                                .size(48.dp)
-                                                .clip(CircleShape)
-                                                .clickable {
-                                                    value = it
-                                                    onColorChange(value)
-                                                }
+                                                .matchParentSize()
+                                                .background(color = colors(key = it, dark = isSystemInDarkTheme()).primary)
+                                        )
+                                        AnimatedVisibility(
+                                            visible = value == it,
+                                            modifier = Modifier.matchParentSize(),
+                                            enter = fadeIn(),
+                                            exit = fadeOut()
                                         ) {
-                                            Spacer(
+                                            Box(
                                                 modifier = Modifier
                                                     .matchParentSize()
-                                                    .background(color = colors(key = it, dark = isSystemInDarkTheme()).primary)
-                                            )
-                                            AnimatedVisibility(
-                                                visible = value == it,
-                                                modifier = Modifier.matchParentSize(),
-                                                enter = fadeIn(),
-                                                exit = fadeOut()
+                                                    .background(color = MaterialTheme.colors.onSurface.copy(alpha = 0.3f))
                                             ) {
-                                                Box(
+                                                Icon(
+                                                    imageVector = Icons.Filled.Check,
+                                                    contentDescription = stringResource(android.R.string.ok),
                                                     modifier = Modifier
                                                         .matchParentSize()
-                                                        .background(color = MaterialTheme.colors.onSurface.copy(alpha = 0.3f))
-                                                ) {
-                                                    Icon(
-                                                        imageVector = Icons.Filled.Check,
-                                                        contentDescription = stringResource(android.R.string.ok),
-                                                        modifier = Modifier
-                                                            .matchParentSize()
-                                                            .padding(10.dp),
-                                                        tint = MaterialTheme.colors.surface
-                                                    )
-                                                }
+                                                        .padding(10.dp),
+                                                    tint = MaterialTheme.colors.surface
+                                                )
                                             }
                                         }
                                     }
                                 }
                             }
-                        },
-                        confirmButton = {
-                            TextButton(onClick = {
-                                sharedPreferences.edit().putString(key, value).apply()
-                                showed = false
-                            }) {
-                                Text(text = stringResource(id = android.R.string.ok))
-                            }
-                        },
-                        dismissButton = {
-                            TextButton(onClick = onDismiss) {
-                                Text(text = stringResource(id = android.R.string.cancel))
-                            }
                         }
-                    )
+                    }
                 }
                 CompositionLocalProvider(
                     values = arrayOf(LocalContentAlpha provides if (enabled) ContentAlpha.high else ContentAlpha.disabled)
@@ -351,7 +333,7 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                                 .padding(20.dp)
                                 .size(32.dp)
                                 .background(
-                                    color = animateColorAsState(targetValue = colors(key = value, dark = isSystemInDarkTheme()).primary).value,
+                                    color = animateColorAsState(targetValue = colors(value, dark, isSystemInDarkTheme()).primary).value,
                                     shape = CircleShape
                                 )
                         )
@@ -456,17 +438,6 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                            items.forEachIndexed { index, text ->
-                                DropdownMenuItem(onClick = {
-                                    value = index
-                                    summary = items[index]
-                                    onSelectedChange(value)
-                                }) {
-                                    Text(text = text)
-                                }
-                            }
-                        }
                         if (icon == null) {
                             Spacer(
                                 modifier = Modifier
@@ -486,8 +457,151 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                             Text(text = title, style = MaterialTheme.typography.subtitle1)
                             Spacer(modifier = Modifier.height(10.dp))
                             Text(text = summary, style = MaterialTheme.typography.subtitle2)
+                            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                                items.forEachIndexed { index, text ->
+                                    DropdownMenuItem(onClick = {
+                                        expanded = false
+                                        value = index
+                                        summary = items[index]
+                                        sharedPreferences.edit().putInt(key, value).apply()
+                                        onSelectedChange(value)
+                                    }) {
+                                        Text(text = text)
+                                    }
+                                }
+                            }
                         }
                         Spacer(modifier = Modifier.width(20.dp))
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun PreferenceDialog(
+        title: String,
+        showButtons: Boolean = true,
+        onConfirm: () -> Unit = { },
+        onDismiss: () -> Unit = { },
+        content: @Composable () -> Unit
+    ) {
+        Dialog(onDismissRequest = onDismiss) {
+            Surface(shape = RoundedCornerShape(10.dp)) {
+                Column {
+                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
+                        Text(
+                            text = title,
+                            modifier = Modifier.padding(24.dp),
+                            style = MaterialTheme.typography.subtitle1
+                        )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .weight(weight = 1f, fill = false)
+                    ) { content() }
+                    Spacer(modifier = Modifier.height(24.dp))
+                    if (showButtons) {
+                        AlertDialogFlowRow(mainAxisSpacing = 8.dp, crossAxisSpacing = 12.dp) {
+                            TextButton(onClick = onDismiss) {
+                                Text(text = stringResource(id = android.R.string.cancel))
+                            }
+                            TextButton(onClick = onConfirm) {
+                                Text(text = stringResource(id = android.R.string.ok))
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun AlertDialogFlowRow(
+        mainAxisSpacing: Dp,
+        crossAxisSpacing: Dp,
+        content: @Composable () -> Unit
+    ) {
+        Layout(content) { measurables, constraints ->
+            val sequences = mutableListOf<List<Placeable>>()
+            val crossAxisSizes = mutableListOf<Int>()
+            val crossAxisPositions = mutableListOf<Int>()
+
+            var mainAxisSpace = 0
+            var crossAxisSpace = 0
+
+            val currentSequence = mutableListOf<Placeable>()
+            var currentMainAxisSize = 0
+            var currentCrossAxisSize = 0
+
+            val childConstraints = Constraints(maxWidth = constraints.maxWidth)
+
+            // Return whether the placeable can be added to the current sequence.
+            fun canAddToCurrentSequence(placeable: Placeable) =
+                currentSequence.isEmpty() || currentMainAxisSize + mainAxisSpacing.roundToPx() +
+                        placeable.width <= constraints.maxWidth
+
+            // Store current sequence information and start a new sequence.
+            fun startNewSequence() {
+                if (sequences.isNotEmpty()) {
+                    crossAxisSpace += crossAxisSpacing.roundToPx()
+                }
+                sequences += currentSequence.toList()
+                crossAxisSizes += currentCrossAxisSize
+                crossAxisPositions += crossAxisSpace
+
+                crossAxisSpace += currentCrossAxisSize
+                mainAxisSpace = max(mainAxisSpace, currentMainAxisSize)
+
+                currentSequence.clear()
+                currentMainAxisSize = 0
+                currentCrossAxisSize = 0
+            }
+
+            for (measurable in measurables) {
+                // Ask the child for its preferred size.
+                val placeable = measurable.measure(childConstraints)
+
+                // Start a new sequence if there is not enough space.
+                if (!canAddToCurrentSequence(placeable)) startNewSequence()
+
+                // Add the child to the current sequence.
+                if (currentSequence.isNotEmpty()) {
+                    currentMainAxisSize += mainAxisSpacing.roundToPx()
+                }
+                currentSequence.add(placeable)
+                currentMainAxisSize += placeable.width
+                currentCrossAxisSize = max(currentCrossAxisSize, placeable.height)
+            }
+
+            if (currentSequence.isNotEmpty()) startNewSequence()
+
+            val mainAxisLayoutSize = if (constraints.maxWidth != Constraints.Infinity) {
+                constraints.maxWidth
+            } else {
+                max(mainAxisSpace, constraints.minWidth)
+            }
+            val crossAxisLayoutSize = max(crossAxisSpace, constraints.minHeight)
+
+            layout(mainAxisLayoutSize, crossAxisLayoutSize) {
+                sequences.forEachIndexed { i, placeables ->
+                    val childrenMainAxisSizes = IntArray(placeables.size) { j ->
+                        placeables[j].width +
+                                if (j < placeables.lastIndex) mainAxisSpacing.roundToPx() else 0
+                    }
+                    val arrangement = Arrangement.Bottom
+                    // Handle vertical direction
+                    val mainAxisPositions = IntArray(childrenMainAxisSizes.size) { 0 }
+                    with(arrangement) {
+                        arrange(mainAxisLayoutSize, childrenMainAxisSizes, mainAxisPositions)
+                    }
+                    placeables.forEachIndexed { j, placeable ->
+                        placeable.place(
+                            x = mainAxisPositions[j],
+                            y = crossAxisPositions[i]
+                        )
                     }
                 }
             }

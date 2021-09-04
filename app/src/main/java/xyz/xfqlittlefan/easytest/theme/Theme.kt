@@ -1,67 +1,66 @@
 package xyz.xfqlittlefan.easytest.theme
 
+import androidx.compose.animation.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
-private val DarkColorPalette = darkColors(
-    primary = Blue700,
-    primaryVariant = Blue900,
-    secondary = Blue700,
-    background = Black
-)
+fun getLightColors(key: String): Colors {
+    return lightColors(
+        primary = getColor500(key),
+        primaryVariant = getColor700(key),
+        secondary = getColor500(key),
+        secondaryVariant = getColor500(key),
+        background = Gray50
+    )
+}
 
-private val LightColorPalette = lightColors(
-    primary = Blue500,
-    primaryVariant = Blue700,
-    secondary = Blue500,
-    background = Gray50
-)
+fun getDarkColors(key: String): Colors {
+    return darkColors(
+        primary = getColor700(key),
+        primaryVariant = getColor900(key),
+        secondary = getColor700(key),
+        secondaryVariant = getColor700(key),
+        background = Black
+    )
+}
 
 fun colors(key: String, dark: Boolean? = false, system: Boolean = false): Colors {
     return if (dark == true) {
-        darkColors(
-            primary = getColor700(key),
-            primaryVariant = getColor900(key),
-            secondary = getColor700(key),
-            background = Black
-        )
+        getDarkColors(key)
     } else if (dark == false) {
-        lightColors(
-            primary = getColor500(key),
-            primaryVariant = getColor700(key),
-            secondary = getColor500(key),
-            background = Gray50
-        )
+        getLightColors(key)
     } else {
         if (system) {
-            darkColors(
-                primary = getColor700(key),
-                primaryVariant = getColor900(key),
-                secondary = getColor700(key),
-                background = Black
-            )
+            getDarkColors(key)
         } else {
-            lightColors(
-                primary = getColor500(key),
-                primaryVariant = getColor700(key),
-                secondary = getColor500(key),
-                background = Gray50
-            )
+            getLightColors(key)
         }
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun EasyTestTheme(themeKey: String = "Blue", darkTheme: Boolean? = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-    MaterialTheme(
-        colors = colors(themeKey, darkTheme, isSystemInDarkTheme()),
-        typography = Typography,
-        shapes = Shapes,
-        content = content
-    )
+    Box {
+        Spacer(modifier = Modifier.matchParentSize().background(color = colors(themeKey, darkTheme, isSystemInDarkTheme()).background))
+        Crossfade(targetState = Pair(themeKey, darkTheme)) {
+            MaterialTheme(
+                colors = colors(it.first, it.second, isSystemInDarkTheme()),
+                typography = Typography,
+                shapes = Shapes,
+                content = content
+            )
+        }
+    }
 }

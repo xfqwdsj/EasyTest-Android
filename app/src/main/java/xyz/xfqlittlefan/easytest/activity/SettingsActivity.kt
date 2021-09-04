@@ -49,9 +49,7 @@ class SettingsActivity : BaseActivity() {
                             key = "theme_color",
                             title = getResString(R.string.theme_color),
                             summary = getResString(R.string.theme_color_summary)
-                        ) {
-                            UtilClass.theme = it
-                        }
+                        ) { UtilClass.theme = it }
                         menu(
                             key = "dark_theme",
                             title = getResString(R.string.dark_theme),
@@ -60,9 +58,14 @@ class SettingsActivity : BaseActivity() {
                                 getResString(R.string.dark_theme_on),
                                 getResString(R.string.dark_theme_off)
                             )
-                        ) {
-                            dark = it
-                        }
+                        ) { dark = it }
+                    }
+                    category(title = getResString(R.string.test)) {
+                        switch(
+                            key = "enable_landscape",
+                            title = getResString(R.string.landscape_mode),
+                            summary = getResString(R.string.landscape_mode_summary)
+                        )
                     }
                 }
             }

@@ -16,7 +16,7 @@ class App : Application() {
         LitePal.initialize(this)
         UtilClass.init(this)
 
-        DayNightDelegate.setApplicationContext(this)
-        DayNightDelegate.setDefaultNightMode(ThemeUtil.getDarkTheme())
+        //DayNightDelegate.setApplicationContext(this)
+        //DayNightDelegate.setDefaultNightMode(ThemeUtil.getDarkTheme())
     }
 }

@@ -89,6 +89,8 @@ object UtilClass {
 
     fun init(context: Context) {
         this.context = context
+        dark = getPreferences().getInt("dark_theme", 0)
+        theme = getPreferences().getString("theme_color", "Blue") ?: "Blue"
     }
 
     fun RecyclerView.smoothScroll(position: Int, mode: Int = LinearSmoothScroller.SNAP_TO_START) {
