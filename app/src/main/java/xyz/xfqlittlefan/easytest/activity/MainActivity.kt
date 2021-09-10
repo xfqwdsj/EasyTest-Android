@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,7 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.view.WindowCompat
 import androidx.preference.PreferenceManager
 import cn.leancloud.LCUser
 import xyz.xfqlittlefan.easytest.R
@@ -32,14 +30,15 @@ import xyz.xfqlittlefan.easytest.activity.base.ComposeBaseActivity
 import xyz.xfqlittlefan.easytest.activity.viewmodel.MainActivityViewModel
 import xyz.xfqlittlefan.easytest.theme.*
 import xyz.xfqlittlefan.easytest.util.UtilClass
+import xyz.xfqlittlefan.easytest.widget.HorizontalSpacer
 import xyz.xfqlittlefan.easytest.widget.MaterialContainer
+import xyz.xfqlittlefan.easytest.widget.VerticalSpacer
 
 class MainActivity : ComposeBaseActivity() {
     private val viewModel by viewModels<MainActivityViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             MaterialContainer(
                 themeKey = UtilClass.theme,
@@ -56,7 +55,7 @@ class MainActivity : ComposeBaseActivity() {
                     )
                 ) {
                     item {
-                        Spacer(modifier = Modifier.height(10.dp))
+                        VerticalSpacer(size = 10.dp)
                     }
                     item {
                         ObviousCard(
@@ -74,7 +73,7 @@ class MainActivity : ComposeBaseActivity() {
                         }
                     }
                     item {
-                        Spacer(modifier = Modifier.height(10.dp))
+                        VerticalSpacer(size = 10.dp)
                     }
                     item {
                         MainCard(
@@ -86,7 +85,7 @@ class MainActivity : ComposeBaseActivity() {
                         }
                     }
                     item {
-                        Spacer(modifier = Modifier.height(10.dp))
+                        VerticalSpacer(size = 10.dp)
                     }
                     item {
                         MainCard(
@@ -103,7 +102,7 @@ class MainActivity : ComposeBaseActivity() {
                         }
                     }
                     item {
-                        Spacer(modifier = Modifier.height(10.dp))
+                        VerticalSpacer(size = 10.dp)
                     }
                     item {
                         SecondaryCard(
@@ -112,9 +111,6 @@ class MainActivity : ComposeBaseActivity() {
                         ) {
                             startActivity(Intent(this@MainActivity, SettingsActivity::class.java))
                         }
-                    }
-                    item {
-                        Spacer(modifier = Modifier.height(10.dp))
                     }
                 }
             }
@@ -142,7 +138,7 @@ class MainActivity : ComposeBaseActivity() {
                 Text(text = it, style = MaterialTheme.typography.subtitle1)
             }
             if (subtitle != null) {
-                Spacer(Modifier.height(4.dp))
+                VerticalSpacer(size = 4.dp)
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                     AnimatedContent(
                         targetState = subtitle,
@@ -169,7 +165,7 @@ class MainActivity : ComposeBaseActivity() {
                 Text(text = it, style = MaterialTheme.typography.subtitle1)
             }
             if (subtitle != null) {
-                Spacer(Modifier.height(4.dp))
+                VerticalSpacer(size = 4.dp)
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                     AnimatedContent(
                         targetState = subtitle,
@@ -197,7 +193,7 @@ class MainActivity : ComposeBaseActivity() {
                 Text(text = it, style = MaterialTheme.typography.subtitle1)
             }
             if (subtitle != null) {
-                Spacer(Modifier.height(4.dp))
+                VerticalSpacer(size = 4.dp)
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                     AnimatedContent(
                         targetState = subtitle,
@@ -230,7 +226,7 @@ class MainActivity : ComposeBaseActivity() {
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Spacer(Modifier.width(20.dp))
+                HorizontalSpacer(size = 20.dp)
                 Icon(
                     imageVector = icon,
                     contentDescription = stringResource(R.string.icon),

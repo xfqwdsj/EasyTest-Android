@@ -28,10 +28,7 @@ import androidx.compose.ui.unit.dp
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.ComposeBaseActivity
 import xyz.xfqlittlefan.easytest.activity.viewmodel.LoginActivityViewModel
-import xyz.xfqlittlefan.easytest.util.UtilClass
-import xyz.xfqlittlefan.easytest.util.UtilClass.getDark
 import xyz.xfqlittlefan.easytest.widget.Autofill
-import xyz.xfqlittlefan.easytest.widget.BackIcon
 import xyz.xfqlittlefan.easytest.widget.MaterialContainer
 import xyz.xfqlittlefan.easytest.widget.VerticalSpacer
 
@@ -44,10 +41,8 @@ class LoginActivity : ComposeBaseActivity() {
         viewModel.finish = { finish() }
         setContent {
             MaterialContainer(
-                themeKey = UtilClass.theme,
-                darkTheme = getDark(),
                 title = stringResource(id = R.string.login),
-                navigationIcon = { BackIcon { super.onBackPressed() } }
+                onBack = { super.onBackPressed() }
             ) { contentPadding ->
                 Column(
                     modifier = Modifier
@@ -74,7 +69,7 @@ class LoginActivity : ComposeBaseActivity() {
                             TextField(
                                 value = viewModel.username,
                                 onValueChange = {
-                                    viewModel.username = it
+                                    viewModel.username = it.replace("[^\\w+]".toRegex(), "")
                                     viewModel.usernameError = false
                                 },
                                 modifier = Modifier

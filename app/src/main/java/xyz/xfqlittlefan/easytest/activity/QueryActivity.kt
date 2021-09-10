@@ -1,9 +1,9 @@
 package xyz.xfqlittlefan.easytest.activity
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -11,31 +11,25 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.ComposeBaseActivity
-import xyz.xfqlittlefan.easytest.util.UtilClass
-import xyz.xfqlittlefan.easytest.widget.BackIcon
+import xyz.xfqlittlefan.easytest.activity.viewmodel.QueryActivityViewModel
 import xyz.xfqlittlefan.easytest.widget.MaterialContainer
 
 class QueryActivity : ComposeBaseActivity() {
+    private val viewModel by viewModels<QueryActivityViewModel>()
+
     @OptIn(ExperimentalAnimationApi::class)
-    @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MaterialContainer(
-                themeKey = UtilClass.theme,
-                darkTheme = UtilClass.getDark(),
-                title = stringResource(R.string.query),
-                navigationIcon = { BackIcon { super.onBackPressed() } }
+                title = R.string.query,
+                onBack = { super.onBackPressed() }
             ) { contentPadding ->
                 Column(
                     modifier = Modifier
@@ -43,13 +37,9 @@ class QueryActivity : ComposeBaseActivity() {
                         .verticalScroll(rememberScrollState())
                         .padding(contentPadding)
                 ) {
-                    var text by remember { mutableStateOf("") }
-                    var expanded by remember { mutableStateOf(false) }
-                    var uploaded by remember { mutableStateOf(false) }
-
                     TextField(
-                        value = text,
-                        onValueChange = { text = it },
+                        value = viewModel.text,
+                        onValueChange = { viewModel.text = it },
                         modifier = Modifier
                             .padding(start = 10.dp, end = 10.dp, top = 10.dp)
                             .fillMaxWidth(),
@@ -65,11 +55,11 @@ class QueryActivity : ComposeBaseActivity() {
                         Column {
                             TextButton(
                                 modifier = Modifier.fillMaxWidth(),
-                                onClick = { expanded = !expanded },
+                                onClick = { viewModel.expanded = !viewModel.expanded },
                                 shape = RectangleShape
                             ) {
                                 AnimatedContent(
-                                    targetState = expanded,
+                                    targetState = viewModel.expanded,
                                     transitionSpec = {
                                         if (targetState) {
                                             slideInVertically({ -it }) + fadeIn() with
@@ -84,16 +74,16 @@ class QueryActivity : ComposeBaseActivity() {
                                 }
                             }
                             Column {
-                                AnimatedVisibility(visible = expanded) {
+                                AnimatedVisibility(visible = viewModel.expanded) {
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .selectable(selected = uploaded) {
-                                                uploaded = !uploaded
+                                            .selectable(selected = viewModel.uploaded) {
+                                                viewModel.uploaded = !viewModel.uploaded
                                             }
                                             .padding(15.dp)
                                     ) {
-                                        Checkbox(checked = uploaded, onCheckedChange = null)
+                                        Checkbox(checked = viewModel.uploaded, onCheckedChange = null)
                                         Text(
                                             modifier = Modifier.padding(start = 5.dp),
                                             text = stringResource(id = R.string.cloud_result)
@@ -109,8 +99,8 @@ class QueryActivity : ComposeBaseActivity() {
                             .fillMaxWidth(),
                         onClick = {
                             startActivity(Intent(this@QueryActivity, ResultActivity::class.java).apply {
-                                putExtra("id", text)
-                                putExtra("uploaded", uploaded)
+                                putExtra("id", viewModel.text)
+                                putExtra("uploaded", viewModel.uploaded)
                             })
                             finish()
                         },

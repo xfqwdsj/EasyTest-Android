@@ -1,9 +1,6 @@
 package xyz.xfqlittlefan.easytest.widget
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -12,7 +9,9 @@ import androidx.compose.ui.autofill.AutofillType
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalAutofillTree
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
+import xyz.xfqlittlefan.easytest.util.UtilClass
 
 @Composable
 fun VerticalSpacer(size: Dp) {

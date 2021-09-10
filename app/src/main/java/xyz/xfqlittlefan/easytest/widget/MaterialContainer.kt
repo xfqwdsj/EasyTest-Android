@@ -1,6 +1,5 @@
 package xyz.xfqlittlefan.easytest.widget
 
-import android.content.Context
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -19,7 +18,7 @@ import com.google.accompanist.insets.ui.Scaffold
 import com.google.accompanist.insets.ui.TopAppBar
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.theme.EasyTestTheme
-import kotlin.reflect.KClass
+import xyz.xfqlittlefan.easytest.util.UtilClass
 
 @Composable
 fun MaterialContainer(
@@ -72,10 +71,32 @@ fun MaterialContainer(
                     elevation = 0.dp
                 )
             },
-            bottomBar = { Spacer(Modifier.navigationBarsHeight()) },
+            bottomBar = { Spacer(Modifier.navigationBarsHeight(20.dp)) },
             content = content
         )
     }
+}
+
+@Composable
+fun MaterialContainer(title: String, subtitle: String? = null, onBack: () -> Unit, content: @Composable (PaddingValues) -> Unit) {
+    MaterialContainer(
+        themeKey = UtilClass.theme,
+        darkTheme = UtilClass.getDark(),
+        title = title,
+        subtitle = subtitle,
+        navigationIcon = { BackIcon(onClick = onBack) },
+        content = content
+    )
+}
+
+@Composable
+fun MaterialContainer(title: Int, subtitle: Int? = null, onBack: () -> Unit, content: @Composable (PaddingValues) -> Unit) {
+    MaterialContainer(
+        title = stringResource(id = title),
+        subtitle = subtitle?.let { stringResource(id = it) },
+        onBack = onBack,
+        content = content
+    )
 }
 
 @Composable
