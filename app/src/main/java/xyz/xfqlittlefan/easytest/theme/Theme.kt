@@ -27,10 +27,10 @@ fun getLightColors(key: String): Colors {
 
 fun getDarkColors(key: String): Colors {
     return darkColors(
-        primary = getColor700(key),
-        primaryVariant = getColor900(key),
-        secondary = getColor700(key),
-        secondaryVariant = getColor700(key),
+        primary = getColor300(key),
+        primaryVariant = getColor500(key),
+        secondary = getColor300(key),
+        secondaryVariant = getColor300(key),
         background = Black
     )
 }

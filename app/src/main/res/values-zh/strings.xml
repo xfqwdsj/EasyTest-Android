@@ -39,7 +39,7 @@
     <string name="download">下载</string>
     <string name="downloading">下载中</string>
     <string name="source">源</string>
-    <string name="downloaded_files_path">下载的文件存储在外部存储/Android/data/com.xfq.mwords/files</string>
+    <string name="downloaded_files_path">下载的文件存储在外部存储/Android/data/xyz.xfqlittlefan.easytest/files</string>
     <string name="custom_source">自定义源</string>
     <string name="offline_result">离线成果</string>
     <string name="view_server_data">查看服务器数据</string>
@@ -68,7 +68,7 @@
     <string name="ask_answer_correct">您的答案是否正确？</string>
     <string name="about_to_exit">即将退出</string>
     <string name="answer">答案</string>
-    <string name="not_found">不存在</string>
+    <string name="not_found">未找到</string>
     <string name="refresh">刷新</string>
     <string name="theme">主题</string>
     <string name="theme_color">主题颜色</string>

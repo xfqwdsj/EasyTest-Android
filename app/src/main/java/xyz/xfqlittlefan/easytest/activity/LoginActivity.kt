@@ -14,6 +14,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.AutofillType
 import androidx.compose.ui.draw.clip
@@ -30,12 +31,13 @@ import xyz.xfqlittlefan.easytest.activity.base.ComposeBaseActivity
 import xyz.xfqlittlefan.easytest.activity.viewmodel.LoginActivityViewModel
 import xyz.xfqlittlefan.easytest.widget.Autofill
 import xyz.xfqlittlefan.easytest.widget.MaterialContainer
+import xyz.xfqlittlefan.easytest.widget.TextDialog
 import xyz.xfqlittlefan.easytest.widget.VerticalSpacer
 
 class LoginActivity : ComposeBaseActivity() {
     private val viewModel by viewModels<LoginActivityViewModel>()
 
-    @OptIn(ExperimentalAnimationApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
+    @OptIn(ExperimentalAnimationApi::class, ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.finish = { finish() }
@@ -186,26 +188,28 @@ class LoginActivity : ComposeBaseActivity() {
                     ) {
                         AnimatedContent(
                             targetState = viewModel.signUp,
-                            transitionSpec = { fadeIn() with fadeOut() }
+                            transitionSpec = {
+                                if (targetState) {
+                                    slideInVertically({ -it }) + fadeIn() with
+                                            slideOutVertically({ it }) + fadeOut()
+                                } else {
+                                    slideInVertically({ it }) + fadeIn() with
+                                            slideOutVertically({ -it }) + fadeOut()
+                                }
+                            }
                         ) {
                             Text(stringResource(if (it) R.string.sign_up else R.string.login))
                         }
                     }
-                    if (viewModel.dialog) {
-                        AlertDialog(
-                            onDismissRequest = { },
-                            confirmButton = {
-                                TextButton(onClick = {
-                                    viewModel.dialog = false
-                                    finish()
-                                }) {
-                                    Text(text = stringResource(id = android.R.string.ok))
-                                }
-                            },
-                            title = { Text(text = stringResource(id = R.string.failed)) },
-                            text = { Text(text = stringResource(id = R.string.error, formatArgs = arrayOf(viewModel.message))) }
-                        )
-                    }
+                }
+                if (viewModel.dialog) {
+                    TextDialog(
+                        title = stringResource(id = R.string.failed),
+                        message = stringResource(id = R.string.error, formatArgs = arrayOf(viewModel.message)),
+                        onConfirm = {
+                            viewModel.dialog = false
+                        }
+                    )
                 }
             }
         }

@@ -38,7 +38,7 @@
     <string name="download">Download</string>
     <string name="downloading">Downloading</string>
     <string name="source">Source</string>
-    <string name="downloaded_files_path">The downloaded files are stored in external storage/Android/data/com.xfq.mwords/files/</string>
+    <string name="downloaded_files_path">The downloaded files are stored in external storage/Android/data/xyz.xfqlittlefan.easytest/files/</string>
     <string name="custom_source">Custom source</string>
     <string name="offline_result">Offline result</string>
     <string name="view_server_data">View server data</string>
@@ -79,7 +79,7 @@
     <string name="enable_blur">Enable blur effect</string>
     <string name="enable_blur_summary">Allow blur effect to be enabled in some scenes</string>
     <string name="previous">Previous</string>
-    <string name="exit_testing_summary">Your anser will not be saved</string>
+    <string name="exit_testing_summary">Your answer will not be saved</string>
     <string name="exit">Exit</string>
     <string name="scoring_hint">Your score (0 ~ %f)</string>
     <string name="score_chip">%1$s (%2$s, %3$.1f / %4$.1f)</string>

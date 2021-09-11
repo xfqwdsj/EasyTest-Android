@@ -24,15 +24,24 @@ class LoginActivityViewModel : ViewModel() {
 
     var dialog by mutableStateOf(false)
     var message by mutableStateOf("")
+        private set
 
     val compositeDisposable = CompositeDisposable()
 
     val onDone: () -> Unit = {
         if (signUp) {
-            if (username.isEmpty()) { usernameError = true }
-            if (password.isEmpty()) { passwordError = true }
-            if (nickname.isEmpty()) { nicknameError = true }
-            if (email.isEmpty()) { emailError = true }
+            if (username.isEmpty()) {
+                usernameError = true
+            }
+            if (password.isEmpty()) {
+                passwordError = true
+            }
+            if (nickname.isEmpty()) {
+                nicknameError = true
+            }
+            if (email.isEmpty()) {
+                emailError = true
+            }
             if (!(usernameError || passwordError || nicknameError || emailError)) {
                 val lcUser = LCUser()
                 lcUser.username = username
@@ -48,14 +57,18 @@ class LoginActivityViewModel : ViewModel() {
                 }))
             }
         } else {
-            if (username.isEmpty()) { usernameError = true }
-            if (password.isEmpty()) { passwordError = true }
+            if (username.isEmpty()) {
+                usernameError = true
+            }
+            if (password.isEmpty()) {
+                passwordError = true
+            }
             if (!(usernameError || passwordError)) {
                 compositeDisposable.add(LCUser.logIn(username, password).subscribe({
                     finish()
                 }, {
                     dialog = true
-                    message = it.toString()
+                    message = it.localizedMessage ?: it.toString()
                 }))
             }
         }

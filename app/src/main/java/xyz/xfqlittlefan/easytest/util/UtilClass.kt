@@ -4,9 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.view.ViewGroup
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -17,8 +14,8 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import xyz.xfqlittlefan.easytest.R
-import xyz.xfqlittlefan.easytest.theme.*
 import xyz.xfqlittlefan.easytest.data.Question
+import xyz.xfqlittlefan.easytest.theme.*
 import kotlin.math.min
 
 @SuppressLint("StaticFieldLeak")
@@ -47,12 +44,8 @@ object UtilClass {
         return if (formatArgs.isEmpty()) {
             context.resources.getString(id)
         } else {
-            context.resources.getString(id, formatArgs)
+            context.resources.getString(id, *formatArgs)
         }
-    }
-
-    fun getResStringArray(id: Int): Array<String> {
-        return context.resources!!.getStringArray(id)
     }
 
     fun getResColor(id: Int): Int {
@@ -64,19 +57,9 @@ object UtilClass {
         return (dpValue * scale + 0.5f).toInt()
     }
 
-    fun px2DipI(pxValue: Float): Int {
-        val scale = context.resources.displayMetrics.density
-        return (pxValue / scale + 0.5f).toInt()
-    }
-
     fun dip2PxF(dpValue: Float): Float {
         val scale = context.resources.displayMetrics.density
         return (dpValue * scale + 0.5f)
-    }
-
-    fun px2DipF(pxValue: Float): Float {
-        val scale = context.resources.displayMetrics.density
-        return (pxValue / scale + 0.5f)
     }
 
     fun getPreferences(): SharedPreferences {
@@ -148,28 +131,34 @@ object UtilClass {
         return maxScore
     }
 
-    @Composable
-    fun getStateContent(question: Question, map: Map<Int, Map<Int, Map<Int, Float>>>, index: Int): Pair<Color, String> {
+    fun getResultItemTitle(question: Question, map: Map<Int, Map<Int, Map<Int, Float>>>, index: Int): String {
         val questionMap = getQuestionStateMap(map)
         val questionNumber = index + 1
         val userScore = questionMap[index]?.get(SCORE)
-        return when (questionMap[index]?.get(CORRECTNESS)) {
-            1F -> Pair(if (MaterialTheme.colors.isLight) Green100 else Green900, context.resources.getString(R.string.result_question_state, questionNumber, getResString(R.string.correct), userScore, getQuestionScore(question)))
-            3F -> Pair(if (MaterialTheme.colors.isLight) Yellow100 else Yellow900, context.resources.getString(R.string.result_question_state, questionNumber, getResString(R.string.half_correct), userScore, getQuestionScore(question)))
-            4F -> Pair(if (MaterialTheme.colors.isLight) Blue100 else Blue900, context.resources.getString(R.string.result_question_state, questionNumber, getResString(R.string.no_points), userScore, getQuestionScore(question)))
-            else -> Pair(if (MaterialTheme.colors.isLight) Red200 else Red900, context.resources.getString(R.string.result_question_state, questionNumber, getResString(R.string.wrong), userScore, getQuestionScore(question)))
+        val string = getResString(when (questionMap[index]?.get(CORRECTNESS)) {
+            1f -> R.string.correct
+            3f -> R.string.half_correct
+            4f -> R.string.no_points
+            else -> R.string.wrong
+        })
+        return getResString(R.string.result_question_state, questionNumber, string, userScore ?: 0f, getQuestionScore(question))
+    }
+
+    fun getResultTitleBackGroundColor(correctness: Int, light: Boolean): Color {
+        val key = when (correctness) {
+            1 -> "Green"
+            3 -> "Yellow"
+            4 -> "Blue"
+            else -> "Red"
         }
+        return if (light) getColor100(key) else getColor900(key)
     }
 
-    fun getSelectionColor(question: Question, index: Int): Color {
-        return if (question.options[index].isCorrect) Green700 else Red700
-    }
-
-    fun getCorrectnessColor(map: Map<Int, Map<Int, Map<Int, Float>>>, questionIndex: Int, answerIndex: Int): Color {
-        return when (map[questionIndex]?.get(answerIndex)?.get(CORRECTNESS)) {
-            1F -> Green700
-            3F -> Yellow700
-            4F -> Blue700
+    fun getResultItemColor(correctness: Int): Color {
+        return when (correctness) {
+            1 -> Green700
+            3 -> Yellow700
+            4 -> Blue700
             else -> Red700
         }
     }
