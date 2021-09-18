@@ -1,122 +1,126 @@
 package xyz.xfqlittlefan.easytest.activity
 
-import android.annotation.SuppressLint
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.webkit.WebView
-import androidx.recyclerview.widget.LinearLayoutManager
-import okhttp3.*
-import rikka.recyclerview.fixEdgeEffect
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Book
+import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import xyz.xfqlittlefan.easytest.R
-import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
-import xyz.xfqlittlefan.easytest.adapter.QuestionBankAdapter
+import xyz.xfqlittlefan.easytest.activity.base.ComposeBaseActivity
+import xyz.xfqlittlefan.easytest.activity.viewmodel.SelectQuestionBankActivityViewModel
 import xyz.xfqlittlefan.easytest.data.QuestionSet
-import xyz.xfqlittlefan.easytest.databinding.ActivitySelectQuestionBankBinding
-import xyz.xfqlittlefan.easytest.util.ActivityMap
 import xyz.xfqlittlefan.easytest.util.UtilClass
-import xyz.xfqlittlefan.easytest.util.UtilClass.getGson
-import xyz.xfqlittlefan.easytest.util.UtilClass.smoothScroll
-import xyz.xfqlittlefan.easytest.widget.BlurBehindDialogBuilder
-import java.io.IOException
+import xyz.xfqlittlefan.easytest.widget.HorizontalSpacer
+import xyz.xfqlittlefan.easytest.widget.MaterialContainer
+import xyz.xfqlittlefan.easytest.widget.VerticalSpacer
 
-class SelectQuestionBankActivity : BaseActivity() {
-    private lateinit var binding: ActivitySelectQuestionBankBinding
+class SelectQuestionBankActivity : ComposeBaseActivity() {
+    private val viewModel by viewModels<SelectQuestionBankActivityViewModel>()
 
-    @SuppressLint("MissingSuperCall")
+    @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySelectQuestionBankBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        setAppBar(binding.appBar, binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.recyclerView.fixEdgeEffect(false)
-        binding.recyclerView.borderViewDelegate.setBorderVisibilityChangedListener { top, _, _, _ ->
-            binding.appBar.isRaised = !top
-        }
-        binding.progress.setVisibilityAfterHide(View.GONE)
-        ActivityMap.addActivity(this)
-        val index = intent.getIntegerArrayListExtra("index") ?: ArrayList()
-        val questionList: MutableList<QuestionSet.Set> = ArrayList()
-        val adapter = QuestionBankAdapter(questionList, this@SelectQuestionBankActivity, index) { item: QuestionSet.Set ->
-            onItemClicked(item)
-        }
-        binding.recyclerView.layoutManager = LinearLayoutManager(this@SelectQuestionBankActivity)
-        binding.recyclerView.adapter = adapter
-        intent.getStringArrayListExtra("urlList")?.let {
-            get(it, index)
-        }
-    }
-
-    fun get(urlList: List<String>, index: ArrayList<Int>) {
-        binding.progress.show()
-        var completedCount = 0
-        val size = mutableListOf<Int>()
-        urlList.forEach { _ ->
-            size.add(0)
-        }
-        for (i in urlList.indices) {
-            val url = urlList[i]
-            if (url != "") {
-                val request = Request.Builder()
-                    .url(url)
-                    .removeHeader("User-Agent")
-                    .addHeader("User-Agent", WebView(this).settings.userAgentString)
-                    .build()
-                OkHttpClient().newCall(request).enqueue(object : Callback {
-                    override fun onFailure(call: Call, e: IOException) {
-                        completedCount ++
-                        runOnUiThread {
-                            binding.progress.hide()
-                            BlurBehindDialogBuilder(this@SelectQuestionBankActivity)
-                                .setTitle(R.string.failed)
-                                .setMessage(resources.getString(R.string.error, e))
-                                .setCancelable(false)
-                                .setPositiveButton(android.R.string.ok) { _: DialogInterface, _: Int ->
-                                    finish()
-                                }
-                                .show()
-                        }
+        viewModel.init(
+            intent.getIntegerArrayListExtra("indexList") ?: ArrayList(),
+            intent.getStringArrayListExtra("urlList") ?: ArrayList(),
+            this
+        )
+        setContent {
+            MaterialContainer(
+                title = R.string.select_question_bank,
+                onBack = { super.onBackPressed() },
+                actions = {
+                    IconButton(onClick = {
+                        viewModel.init(
+                            intent.getIntegerArrayListExtra("indexList") ?: ArrayList(),
+                            intent.getStringArrayListExtra("urlList") ?: ArrayList(),
+                            this@SelectQuestionBankActivity
+                        )
+                    }) {
+                        Icon(imageVector = Icons.Filled.Refresh, contentDescription = stringResource(id = R.string.refresh))
                     }
-
-                    override fun onResponse(call: Call, response: Response) {
-                        if (response.code == 200) {
-                            try {
-                                val set = getGson().fromJson(response.body?.string(), QuestionSet::class.java)
-                                set.init()
-                                set.setUrl(url)
-                                var cacheList: MutableList<QuestionSet.Set> = ArrayList()
-                                cacheList.addAll(set.set)
-                                for (currentIndex in index) {
-                                    cacheList = cacheList[currentIndex].children.toMutableList()
-                                }
-                                completedCount ++
-                                size[i] = cacheList.size
-                                var position = 0
-                                for (j in 0 until i) {
-                                    position += size[j]
-                                }
-                                runOnUiThread {
-                                    (binding.recyclerView.adapter as QuestionBankAdapter).add(position, cacheList)
-                                    binding.recyclerView.smoothScroll(0)
-                                }
-                                if (completedCount == urlList.size) {
-                                    runOnUiThread {
-                                        binding.progress.hide()
+                }
+            ) { contentPadding ->
+                Box {
+                    AnimatedVisibility(
+                        modifier = Modifier.padding(top = contentPadding.calculateTopPadding()),
+                        visible = viewModel.progressing
+                    ) { LinearProgressIndicator(modifier = Modifier.fillMaxWidth()) }
+                    LazyColumn(contentPadding = contentPadding) {
+                        itemsIndexed(viewModel.items) { index, item ->
+                            Card(
+                                onClick = {
+                                    if (item.children.isNullOrEmpty()) {
+                                        if (item.url != "" && item.url != null) {
+                                            requestedOrientation = if (UtilClass.getPreferences().getBoolean("enable_landscape", false)) {
+                                                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                                            } else {
+                                                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                                            }
+                                            startActivity(Intent().apply {
+                                                putExtra("url", item.url)
+                                                putExtra("random", item.random)
+                                                putExtra("id", item.id)
+                                                putExtra("questionSetUrl", item.questionSetUrl)
+                                            })
+                                            finish()
+                                        }
+                                    } else {
+                                        val indexList = ArrayList(viewModel.indexList)
+                                        val urlList = arrayListOf(item.questionSetUrl)
+                                        indexList.add(item.index)
+                                        startActivity(Intent().apply {
+                                            putIntegerArrayListExtra("indexList", indexList)
+                                            putStringArrayListExtra("urlList", urlList)
+                                        })
+                                    }
+                                },
+                                modifier = Modifier
+                                    .padding(
+                                        start = 10.dp,
+                                        top = 10.dp,
+                                        end = 10.dp,
+                                        bottom = if (index + 1 == viewModel.items.size) 10.dp else 0.dp
+                                    )
+                                    .fillMaxWidth(),
+                                shape = RoundedCornerShape(10.dp),
+                                elevation = 0.dp
+                            ) {
+                                Row {
+                                    HorizontalSpacer(size = 10.dp)
+                                    Icon(
+                                        imageVector = if (item.children.isNullOrEmpty()) Icons.Filled.Book
+                                        else Icons.Filled.Folder,
+                                        contentDescription = stringResource(id = R.string.question_bank_icon),
+                                        modifier = Modifier.padding(vertical = 10.dp)
+                                    )
+                                    Column(modifier = Modifier.padding(10.dp)) {
+                                        Text(text = item.name, style = MaterialTheme.typography.subtitle1)
+                                        VerticalSpacer(size = 10.dp)
+                                        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                                            Text(text = item.description, style = MaterialTheme.typography.subtitle2)
+                                        }
                                     }
                                 }
-                            } catch (e: Exception) {
-                                e.printStackTrace()
                             }
                         }
                     }
-                })
-            } else {
-                completedCount ++
+                }
             }
         }
     }
@@ -137,27 +141,5 @@ class SelectQuestionBankActivity : BaseActivity() {
             }
             finish()
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                super.onBackPressed()
-                true
-            }
-            R.id.refresh -> {
-                if (intent.getStringArrayListExtra("urlList") != null) {
-                    (binding.recyclerView.adapter as QuestionBankAdapter).reset()
-                    get(intent.getStringArrayListExtra("urlList")!!, intent.getIntegerArrayListExtra("index") ?: ArrayList())
-                }
-                true
-            }
-            else -> false
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.refresh_menu, menu)
-        return true
     }
 }

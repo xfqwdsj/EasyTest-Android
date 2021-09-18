@@ -13,24 +13,18 @@ import org.litepal.extension.find
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.data.Question
 import xyz.xfqlittlefan.easytest.data.Result
+import xyz.xfqlittlefan.easytest.util.UtilClass.CORRECTNESS
 import xyz.xfqlittlefan.easytest.util.UtilClass.getGson
 import xyz.xfqlittlefan.easytest.util.UtilClass.getQuestionStateMap
 import xyz.xfqlittlefan.easytest.util.UtilClass.getResString
 import xyz.xfqlittlefan.easytest.util.UtilClass.getResultItemTitle
 import xyz.xfqlittlefan.easytest.util.UtilClass.parseQuestion
 
-const val CORRECTNESS = 0
-const val TITLE = 1
-const val QUESTION = 2
-const val TYPE = 3
-const val ITEMS = 4
-const val DETAILS_ITEMS = 5
-
 class ResultActivityViewModel : ViewModel() {
     var id by mutableStateOf(Pair(Any(), false))
         private set
 
-    var display by mutableStateOf(listOf<Map<Int, Any>>())
+    var display by mutableStateOf(listOf<DisplayData>())
         private set
 
     var dialog by mutableStateOf(false)
@@ -76,11 +70,11 @@ class ResultActivityViewModel : ViewModel() {
             if (questionList.size == stateMap.size) {
                 questionList.forEachIndexed { index, question ->
                     val list = display.toMutableList()
-                    val map = mutableMapOf<Int, Any>()
-                    map[CORRECTNESS] = getQuestionStateMap(stateMap)[index]?.get(CORRECTNESS)?.toInt() ?: 2
-                    map[TITLE] = getResultItemTitle(question, stateMap, index)
-                    map[QUESTION] = parseQuestion(question).first
-                    map[TYPE] = if (question.type == 1) {
+
+                    val correctness = getQuestionStateMap(stateMap)[index]?.get(CORRECTNESS)?.toInt() ?: 2
+                    val title = getResultItemTitle(question, stateMap, index)
+                    val questionString = parseQuestion(question).first
+                    val type = if (question.type == 1) {
                         if (question.maxSelecting != null) 1 else 2
                     } else if (question.type == 2) 3 else 114514
                     val items = mutableListOf<Pair<Int, String>>()
@@ -102,9 +96,7 @@ class ResultActivityViewModel : ViewModel() {
                             }
                         }
                     }
-                    map[ITEMS] = items.toList()
-                    map[DETAILS_ITEMS] = detailsItems.toList()
-                    list.add(map.toMap())
+                    list.add(DisplayData(correctness, title, questionString, type, items, detailsItems))
                     display = list
                 }
             }
@@ -113,4 +105,13 @@ class ResultActivityViewModel : ViewModel() {
             message = getResString(R.string.unknown_error)
         }
     }
+
+    data class DisplayData(
+        val correctness: Int,
+        val title: String,
+        val question: String,
+        val type: Int,
+        val items: List<Pair<Int, String>>,
+        val detailsItems: List<Pair<Int, String>>
+    )
 }

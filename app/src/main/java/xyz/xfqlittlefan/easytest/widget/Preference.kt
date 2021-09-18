@@ -84,7 +84,7 @@ class PreferenceScope(private val context: Context) {
                 ) {
                     Text(
                         modifier = Modifier
-                            .padding(start = 72.dp, top = 20.dp, bottom = 20.dp)
+                            .padding(start = 72.dp, top = 20.dp, bottom = 20.dp, end = 20.dp)
                             .wrapContentHeight(),
                         text = title,
                         color = MaterialTheme.colors.primary,

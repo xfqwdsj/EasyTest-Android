@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -21,7 +22,7 @@ import com.google.gson.reflect.TypeToken
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.ComposeBaseActivity
-import xyz.xfqlittlefan.easytest.activity.viewmodel.*
+import xyz.xfqlittlefan.easytest.activity.viewmodel.ResultActivityViewModel
 import xyz.xfqlittlefan.easytest.util.UtilClass.getGson
 import xyz.xfqlittlefan.easytest.util.UtilClass.getResultItemColor
 import xyz.xfqlittlefan.easytest.util.UtilClass.getResultTitleBackGroundColor
@@ -42,19 +43,24 @@ class ResultActivity : ComposeBaseActivity() {
                 onBack = { super.onBackPressed() }
             ) { contentPadding ->
                 LazyColumn(contentPadding = contentPadding) {
-                    items(viewModel.display) { map ->
+                    itemsIndexed(viewModel.display) { index, displayData ->
                         Card(
                             modifier = Modifier
-                                .padding(10.dp)
+                                .padding(
+                                    start = 10.dp,
+                                    top = 10.dp,
+                                    end = 10.dp,
+                                    bottom = if (index + 1 == viewModel.display.size) 10.dp else 0.dp
+                                )
                                 .fillMaxWidth(),
                             shape = RoundedCornerShape(10.dp),
                             elevation = 0.dp
                         ) {
                             Column {
-                                Surface(color = getResultTitleBackGroundColor(map[CORRECTNESS] as? Int ?: 2, MaterialTheme.colors.isLight)) {
+                                Surface(color = getResultTitleBackGroundColor(displayData.correctness, MaterialTheme.colors.isLight)) {
                                     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                                         Text(
-                                            text = map[TITLE] as? String ?: "",
+                                            text = displayData.title,
                                             modifier = Modifier
                                                 .padding(5.dp)
                                                 .fillMaxWidth(),
@@ -66,7 +72,7 @@ class ResultActivity : ComposeBaseActivity() {
                                     var expanded by remember { mutableStateOf(false) }
                                     VerticalSpacer(size = 10.dp)
                                     MarkdownText(
-                                        markdown = map[QUESTION] as? String ?: "",
+                                        markdown = displayData.question,
                                         modifier = Modifier.padding(horizontal = 10.dp),
                                         style = MaterialTheme.typography.subtitle1
                                     )
@@ -79,26 +85,23 @@ class ResultActivity : ComposeBaseActivity() {
                                         color = MaterialTheme.colors.onBackground.copy(alpha = 0.05f)
                                     ) {
                                         Column {
-                                            (map[ITEMS] as? List<*>)?.forEach {
-                                                if (map[TYPE] == 1 || map[TYPE] == 2 || map[TYPE] == 3) {
-                                                    val pair = it as? Pair<*, *>
-                                                    val number = pair?.first as? Int ?: 0
-                                                    val string = pair?.second as? String ?: ""
-                                                    if (map[TYPE] == 1 || map[TYPE] == 2) {
-                                                        val correctness = if (number shr 1 and 1 == 1) 1 else 2
-                                                        val userSelected = number shr 0 and 1 == 1
-                                                        AnswerItem(
-                                                            type = map[TYPE] as Int,
-                                                            text = string,
-                                                            color = if (userSelected) getResultItemColor(correctness) else null
-                                                        )
-                                                    } else if (map[TYPE] == 3) {
-                                                        AnswerItem(
-                                                            type = map[TYPE] as Int,
-                                                            text = string,
-                                                            color = getResultItemColor(number)
-                                                        )
-                                                    }
+                                            displayData.items.forEach {
+                                                val number = it.first
+                                                val string = it.second
+                                                if (displayData.type == 1 || displayData.type == 2) {
+                                                    val correctness = if (number shr 1 and 1 == 1) 1 else 2
+                                                    val userSelected = number shr 0 and 1 == 1
+                                                    AnswerItem(
+                                                        type = displayData.type,
+                                                        text = string,
+                                                        color = if (userSelected) getResultItemColor(correctness) else null
+                                                    )
+                                                } else if (displayData.type == 3) {
+                                                    AnswerItem(
+                                                        type = displayData.type,
+                                                        text = string,
+                                                        color = getResultItemColor(number)
+                                                    )
                                                 }
                                             }
                                         }
@@ -135,35 +138,32 @@ class ResultActivity : ComposeBaseActivity() {
                                                 color = MaterialTheme.colors.onBackground.copy(alpha = 0.05f)
                                             ) {
                                                 Column {
-                                                    (map[DETAILS_ITEMS] as? List<*>)?.forEach {
-                                                        if (map[TYPE] == 1 || map[TYPE] == 2 || map[TYPE] == 3) {
-                                                            val pair = it as? Pair<*, *>
-                                                            val number = pair?.first as? Int ?: 0
-                                                            val string = pair?.second as? String ?: ""
-                                                            if (map[TYPE] == 1 || map[TYPE] == 2) {
-                                                                AnswerItem(
-                                                                    type = map[TYPE] as Int,
-                                                                    text = string,
-                                                                    color = if (number == 1) getResultItemColor(1) else null
-                                                                )
-                                                            } else if (map[TYPE] == 3) {
-                                                                AnswerItem(
-                                                                    type = map[TYPE] as Int,
-                                                                    color = getResultItemColor(1)
-                                                                ) {
-                                                                    Column {
-                                                                        val list = getGson().fromJson<List<String>>(string, object : TypeToken<List<String>>() {}.type)
-                                                                        list.forEach {
-                                                                            Box(
-                                                                                modifier = Modifier
-                                                                                    .padding(horizontal = 5.dp)
-                                                                                    .fillMaxWidth()
-                                                                            ) {
-                                                                                MarkdownText(
-                                                                                    markdown = it,
-                                                                                    modifier = Modifier.padding(vertical = 15.dp)
-                                                                                )
-                                                                            }
+                                                    displayData.detailsItems.forEach {
+                                                        val number = it.first
+                                                        val string = it.second
+                                                        if (displayData.type == 1 || displayData.type == 2) {
+                                                            AnswerItem(
+                                                                type = displayData.type,
+                                                                text = string,
+                                                                color = if (number == 1) getResultItemColor(1) else null
+                                                            )
+                                                        } else if (displayData.type == 3) {
+                                                            AnswerItem(
+                                                                type = displayData.type,
+                                                                color = getResultItemColor(1)
+                                                            ) {
+                                                                Column {
+                                                                    val list = getGson().fromJson<List<String>>(string, object : TypeToken<List<String>>() {}.type)
+                                                                    list.forEach {
+                                                                        Box(
+                                                                            modifier = Modifier
+                                                                                .padding(horizontal = 5.dp)
+                                                                                .fillMaxWidth()
+                                                                        ) {
+                                                                            MarkdownText(
+                                                                                markdown = it,
+                                                                                modifier = Modifier.padding(vertical = 15.dp)
+                                                                            )
                                                                         }
                                                                     }
                                                                 }

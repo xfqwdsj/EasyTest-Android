@@ -78,23 +78,37 @@ fun MaterialContainer(
 }
 
 @Composable
-fun MaterialContainer(title: String, subtitle: String? = null, onBack: () -> Unit, content: @Composable (PaddingValues) -> Unit) {
+fun MaterialContainer(
+    title: String,
+    subtitle: String? = null,
+    onBack: () -> Unit,
+    actions: @Composable RowScope.() -> Unit = { },
+    content: @Composable (PaddingValues) -> Unit
+) {
     MaterialContainer(
         themeKey = UtilClass.theme,
         darkTheme = UtilClass.getDark(),
         title = title,
         subtitle = subtitle,
         navigationIcon = { BackIcon(onClick = onBack) },
+        actions = actions,
         content = content
     )
 }
 
 @Composable
-fun MaterialContainer(title: Int, subtitle: Int? = null, onBack: () -> Unit, content: @Composable (PaddingValues) -> Unit) {
+fun MaterialContainer(
+    title: Int,
+    subtitle: Int? = null,
+    onBack: () -> Unit,
+    actions: @Composable RowScope.() -> Unit = { },
+    content: @Composable (PaddingValues) -> Unit
+) {
     MaterialContainer(
         title = stringResource(id = title),
         subtitle = subtitle?.let { stringResource(id = it) },
         onBack = onBack,
+        actions = actions,
         content = content
     )
 }

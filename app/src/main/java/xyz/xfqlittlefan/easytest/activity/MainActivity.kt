@@ -216,11 +216,11 @@ class MainActivity : ComposeBaseActivity() {
         content: @Composable ColumnScope.() -> Unit
     ) {
         Card(
+            onClick = onClick,
+            shape = RoundedCornerShape(10.dp),
             backgroundColor = color,
             contentColor = contentColor,
-            shape = RoundedCornerShape(10.dp),
-            elevation = 0.dp,
-            onClick = onClick
+            elevation = 0.dp
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
