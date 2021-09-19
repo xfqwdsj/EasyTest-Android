@@ -44,8 +44,8 @@ class ResultActivityViewModel : ViewModel() {
                     url = it["url"] as String?
                 })
             }, {
+                message = getResString(R.string.error, it.localizedMessage ?: it.toString())
                 dialog = true
-                message = it.localizedMessage ?: it.toString()
             }))
             this.id = Pair(id.toString(), uploaded)
         } else if (!uploaded && id?.toLongOrNull() != null) {
@@ -53,13 +53,13 @@ class ResultActivityViewModel : ViewModel() {
             if (result != null) {
                 initItems(result)
             } else {
-                dialog = true
                 message = getResString(R.string.not_found)
+                dialog = true
             }
             this.id = Pair(id.toLong(), uploaded)
         } else {
-            dialog = true
             message = getResString(R.string.unknown_error)
+            dialog = true
         }
     }
 
@@ -101,8 +101,8 @@ class ResultActivityViewModel : ViewModel() {
                 }
             }
         } else {
-            dialog = true
             message = getResString(R.string.unknown_error)
+            dialog = true
         }
     }
 

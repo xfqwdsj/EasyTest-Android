@@ -39,7 +39,7 @@ fun Dialog(
                 ) { content() }
                 Spacer(modifier = Modifier.height(24.dp))
                 if (buttons != null) {
-                    Box(modifier = Modifier.padding(horizontal = 24.dp)) {
+                    Box(modifier = Modifier.padding(horizontal = 10.dp)) {
                         ButtonsRow(mainAxisSpacing = 8.dp, crossAxisSpacing = 12.dp, content = buttons)
                     }
                     Spacer(modifier = Modifier.height(10.dp))

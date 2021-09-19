@@ -24,9 +24,11 @@ import androidx.compose.ui.unit.dp
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.ComposeBaseActivity
 import xyz.xfqlittlefan.easytest.activity.viewmodel.SelectQuestionBankActivityViewModel
+import xyz.xfqlittlefan.easytest.util.ActivityMap
 import xyz.xfqlittlefan.easytest.util.UtilClass
 import xyz.xfqlittlefan.easytest.widget.HorizontalSpacer
 import xyz.xfqlittlefan.easytest.widget.MaterialContainer
+import xyz.xfqlittlefan.easytest.widget.TextDialog
 import xyz.xfqlittlefan.easytest.widget.VerticalSpacer
 
 class SelectQuestionBankActivity : ComposeBaseActivity() {
@@ -38,9 +40,8 @@ class SelectQuestionBankActivity : ComposeBaseActivity() {
         viewModel.init(
             intent.getIntegerArrayListExtra("indexList") ?: ArrayList(),
             intent.getStringArrayListExtra("urlList") ?: ArrayList(),
-            this
         )
-        xyz.xfqlittlefan.easytest.util.ActivityMap.addActivity(this)
+        ActivityMap.addActivity(this)
         setContent {
             MaterialContainer(
                 title = R.string.select_question_bank,
@@ -49,8 +50,7 @@ class SelectQuestionBankActivity : ComposeBaseActivity() {
                     IconButton(onClick = {
                         viewModel.init(
                             intent.getIntegerArrayListExtra("indexList") ?: ArrayList(),
-                            intent.getStringArrayListExtra("urlList") ?: ArrayList(),
-                            this@SelectQuestionBankActivity
+                            intent.getStringArrayListExtra("urlList") ?: ArrayList()
                         )
                     }) {
                         Icon(imageVector = Icons.Filled.Refresh, contentDescription = stringResource(id = R.string.refresh))
@@ -66,10 +66,17 @@ class SelectQuestionBankActivity : ComposeBaseActivity() {
                     ) { LinearProgressIndicator(modifier = Modifier.fillMaxWidth()) }
                     LazyColumn(contentPadding = contentPadding) {
                         itemsIndexed(viewModel.items) { index, item ->
+                            if (item.index == 0 && item.questionSet != null) {
+                                Text(
+                                    text = item.questionSet!!.name,
+                                    modifier = Modifier.padding(10.dp),
+                                    color = MaterialTheme.colors.primary
+                                )
+                            }
                             Card(
                                 onClick = {
-                                    if (item.children.isNullOrEmpty()) {
-                                        if (item.url != "" && item.url != null) {
+                                    if ((item.isChildrenInitialized && item.children.isEmpty()) || !item.isChildrenInitialized) {
+                                        if (item.url != "") {
                                             requestedOrientation = if (UtilClass.getPreferences().getBoolean("enable_landscape", false)) {
                                                 ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
                                             } else {
@@ -96,7 +103,7 @@ class SelectQuestionBankActivity : ComposeBaseActivity() {
                                 modifier = Modifier
                                     .padding(
                                         start = 10.dp,
-                                        top = 10.dp,
+                                        top = if (index == 0) 0.dp else 10.dp,
                                         end = 10.dp,
                                         bottom = if (index + 1 == viewModel.items.size) 10.dp else 0.dp
                                     )
@@ -107,7 +114,7 @@ class SelectQuestionBankActivity : ComposeBaseActivity() {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     HorizontalSpacer(size = 15.dp)
                                     Icon(
-                                        imageVector = if (item.children.isNullOrEmpty()) Icons.Filled.Book
+                                        imageVector = if ((item.isChildrenInitialized && item.children.isEmpty()) || !item.isChildrenInitialized) Icons.Filled.Book
                                         else Icons.Filled.Folder,
                                         contentDescription = stringResource(id = R.string.question_bank_icon),
                                         modifier = Modifier.padding(vertical = 15.dp).size(32.dp)
@@ -122,6 +129,15 @@ class SelectQuestionBankActivity : ComposeBaseActivity() {
                                 }
                             }
                         }
+                    }
+                    if (viewModel.dialog) {
+                        TextDialog(
+                            title = stringResource(id = R.string.failed),
+                            message = viewModel.message,
+                            onConfirm = {
+                                finish()
+                            }
+                        )
                     }
                 }
             }
