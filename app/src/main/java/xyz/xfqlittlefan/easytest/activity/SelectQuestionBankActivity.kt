@@ -59,7 +59,9 @@ class SelectQuestionBankActivity : ComposeBaseActivity() {
             ) { contentPadding ->
                 Box {
                     AnimatedVisibility(
-                        modifier = Modifier.padding(top = contentPadding.calculateTopPadding()),
+                        modifier = Modifier
+                            .padding(top = contentPadding.calculateTopPadding())
+                            .fillMaxWidth(),
                         visible = viewModel.progressing
                     ) { LinearProgressIndicator(modifier = Modifier.fillMaxWidth()) }
                     LazyColumn(contentPadding = contentPadding) {
@@ -103,14 +105,14 @@ class SelectQuestionBankActivity : ComposeBaseActivity() {
                                 elevation = 0.dp
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    HorizontalSpacer(size = 10.dp)
+                                    HorizontalSpacer(size = 15.dp)
                                     Icon(
                                         imageVector = if (item.children.isNullOrEmpty()) Icons.Filled.Book
                                         else Icons.Filled.Folder,
                                         contentDescription = stringResource(id = R.string.question_bank_icon),
-                                        modifier = Modifier.padding(vertical = 10.dp).size(32.dp)
+                                        modifier = Modifier.padding(vertical = 15.dp).size(32.dp)
                                     )
-                                    Column(modifier = Modifier.padding(10.dp)) {
+                                    Column(modifier = Modifier.padding(15.dp)) {
                                         Text(text = item.name, style = MaterialTheme.typography.subtitle1)
                                         VerticalSpacer(size = 5.dp)
                                         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
