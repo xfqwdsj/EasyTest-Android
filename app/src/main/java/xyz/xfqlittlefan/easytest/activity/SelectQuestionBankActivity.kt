@@ -5,8 +5,7 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -62,68 +61,78 @@ class SelectQuestionBankActivity : ComposeBaseActivity() {
                         modifier = Modifier
                             .padding(top = contentPadding.calculateTopPadding())
                             .fillMaxWidth(),
-                        visible = viewModel.progressing
+                        visible = viewModel.progressing,
+                        enter = slideInVertically(initialOffsetY = { -it }),
+                        exit = slideOutVertically(targetOffsetY = { -it })
                     ) { LinearProgressIndicator(modifier = Modifier.fillMaxWidth()) }
-                    LazyColumn(contentPadding = contentPadding) {
-                        itemsIndexed(viewModel.items) { index, item ->
-                            if (item.index == 0 && item.questionSet != null) {
-                                Text(
-                                    text = item.questionSet!!.name,
-                                    modifier = Modifier.padding(10.dp),
-                                    color = MaterialTheme.colors.primary
-                                )
-                            }
-                            Card(
-                                onClick = {
-                                    if ((item.isChildrenInitialized && item.children.isEmpty()) || !item.isChildrenInitialized) {
-                                        if (item.url != "") {
-                                            requestedOrientation = if (UtilClass.getPreferences().getBoolean("enable_landscape", false)) {
-                                                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                                            } else {
-                                                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                    AnimatedVisibility(
+                        modifier = Modifier.fillMaxSize(),
+                        visible = !viewModel.progressing,
+                        enter = fadeIn(),
+                        exit = fadeOut()
+                    ) {
+                        LazyColumn(contentPadding = contentPadding) {
+                            itemsIndexed(viewModel.items) { index, item ->
+                                if (item.index == 0 && item.questionSet != null) {
+                                    Text(
+                                        text = item.questionSet!!.name,
+                                        modifier = Modifier.padding(10.dp),
+                                        color = MaterialTheme.colors.primary,
+                                        style = MaterialTheme.typography.subtitle2
+                                    )
+                                }
+                                Card(
+                                    onClick = {
+                                        if ((item.isChildrenInitialized && item.children.isEmpty()) || !item.isChildrenInitialized) {
+                                            if (item.url != "") {
+                                                requestedOrientation = if (UtilClass.getPreferences().getBoolean("enable_landscape", false)) {
+                                                    ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                                                } else {
+                                                    ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                                                }
+                                                startActivity(Intent(this@SelectQuestionBankActivity, TestActivity::class.java).apply {
+                                                    putExtra("url", item.url)
+                                                    putExtra("random", item.random)
+                                                    putExtra("id", item.id)
+                                                    putExtra("questionSetUrl", item.questionSetUrl)
+                                                })
+                                                finish()
                                             }
-                                            startActivity(Intent(this@SelectQuestionBankActivity, TestActivity::class.java).apply {
-                                                putExtra("url", item.url)
-                                                putExtra("random", item.random)
-                                                putExtra("id", item.id)
-                                                putExtra("questionSetUrl", item.questionSetUrl)
+                                        } else {
+                                            val indexList = ArrayList(viewModel.indexList)
+                                            val urlList = arrayListOf(item.questionSetUrl)
+                                            indexList.add(item.index)
+                                            startActivity(Intent(this@SelectQuestionBankActivity, SelectQuestionBankActivity::class.java).apply {
+                                                putIntegerArrayListExtra("indexList", indexList)
+                                                putStringArrayListExtra("urlList", urlList)
                                             })
-                                            finish()
                                         }
-                                    } else {
-                                        val indexList = ArrayList(viewModel.indexList)
-                                        val urlList = arrayListOf(item.questionSetUrl)
-                                        indexList.add(item.index)
-                                        startActivity(Intent(this@SelectQuestionBankActivity, SelectQuestionBankActivity::class.java).apply {
-                                            putIntegerArrayListExtra("indexList", indexList)
-                                            putStringArrayListExtra("urlList", urlList)
-                                        })
-                                    }
-                                },
-                                modifier = Modifier
-                                    .padding(
-                                        start = 10.dp,
-                                        top = if (index == 0) 0.dp else 10.dp,
-                                        end = 10.dp,
-                                        bottom = if (index + 1 == viewModel.items.size) 10.dp else 0.dp
-                                    )
-                                    .fillMaxWidth(),
-                                shape = RoundedCornerShape(10.dp),
-                                elevation = 0.dp
-                            ) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    HorizontalSpacer(size = 15.dp)
-                                    Icon(
-                                        imageVector = if ((item.isChildrenInitialized && item.children.isEmpty()) || !item.isChildrenInitialized) Icons.Filled.Book
-                                        else Icons.Filled.Folder,
-                                        contentDescription = stringResource(id = R.string.question_bank_icon),
-                                        modifier = Modifier.padding(vertical = 15.dp).size(32.dp)
-                                    )
-                                    Column(modifier = Modifier.padding(15.dp)) {
-                                        Text(text = item.name, style = MaterialTheme.typography.subtitle1)
-                                        VerticalSpacer(size = 5.dp)
-                                        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                                            Text(text = item.description, style = MaterialTheme.typography.subtitle2)
+                                    },
+                                    modifier = Modifier
+                                        .padding(
+                                            start = 10.dp,
+                                            top = if (item.index == 0) 0.dp else 10.dp,
+                                            end = 10.dp,
+                                            bottom = if (index + 1 == viewModel.items.size) 10.dp else 0.dp
+                                        )
+                                        .fillMaxWidth(),
+                                    shape = RoundedCornerShape(10.dp),
+                                    elevation = 0.dp
+                                ) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        HorizontalSpacer(size = 15.dp)
+                                        Icon(
+                                            imageVector = if ((item.isChildrenInitialized && item.children.isEmpty()) || !item.isChildrenInitialized) Icons.Filled.Book
+                                            else Icons.Filled.Folder,
+                                            contentDescription = stringResource(id = R.string.question_bank_icon),
+                                            modifier = Modifier.padding(vertical = 15.dp).size(32.dp)
+                                        )
+                                        Column(modifier = Modifier.padding(15.dp)) {
+                                            Text(text = item.name, style = MaterialTheme.typography.subtitle1)
+                                            VerticalSpacer(size = 5.dp)
+                                            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                                                Text(text = item.description, style = MaterialTheme.typography.subtitle2)
+                                            }
                                         }
                                     }
                                 }
@@ -131,12 +140,12 @@ class SelectQuestionBankActivity : ComposeBaseActivity() {
                         }
                     }
                     if (viewModel.dialog) {
+                        val onDismiss = { viewModel.dialog = false }
                         TextDialog(
                             title = stringResource(id = R.string.failed),
                             message = viewModel.message,
-                            onConfirm = {
-                                finish()
-                            }
+                            onDismissRequest = onDismiss,
+                            onConfirm = onDismiss
                         )
                     }
                 }

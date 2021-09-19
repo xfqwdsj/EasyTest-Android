@@ -25,8 +25,8 @@ class QuestionSet {
         private lateinit var savedSet: Set
         lateinit var name: String
         lateinit var description: String
-        lateinit var url: String
-        lateinit var id: String
+        var url: String = ""
+        var id: String = ""
         var random = false
         lateinit var children: List<Set>
         val isChildrenInitialized get() = this::children.isInitialized
@@ -45,18 +45,24 @@ class QuestionSet {
             }
         val questionSetUrl: String
             get() = questionSet?.url ?: ""
-        val index: Int
+        var index: Int = -1
             get() {
-                var index = 114514
-                val set = list
-                for (i in set.indices) {
-                    if (set[i] == this) {
-                        index = i
-                        break
+                return if (field == -1) {
+                    var index = 114514
+                    val set = list
+                    for (i in set.indices) {
+                        if (set[i] == this) {
+                            index = i
+                            break
+                        }
                     }
+                    field = index
+                    index
+                } else {
+                    field
                 }
-                return index
             }
+            private set
 
         fun init() {
             if (this::children.isInitialized) {
