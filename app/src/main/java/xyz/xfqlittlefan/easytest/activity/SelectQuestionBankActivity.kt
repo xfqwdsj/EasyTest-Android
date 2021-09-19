@@ -17,13 +17,13 @@ import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.ComposeBaseActivity
 import xyz.xfqlittlefan.easytest.activity.viewmodel.SelectQuestionBankActivityViewModel
-import xyz.xfqlittlefan.easytest.data.QuestionSet
 import xyz.xfqlittlefan.easytest.util.UtilClass
 import xyz.xfqlittlefan.easytest.widget.HorizontalSpacer
 import xyz.xfqlittlefan.easytest.widget.MaterialContainer
@@ -72,7 +72,7 @@ class SelectQuestionBankActivity : ComposeBaseActivity() {
                                             } else {
                                                 ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                                             }
-                                            startActivity(Intent().apply {
+                                            startActivity(Intent(this@SelectQuestionBankActivity, TestActivity::class.java).apply {
                                                 putExtra("url", item.url)
                                                 putExtra("random", item.random)
                                                 putExtra("id", item.id)
@@ -84,7 +84,7 @@ class SelectQuestionBankActivity : ComposeBaseActivity() {
                                         val indexList = ArrayList(viewModel.indexList)
                                         val urlList = arrayListOf(item.questionSetUrl)
                                         indexList.add(item.index)
-                                        startActivity(Intent().apply {
+                                        startActivity(Intent(this@SelectQuestionBankActivity, SelectQuestionBankActivity::class.java).apply {
                                             putIntegerArrayListExtra("indexList", indexList)
                                             putStringArrayListExtra("urlList", urlList)
                                         })
@@ -101,17 +101,17 @@ class SelectQuestionBankActivity : ComposeBaseActivity() {
                                 shape = RoundedCornerShape(10.dp),
                                 elevation = 0.dp
                             ) {
-                                Row {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
                                     HorizontalSpacer(size = 10.dp)
                                     Icon(
                                         imageVector = if (item.children.isNullOrEmpty()) Icons.Filled.Book
                                         else Icons.Filled.Folder,
                                         contentDescription = stringResource(id = R.string.question_bank_icon),
-                                        modifier = Modifier.padding(vertical = 10.dp)
+                                        modifier = Modifier.padding(vertical = 10.dp).size(32.dp)
                                     )
                                     Column(modifier = Modifier.padding(10.dp)) {
                                         Text(text = item.name, style = MaterialTheme.typography.subtitle1)
-                                        VerticalSpacer(size = 10.dp)
+                                        VerticalSpacer(size = 15.dp)
                                         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                                             Text(text = item.description, style = MaterialTheme.typography.subtitle2)
                                         }
@@ -122,24 +122,6 @@ class SelectQuestionBankActivity : ComposeBaseActivity() {
                     }
                 }
             }
-        }
-    }
-
-    private fun onItemClicked(item: QuestionSet.Set) {
-        if (item.url != "" && item.url != null) {
-            requestedOrientation = if (UtilClass.getPreferences().getBoolean("enable_landscape", false)) {
-                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-            } else {
-                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            }
-            Intent(this, TestActivity::class.java).apply {
-                putExtra("url", item.url)
-                putExtra("random", item.random)
-                putExtra("id", item.id)
-                putExtra("questionSetUrl", item.questionSetUrl)
-                startActivity(this)
-            }
-            finish()
         }
     }
 }

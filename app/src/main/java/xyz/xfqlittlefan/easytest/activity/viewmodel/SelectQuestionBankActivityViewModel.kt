@@ -69,6 +69,10 @@ class SelectQuestionBankActivityViewModel : ViewModel() {
                             }
                             list.addAll(position, cacheList)
                             items = list
+                            completedCount ++
+                            if (completedCount == urlList.size) {
+                                progressing = false
+                            }
                         }
                     }
                 })
