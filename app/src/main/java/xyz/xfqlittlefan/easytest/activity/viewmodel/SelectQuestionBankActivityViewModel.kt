@@ -31,12 +31,14 @@ class SelectQuestionBankActivityViewModel : ViewModel() {
     ) {
         items = listOf()
         progressing = true
+        var startedCount = 0
         var completedCount = 0
         val size = mutableListOf<Int>()
         this.indexList = indexList
         urlList.forEach { _ -> size.add(0) }
         urlList.forEachIndexed { i, url ->
             if (url.isNotEmpty()) {
+                startedCount++
                 OkHttpClient().newCall(
                     Request.Builder()
                         .url(url)
@@ -70,7 +72,7 @@ class SelectQuestionBankActivityViewModel : ViewModel() {
                             list.addAll(position, cacheList)
                             items = list
                             completedCount ++
-                            if (completedCount == urlList.size) {
+                            if (completedCount == startedCount) {
                                 progressing = false
                             }
                         }

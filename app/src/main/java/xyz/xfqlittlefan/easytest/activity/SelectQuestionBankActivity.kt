@@ -111,7 +111,7 @@ class SelectQuestionBankActivity : ComposeBaseActivity() {
                                     )
                                     Column(modifier = Modifier.padding(10.dp)) {
                                         Text(text = item.name, style = MaterialTheme.typography.subtitle1)
-                                        VerticalSpacer(size = 15.dp)
+                                        VerticalSpacer(size = 5.dp)
                                         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                                             Text(text = item.description, style = MaterialTheme.typography.subtitle2)
                                         }
