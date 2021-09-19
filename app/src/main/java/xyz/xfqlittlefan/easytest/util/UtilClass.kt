@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.view.ViewGroup
+import android.webkit.WebView
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -22,6 +23,7 @@ import kotlin.math.min
 object UtilClass {
     private lateinit var context: Context
     private val gson = Gson()
+    private lateinit var userAgent: String
 
     const val CORRECTNESS = 0
     const val SCORE = 1
@@ -273,6 +275,14 @@ object UtilClass {
             1 -> true
             2 -> false
             else -> null
+        }
+    }
+
+    fun getUA(): String {
+        return if (this::userAgent.isInitialized) {
+            userAgent
+        } else {
+            if (this::context.isInitialized) WebView(context).settings.userAgentString else ""
         }
     }
 }

@@ -40,6 +40,7 @@ class SelectQuestionBankActivity : ComposeBaseActivity() {
             intent.getStringArrayListExtra("urlList") ?: ArrayList(),
             this
         )
+        xyz.xfqlittlefan.easytest.util.ActivityMap.addActivity(this)
         setContent {
             MaterialContainer(
                 title = R.string.select_question_bank,

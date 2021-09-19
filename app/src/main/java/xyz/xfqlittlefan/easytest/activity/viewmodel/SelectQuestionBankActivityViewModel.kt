@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import okhttp3.*
 import xyz.xfqlittlefan.easytest.data.QuestionSet
 import xyz.xfqlittlefan.easytest.util.UtilClass.getGson
+import xyz.xfqlittlefan.easytest.util.UtilClass.getUA
 import java.io.IOException
 
 class SelectQuestionBankActivityViewModel : ViewModel() {
@@ -43,7 +44,7 @@ class SelectQuestionBankActivityViewModel : ViewModel() {
                     Request.Builder()
                         .url(url)
                         .removeHeader("User-Agent")
-                        .addHeader("User-Agent", WebView(context).settings.userAgentString)
+                        .addHeader("User-Agent", getUA())
                         .build()
                 ).enqueue(object : Callback {
                     override fun onFailure(call: Call, e: IOException) {
