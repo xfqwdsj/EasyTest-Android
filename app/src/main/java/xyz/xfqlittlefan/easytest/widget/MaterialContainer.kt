@@ -145,7 +145,7 @@ fun MaterialContainer(
     MaterialContainer(
         title = stringResource(id = title),
         subtitle = subtitle?.let { stringResource(id = it) },
-        raised = false,
+        raised = raised,
         onBack = onBack,
         actions = actions,
         content = content
