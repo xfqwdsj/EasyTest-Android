@@ -2,7 +2,6 @@ package xyz.xfqlittlefan.easytest.widget
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -69,7 +68,7 @@ fun MaterialContainer(
         darkTheme = darkTheme,
         topBar = {
             val alpha = animateFloatAsState(targetValue = if (raised) 0.95f else 1f)
-            
+
             TopAppBar(
                 title = {
                     Column {
@@ -99,13 +98,15 @@ fun MaterialContainer(
             ) {
                 Spacer(
                     modifier = Modifier
-                    .fillMaxWidth()
-                    .background(brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Black.copy(alpha = 0.5f),
-                            Transparent
+                        .fillMaxWidth()
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    Black.copy(alpha = 0.5f),
+                                    Transparent
+                                )
+                            )
                         )
-                    ))
                 )
             }
         }
