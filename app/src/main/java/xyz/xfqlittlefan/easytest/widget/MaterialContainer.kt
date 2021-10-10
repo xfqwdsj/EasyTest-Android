@@ -99,6 +99,7 @@ fun MaterialContainer(
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .height(2.dp)
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(
