@@ -11,7 +11,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -80,7 +80,7 @@ class PreferenceScope(private val context: Context) {
                     modifier = Modifier
                         .padding(start = 10.dp, top = 10.dp, end = 10.dp)
                         .fillMaxWidth(),
-                    shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
+                    shape = MaterialTheme.shapes.medium.copy(bottomEnd = ZeroCornerSize, bottomStart = ZeroCornerSize)
                 ) {
                     Text(
                         modifier = Modifier
@@ -102,7 +102,7 @@ class PreferenceScope(private val context: Context) {
                     .height(10.dp)
                     .background(
                         color = MaterialTheme.colors.surface,
-                        shape = RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp)
+                        shape = MaterialTheme.shapes.medium.copy(topStart = ZeroCornerSize, topEnd = ZeroCornerSize)
                     )
             )
         }
@@ -141,16 +141,15 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                         onDismissRequest = onDismiss,
                         onConfirm = {
                             sharedPreferences.edit().putString(key, value).apply()
-                            showed = false
+                            onDismiss()
                         },
                         onDismiss = onDismiss
                     ) {
-                        Column(modifier = Modifier.fillMaxWidth()) {
-                            TextField(
-                                value = value,
-                                onValueChange = { value = it }
-                            )
-                        }
+                        TextField(
+                            value = value,
+                            onValueChange = { value = it },
+                            modifier = Modifier.fillMaxWidth()
+                        )
                     }
                 }
                 CompositionLocalProvider(
@@ -251,7 +250,9 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                     ) {
                         LazyVerticalGrid(
                             cells = GridCells.Adaptive(minSize = 68.dp),
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(MaterialTheme.shapes.medium)
                         ) {
                             items(colors) {
                                 Box(
@@ -516,6 +517,4 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
             }
         }
     }
-
-
 }

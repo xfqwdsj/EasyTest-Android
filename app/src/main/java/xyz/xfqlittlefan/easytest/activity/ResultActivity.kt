@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -29,6 +30,7 @@ import xyz.xfqlittlefan.easytest.util.UtilClass.getResultTitleBackGroundColor
 import xyz.xfqlittlefan.easytest.widget.MaterialContainer
 import xyz.xfqlittlefan.easytest.widget.TextDialog
 import xyz.xfqlittlefan.easytest.widget.VerticalSpacer
+import xyz.xfqlittlefan.easytest.widget.getRaised
 
 class ResultActivity : ComposeBaseActivity() {
     private val viewModel by viewModels<ResultActivityViewModel>()
@@ -38,11 +40,14 @@ class ResultActivity : ComposeBaseActivity() {
         super.onCreate(savedInstanceState)
         viewModel.init(intent.getStringExtra("id"), intent.getBooleanExtra("uploaded", false))
         setContent {
+            val state = rememberLazyListState()
+
             MaterialContainer(
                 title = R.string.result,
+                raised = getRaised(state),
                 onBack = { super.onBackPressed() }
             ) { contentPadding ->
-                LazyColumn(contentPadding = contentPadding) {
+                LazyColumn(state = state, contentPadding = contentPadding) {
                     itemsIndexed(viewModel.display) { index, displayData ->
                         Card(
                             modifier = Modifier

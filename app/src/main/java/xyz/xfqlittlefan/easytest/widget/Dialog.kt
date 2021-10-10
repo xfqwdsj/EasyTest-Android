@@ -1,20 +1,25 @@
 package xyz.xfqlittlefan.easytest.widget
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Placeable
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import com.google.accompanist.insets.navigationBarsWithImePadding
+import com.google.accompanist.insets.statusBarsPadding
 import kotlin.math.max
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Dialog(
     title: String,
@@ -22,27 +27,43 @@ fun Dialog(
     onDismissRequest: () -> Unit,
     content: @Composable () -> Unit
 ) {
-    Dialog(onDismissRequest = onDismissRequest) {
-        Surface(shape = RoundedCornerShape(10.dp)) {
-            Column {
-                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
-                    Text(
-                        text = title,
-                        modifier = Modifier.padding(24.dp),
-                        style = MaterialTheme.typography.subtitle1
-                    )
-                }
-                Box(
+    Dialog(
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        with(LocalDensity.current) {
+            BoxWithConstraints(
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .navigationBarsWithImePadding()
+            ) {
+                Surface(
                     modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .weight(weight = 1f, fill = false)
-                ) { content() }
-                Spacer(modifier = Modifier.height(24.dp))
-                if (buttons != null) {
-                    Box(modifier = Modifier.padding(horizontal = 10.dp)) {
-                        ButtonsRow(mainAxisSpacing = 8.dp, crossAxisSpacing = 12.dp, content = buttons)
+                        .width(constraints.maxWidth.toDp() - 40.dp)
+                        .heightIn(min = 0.dp, max = constraints.maxHeight.toDp() - 40.dp),
+                    shape = MaterialTheme.shapes.medium
+                ) {
+                    Column {
+                        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
+                            Text(
+                                text = title,
+                                modifier = Modifier.padding(24.dp),
+                                style = MaterialTheme.typography.subtitle1
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .padding(horizontal = 24.dp)
+                                .weight(weight = 1f, fill = false)
+                        ) { content() }
+                        Spacer(modifier = Modifier.height(24.dp))
+                        if (buttons != null) {
+                            Box(modifier = Modifier.padding(horizontal = 10.dp)) {
+                                ButtonsRow(mainAxisSpacing = 8.dp, crossAxisSpacing = 12.dp, content = buttons)
+                            }
+                            Spacer(modifier = Modifier.height(10.dp))
+                        }
                     }
-                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }

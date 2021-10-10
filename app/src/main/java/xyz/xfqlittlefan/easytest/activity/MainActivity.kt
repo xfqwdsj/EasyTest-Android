@@ -33,6 +33,7 @@ import xyz.xfqlittlefan.easytest.util.UtilClass
 import xyz.xfqlittlefan.easytest.widget.HorizontalSpacer
 import xyz.xfqlittlefan.easytest.widget.MaterialContainer
 import xyz.xfqlittlefan.easytest.widget.VerticalSpacer
+import xyz.xfqlittlefan.easytest.widget.getRaised
 
 class MainActivity : ComposeBaseActivity() {
     private val viewModel by viewModels<MainActivityViewModel>()
@@ -40,13 +41,17 @@ class MainActivity : ComposeBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val state = rememberLazyListState()
+
             MaterialContainer(
                 themeKey = UtilClass.theme,
                 darkTheme = UtilClass.getDark(),
-                title = stringResource(R.string.home)
+                title = stringResource(R.string.home),
+                raised = getRaised(state)
             ) { contentPadding ->
                 LazyColumn(
-                    state = rememberLazyListState(),
+                    modifier = Modifier.fillMaxSize(),
+                    state = state,
                     contentPadding = PaddingValues(
                         start = 10.dp,
                         top = contentPadding.calculateTopPadding(),

@@ -2,10 +2,10 @@ package xyz.xfqlittlefan.easytest.activity.base
 
 import android.graphics.Color
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 import androidx.core.view.WindowCompat
 
-open class ComposeBaseActivity : AppCompatActivity() {
+open class ComposeBaseActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
