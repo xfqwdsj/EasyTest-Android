@@ -3,7 +3,9 @@ package xyz.xfqlittlefan.easytest.activity
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.ComposeBaseActivity
 import xyz.xfqlittlefan.easytest.activity.viewmodel.LoginActivityViewModel
+import xyz.xfqlittlefan.easytest.theme.expand
 import xyz.xfqlittlefan.easytest.widget.Autofill
 import xyz.xfqlittlefan.easytest.widget.MaterialContainer
 import xyz.xfqlittlefan.easytest.widget.TextDialog
@@ -188,15 +191,7 @@ class LoginActivity : ComposeBaseActivity() {
                     ) {
                         AnimatedContent(
                             targetState = viewModel.signUp,
-                            transitionSpec = {
-                                if (targetState) {
-                                    slideInVertically({ -it }) + fadeIn() with
-                                            slideOutVertically({ it }) + fadeOut()
-                                } else {
-                                    slideInVertically({ it }) + fadeIn() with
-                                            slideOutVertically({ -it }) + fadeOut()
-                                }
-                            }
+                            transitionSpec = { expand(targetState) }
                         ) {
                             Text(stringResource(if (it) R.string.sign_up else R.string.login))
                         }

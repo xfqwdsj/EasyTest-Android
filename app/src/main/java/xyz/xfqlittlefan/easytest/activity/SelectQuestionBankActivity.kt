@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.ComposeBaseActivity
 import xyz.xfqlittlefan.easytest.activity.viewmodel.SelectQuestionBankActivityViewModel
+import xyz.xfqlittlefan.easytest.theme.slideInDown
+import xyz.xfqlittlefan.easytest.theme.slideOutUp
 import xyz.xfqlittlefan.easytest.util.ActivityMap
 import xyz.xfqlittlefan.easytest.util.UtilClass
 import xyz.xfqlittlefan.easytest.widget.HorizontalSpacer
@@ -62,8 +64,8 @@ class SelectQuestionBankActivity : ComposeBaseActivity() {
                             .padding(top = contentPadding.calculateTopPadding())
                             .fillMaxWidth(),
                         visible = viewModel.progressing,
-                        enter = slideInVertically(initialOffsetY = { -it }),
-                        exit = slideOutVertically(targetOffsetY = { -it })
+                        enter = slideInDown,
+                        exit = slideOutUp
                     ) { LinearProgressIndicator(modifier = Modifier.fillMaxWidth()) }
                     AnimatedVisibility(
                         modifier = Modifier.fillMaxSize(),

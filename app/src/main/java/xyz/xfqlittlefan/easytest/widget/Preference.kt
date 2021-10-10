@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.preference.PreferenceManager
 import xyz.xfqlittlefan.easytest.theme.Black
 import xyz.xfqlittlefan.easytest.theme.colors
+import xyz.xfqlittlefan.easytest.theme.fade
 
 @DslMarker
 annotation class PreferenceMarker
@@ -177,7 +178,7 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                         Column(modifier = Modifier.weight(1f)) {
                             AnimatedContent(
                                 targetState = title,
-                                transitionSpec = { fadeIn() with fadeOut() }
+                                transitionSpec = { fade }
                             ) {
                                 Text(text = it, style = MaterialTheme.typography.subtitle1)
                             }
@@ -185,7 +186,7 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                                 Spacer(modifier = Modifier.height(10.dp))
                                 AnimatedContent(
                                     targetState = summary,
-                                    transitionSpec = { fadeIn() with fadeOut() }
+                                    transitionSpec = { fade }
                                 ) {
                                     Text(text = it, style = MaterialTheme.typography.subtitle2)
                                 }
@@ -332,7 +333,7 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                         Column(modifier = Modifier.weight(1f)) {
                             AnimatedContent(
                                 targetState = title,
-                                transitionSpec = { fadeIn() with fadeOut() }
+                                transitionSpec = { fade }
                             ) {
                                 Text(text = it, style = MaterialTheme.typography.subtitle1)
                             }
@@ -340,7 +341,7 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                                 Spacer(modifier = Modifier.height(10.dp))
                                 AnimatedContent(
                                     targetState = summary,
-                                    transitionSpec = { fadeIn() with fadeOut() }
+                                    transitionSpec = { fade }
                                 ) {
                                     Text(text = it, style = MaterialTheme.typography.subtitle2)
                                 }
@@ -411,7 +412,7 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                         Column(modifier = Modifier.weight(1f)) {
                             AnimatedContent(
                                 targetState = title,
-                                transitionSpec = { fadeIn() with fadeOut() }
+                                transitionSpec = { fade }
                             ) {
                                 Text(text = it, style = MaterialTheme.typography.subtitle1)
                             }
@@ -419,7 +420,7 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                                 Spacer(modifier = Modifier.height(10.dp))
                                 AnimatedContent(
                                     targetState = summary,
-                                    transitionSpec = { fadeIn() with fadeOut() }
+                                    transitionSpec = { fade }
                                 ) {
                                     Text(text = it, style = MaterialTheme.typography.subtitle2)
                                 }
@@ -486,14 +487,14 @@ class PreferenceCategoryScope(private val itemList: MutableList<@Composable () -
                         Column(modifier = Modifier.weight(1f)) {
                             AnimatedContent(
                                 targetState = title,
-                                transitionSpec = { fadeIn() with fadeOut() }
+                                transitionSpec = { fade }
                             ) {
                                 Text(text = it, style = MaterialTheme.typography.subtitle1)
                             }
                             Spacer(modifier = Modifier.height(10.dp))
                             AnimatedContent(
                                 targetState = summary,
-                                transitionSpec = { fadeIn() with fadeOut() }
+                                transitionSpec = { fade }
                             ) {
                                 Text(text = it, style = MaterialTheme.typography.subtitle2)
                             }

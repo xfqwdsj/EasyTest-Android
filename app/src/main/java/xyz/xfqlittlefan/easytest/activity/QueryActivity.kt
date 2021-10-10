@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.ComposeBaseActivity
 import xyz.xfqlittlefan.easytest.activity.viewmodel.QueryActivityViewModel
+import xyz.xfqlittlefan.easytest.theme.expand
 import xyz.xfqlittlefan.easytest.widget.MaterialContainer
 
 class QueryActivity : ComposeBaseActivity() {
@@ -60,15 +61,7 @@ class QueryActivity : ComposeBaseActivity() {
                             ) {
                                 AnimatedContent(
                                     targetState = viewModel.expanded,
-                                    transitionSpec = {
-                                        if (targetState) {
-                                            slideInVertically({ -it }) + fadeIn() with
-                                                    slideOutVertically({ it }) + fadeOut()
-                                        } else {
-                                            slideInVertically({ it }) + fadeIn() with
-                                                    slideOutVertically({ -it }) + fadeOut()
-                                        }
-                                    }
+                                    transitionSpec = { expand(targetState) }
                                 ) {
                                     Text(stringResource(if (it) R.string.collapse_options else R.string.expand_options))
                                 }

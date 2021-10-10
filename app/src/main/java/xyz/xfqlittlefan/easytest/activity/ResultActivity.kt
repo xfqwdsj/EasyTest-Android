@@ -3,12 +3,13 @@ package xyz.xfqlittlefan.easytest.activity
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,6 +25,7 @@ import dev.jeziellago.compose.markdowntext.MarkdownText
 import xyz.xfqlittlefan.easytest.R
 import xyz.xfqlittlefan.easytest.activity.base.ComposeBaseActivity
 import xyz.xfqlittlefan.easytest.activity.viewmodel.ResultActivityViewModel
+import xyz.xfqlittlefan.easytest.theme.expand
 import xyz.xfqlittlefan.easytest.util.UtilClass.getGson
 import xyz.xfqlittlefan.easytest.util.UtilClass.getResultItemColor
 import xyz.xfqlittlefan.easytest.util.UtilClass.getResultTitleBackGroundColor
@@ -119,15 +121,7 @@ class ResultActivity : ComposeBaseActivity() {
                                     ) {
                                         AnimatedContent(
                                             targetState = expanded,
-                                            transitionSpec = {
-                                                if (targetState) {
-                                                    slideInVertically({ -it }) + fadeIn() with
-                                                            slideOutVertically({ it }) + fadeOut()
-                                                } else {
-                                                    slideInVertically({ it }) + fadeIn() with
-                                                            slideOutVertically({ -it }) + fadeOut()
-                                                }
-                                            }
+                                            transitionSpec = { expand(targetState) }
                                         ) {
                                             Text(stringResource(if (it) R.string.collapse_details else R.string.expand_details))
                                         }

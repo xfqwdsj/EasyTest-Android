@@ -4,7 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -138,7 +139,7 @@ class MainActivity : ComposeBaseActivity() {
         ) {
             AnimatedContent(
                 targetState = title,
-                transitionSpec = { fadeIn() with fadeOut() }
+                transitionSpec = { fade }
             ) {
                 Text(text = it, style = MaterialTheme.typography.subtitle1)
             }
@@ -147,7 +148,7 @@ class MainActivity : ComposeBaseActivity() {
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                     AnimatedContent(
                         targetState = subtitle,
-                        transitionSpec = { fadeIn() with fadeOut() }
+                        transitionSpec = { fade }
                     ) {
                         Text(text = it, style = MaterialTheme.typography.subtitle2)
                     }
@@ -165,7 +166,7 @@ class MainActivity : ComposeBaseActivity() {
         ) {
             AnimatedContent(
                 targetState = title,
-                transitionSpec = { fadeIn() with fadeOut() }
+                transitionSpec = { fade }
             ) {
                 Text(text = it, style = MaterialTheme.typography.subtitle1)
             }
@@ -174,7 +175,7 @@ class MainActivity : ComposeBaseActivity() {
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                     AnimatedContent(
                         targetState = subtitle,
-                        transitionSpec = { fadeIn() with fadeOut() }
+                        transitionSpec = { fade }
                     ) {
                         Text(text = it, style = MaterialTheme.typography.subtitle2)
                     }
@@ -193,7 +194,7 @@ class MainActivity : ComposeBaseActivity() {
         ) {
             AnimatedContent(
                 targetState = title,
-                transitionSpec = { fadeIn() with fadeOut() }
+                transitionSpec = { fade }
             ) {
                 Text(text = it, style = MaterialTheme.typography.subtitle1)
             }
@@ -202,7 +203,7 @@ class MainActivity : ComposeBaseActivity() {
                 CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                     AnimatedContent(
                         targetState = subtitle,
-                        transitionSpec = { fadeIn() with fadeOut() }
+                        transitionSpec = { fade }
                     ) {
                         Text(text = it, style = MaterialTheme.typography.subtitle2)
                     }
