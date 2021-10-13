@@ -32,11 +32,7 @@ fun Dialog(
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         with(LocalDensity.current) {
-            BoxWithConstraints(
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .navigationBarsWithImePadding()
-            ) {
+            BoxWithConstraints {
                 Surface(
                     modifier = Modifier
                         .width(constraints.maxWidth.toDp() - 40.dp)

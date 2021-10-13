@@ -9,6 +9,7 @@ import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -21,18 +22,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import xyz.xfqlittlefan.easytest.R
-import xyz.xfqlittlefan.easytest.activity.base.ComposeBaseActivity
+import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
 import xyz.xfqlittlefan.easytest.activity.viewmodel.SelectQuestionBankActivityViewModel
 import xyz.xfqlittlefan.easytest.theme.slideInDown
 import xyz.xfqlittlefan.easytest.theme.slideOutUp
 import xyz.xfqlittlefan.easytest.util.ActivityMap
 import xyz.xfqlittlefan.easytest.util.UtilClass
-import xyz.xfqlittlefan.easytest.widget.HorizontalSpacer
-import xyz.xfqlittlefan.easytest.widget.MaterialContainer
-import xyz.xfqlittlefan.easytest.widget.TextDialog
-import xyz.xfqlittlefan.easytest.widget.VerticalSpacer
+import xyz.xfqlittlefan.easytest.widget.*
 
-class SelectQuestionBankActivity : ComposeBaseActivity() {
+class SelectQuestionBankActivity : BaseActivity() {
     private val viewModel by viewModels<SelectQuestionBankActivityViewModel>()
 
     @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
@@ -44,8 +42,11 @@ class SelectQuestionBankActivity : ComposeBaseActivity() {
         )
         ActivityMap.addActivity(this)
         setContent {
+            val state = rememberLazyListState()
+
             MaterialContainer(
                 title = R.string.select_question_bank,
+                raised = getRaised(state),
                 onBack = { super.onBackPressed() },
                 actions = {
                     IconButton(onClick = {
@@ -73,7 +74,7 @@ class SelectQuestionBankActivity : ComposeBaseActivity() {
                         enter = fadeIn(),
                         exit = fadeOut()
                     ) {
-                        LazyColumn(contentPadding = contentPadding) {
+                        LazyColumn(state = state, contentPadding = contentPadding) {
                             itemsIndexed(viewModel.items) { index, item ->
                                 if (item.index == 0 && item.questionSet != null) {
                                     Text(
@@ -127,7 +128,9 @@ class SelectQuestionBankActivity : ComposeBaseActivity() {
                                             imageVector = if ((item.isChildrenInitialized && item.children.isEmpty()) || !item.isChildrenInitialized) Icons.Filled.Book
                                             else Icons.Filled.Folder,
                                             contentDescription = stringResource(id = R.string.question_bank_icon),
-                                            modifier = Modifier.padding(vertical = 15.dp).size(32.dp)
+                                            modifier = Modifier
+                                                .padding(vertical = 15.dp)
+                                                .size(32.dp)
                                         )
                                         Column(modifier = Modifier.padding(15.dp)) {
                                             Text(text = item.name, style = MaterialTheme.typography.subtitle1)

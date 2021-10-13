@@ -16,26 +16,30 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import xyz.xfqlittlefan.easytest.R
-import xyz.xfqlittlefan.easytest.activity.base.ComposeBaseActivity
+import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
 import xyz.xfqlittlefan.easytest.activity.viewmodel.QueryActivityViewModel
 import xyz.xfqlittlefan.easytest.theme.expand
 import xyz.xfqlittlefan.easytest.widget.MaterialContainer
+import xyz.xfqlittlefan.easytest.widget.getRaised
 
-class QueryActivity : ComposeBaseActivity() {
+class QueryActivity : BaseActivity() {
     private val viewModel by viewModels<QueryActivityViewModel>()
 
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val state = rememberScrollState()
+
             MaterialContainer(
                 title = R.string.query,
+                raised = getRaised(state),
                 onBack = { super.onBackPressed() }
             ) { contentPadding ->
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
+                        .verticalScroll(state)
                         .padding(contentPadding)
                 ) {
                     TextField(

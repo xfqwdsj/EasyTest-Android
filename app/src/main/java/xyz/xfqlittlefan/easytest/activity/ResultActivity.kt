@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.google.gson.reflect.TypeToken
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import xyz.xfqlittlefan.easytest.R
-import xyz.xfqlittlefan.easytest.activity.base.ComposeBaseActivity
+import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
 import xyz.xfqlittlefan.easytest.activity.viewmodel.ResultActivityViewModel
 import xyz.xfqlittlefan.easytest.theme.expand
 import xyz.xfqlittlefan.easytest.util.UtilClass.getGson
@@ -34,7 +34,7 @@ import xyz.xfqlittlefan.easytest.widget.TextDialog
 import xyz.xfqlittlefan.easytest.widget.VerticalSpacer
 import xyz.xfqlittlefan.easytest.widget.getRaised
 
-class ResultActivity : ComposeBaseActivity() {
+class ResultActivity : BaseActivity() {
     private val viewModel by viewModels<ResultActivityViewModel>()
 
     @OptIn(ExperimentalAnimationApi::class)

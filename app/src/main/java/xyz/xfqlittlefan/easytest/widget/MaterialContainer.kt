@@ -54,8 +54,8 @@ fun MaterialContainer(
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MaterialContainer(
-    themeKey: String = "Blue",
-    darkTheme: Boolean? = isSystemInDarkTheme(),
+    themeKey: String = UtilClass.theme,
+    darkTheme: Boolean? = UtilClass.getDark(),
     title: String,
     subtitle: String? = null,
     raised: Boolean = false,
@@ -93,13 +93,14 @@ fun MaterialContainer(
             content(it)
             AnimatedVisibility(
                 visible = raised,
+                modifier = Modifier.padding(top = it.calculateTopPadding()).fillMaxWidth(),
                 enter = expandVertically(),
                 exit = shrinkVertically()
             ) {
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(2.dp)
+                        .height(4.dp)
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(
@@ -124,8 +125,6 @@ fun MaterialContainer(
     content: @Composable (PaddingValues) -> Unit
 ) {
     MaterialContainer(
-        themeKey = UtilClass.theme,
-        darkTheme = UtilClass.getDark(),
         title = title,
         subtitle = subtitle,
         raised = raised,

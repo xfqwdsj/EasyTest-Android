@@ -27,16 +27,15 @@ import androidx.compose.ui.unit.dp
 import androidx.preference.PreferenceManager
 import cn.leancloud.LCUser
 import xyz.xfqlittlefan.easytest.R
-import xyz.xfqlittlefan.easytest.activity.base.ComposeBaseActivity
+import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
 import xyz.xfqlittlefan.easytest.activity.viewmodel.MainActivityViewModel
 import xyz.xfqlittlefan.easytest.theme.*
-import xyz.xfqlittlefan.easytest.util.UtilClass
 import xyz.xfqlittlefan.easytest.widget.HorizontalSpacer
 import xyz.xfqlittlefan.easytest.widget.MaterialContainer
 import xyz.xfqlittlefan.easytest.widget.VerticalSpacer
 import xyz.xfqlittlefan.easytest.widget.getRaised
 
-class MainActivity : ComposeBaseActivity() {
+class MainActivity : BaseActivity() {
     private val viewModel by viewModels<MainActivityViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,9 +44,7 @@ class MainActivity : ComposeBaseActivity() {
             val state = rememberLazyListState()
 
             MaterialContainer(
-                themeKey = UtilClass.theme,
-                darkTheme = UtilClass.getDark(),
-                title = stringResource(R.string.home),
+                title = R.string.home,
                 raised = getRaised(state)
             ) { contentPadding ->
                 LazyColumn(

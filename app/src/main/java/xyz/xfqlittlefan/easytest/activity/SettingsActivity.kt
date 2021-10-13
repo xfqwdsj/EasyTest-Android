@@ -4,31 +4,32 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import xyz.xfqlittlefan.easytest.R
-import xyz.xfqlittlefan.easytest.activity.base.ComposeBaseActivity
+import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
 import xyz.xfqlittlefan.easytest.util.UtilClass
 import xyz.xfqlittlefan.easytest.util.UtilClass.dark
-import xyz.xfqlittlefan.easytest.util.UtilClass.getDark
 import xyz.xfqlittlefan.easytest.util.UtilClass.getResString
-import xyz.xfqlittlefan.easytest.widget.BackIcon
 import xyz.xfqlittlefan.easytest.widget.MaterialContainer
 import xyz.xfqlittlefan.easytest.widget.PreferenceContainer
+import xyz.xfqlittlefan.easytest.widget.getRaised
 
-class SettingsActivity : ComposeBaseActivity() {
+class SettingsActivity : BaseActivity() {
 
     @SuppressLint("MissingSuperCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val state = rememberLazyListState()
+
             MaterialContainer(
-                themeKey = UtilClass.theme,
-                darkTheme = getDark(),
                 title = stringResource(id = R.string.settings),
-                navigationIcon = { BackIcon { super.onBackPressed() } }
+                raised = getRaised(state),
+                onBack = { super.onBackPressed() }
             ) { contentPadding ->
-                PreferenceContainer(modifier = Modifier.fillMaxSize(), context = this, contentPadding = contentPadding) {
+                PreferenceContainer(modifier = Modifier.fillMaxSize(), context = this, state = state, contentPadding = contentPadding) {
                     category(title = getResString(R.string.general)) {
                         edit(
                             key = "custom_source",

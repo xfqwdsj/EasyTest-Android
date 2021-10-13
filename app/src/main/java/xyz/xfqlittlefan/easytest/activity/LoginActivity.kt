@@ -29,15 +29,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import xyz.xfqlittlefan.easytest.R
-import xyz.xfqlittlefan.easytest.activity.base.ComposeBaseActivity
+import xyz.xfqlittlefan.easytest.activity.base.BaseActivity
 import xyz.xfqlittlefan.easytest.activity.viewmodel.LoginActivityViewModel
 import xyz.xfqlittlefan.easytest.theme.expand
-import xyz.xfqlittlefan.easytest.widget.Autofill
-import xyz.xfqlittlefan.easytest.widget.MaterialContainer
-import xyz.xfqlittlefan.easytest.widget.TextDialog
-import xyz.xfqlittlefan.easytest.widget.VerticalSpacer
+import xyz.xfqlittlefan.easytest.widget.*
 
-class LoginActivity : ComposeBaseActivity() {
+class LoginActivity : BaseActivity() {
     private val viewModel by viewModels<LoginActivityViewModel>()
 
     @OptIn(ExperimentalAnimationApi::class, ExperimentalComposeUiApi::class)
@@ -45,14 +42,17 @@ class LoginActivity : ComposeBaseActivity() {
         super.onCreate(savedInstanceState)
         viewModel.finish = { finish() }
         setContent {
+            val state = rememberScrollState()
+
             MaterialContainer(
                 title = stringResource(id = R.string.login),
+                raised = getRaised(state),
                 onBack = { super.onBackPressed() }
             ) { contentPadding ->
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
+                        .verticalScroll(state)
                         .padding(contentPadding)
                 ) {
                     val autoFill = LocalAutofill.current
