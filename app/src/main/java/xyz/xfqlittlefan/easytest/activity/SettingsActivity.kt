@@ -53,13 +53,6 @@ class SettingsActivity : BaseActivity() {
                             )
                         ) { dark = it }
                     }
-                    category(title = getResString(R.string.test)) {
-                        switch(
-                            key = "enable_landscape",
-                            title = getResString(R.string.landscape_mode),
-                            summary = getResString(R.string.landscape_mode_summary)
-                        )
-                    }
                 }
             }
         }

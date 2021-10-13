@@ -85,8 +85,6 @@
     <string name="scoring_hint">你的分数 (0 ~ %f)</string>
     <string name="score_chip">%1$s (%2$s, %3$.1f / %4$.1f)</string>
     <string name="total_score">总分 (%1$.1f / %2$.1f)</string>
-    <string name="landscape_mode">横屏模式</string>
-    <string name="landscape_mode_summary">测试时使用横屏模式</string>
     <string name="back">返回</string>
     <string name="query">查询</string>
     <string name="expand_options">展开选项</string>
@@ -99,4 +97,8 @@
     <string name="checked">已选中</string>
     <string name="unchecked">未选中</string>
     <string name="nickname">昵称</string>
+    <string name="dark_theme">深色主题</string>
+    <string name="dark_theme_follow_system">跟随系统</string>
+    <string name="dark_theme_on">开启</string>
+    <string name="dark_theme_off">关闭</string>
 </resources>

@@ -84,8 +84,6 @@
     <string name="scoring_hint">Your score (0 ~ %f)</string>
     <string name="score_chip">%1$s (%2$s, %3$.1f / %4$.1f)</string>
     <string name="total_score">Total score (%1$.1f / %2$.1f)</string>
-    <string name="landscape_mode">Landscape mode</string>
-    <string name="landscape_mode_summary">Use landscape mode when testing</string>
     <string name="back">Back</string>
     <string name="query">Query</string>
     <string name="expand_options">Expand options</string>
@@ -98,4 +96,8 @@
     <string name="checked">Checked</string>
     <string name="unchecked">Unchecked</string>
     <string name="nickname">Nickname</string>
+    <string name="dark_theme">Dark theme</string>
+    <string name="dark_theme_follow_system">Follow system</string>
+    <string name="dark_theme_on">On</string>
+    <string name="dark_theme_off">Off</string>
 </resources>

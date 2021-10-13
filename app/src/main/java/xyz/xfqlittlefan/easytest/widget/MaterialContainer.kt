@@ -93,7 +93,9 @@ fun MaterialContainer(
             content(it)
             AnimatedVisibility(
                 visible = raised,
-                modifier = Modifier.padding(top = it.calculateTopPadding()).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(top = it.calculateTopPadding())
+                    .fillMaxWidth(),
                 enter = expandVertically(),
                 exit = shrinkVertically()
             ) {
@@ -120,7 +122,7 @@ fun MaterialContainer(
     title: String,
     subtitle: String? = null,
     raised: Boolean = false,
-    onBack: () -> Unit,
+    onBack: (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = { },
     content: @Composable (PaddingValues) -> Unit
 ) {
@@ -128,7 +130,7 @@ fun MaterialContainer(
         title = title,
         subtitle = subtitle,
         raised = raised,
-        navigationIcon = { BackIcon(onClick = onBack) },
+        navigationIcon = if (onBack != null) { { BackIcon(onClick = onBack) } } else null,
         actions = actions,
         content = content
     )
@@ -139,7 +141,7 @@ fun MaterialContainer(
     title: Int,
     subtitle: Int? = null,
     raised: Boolean = false,
-    onBack: () -> Unit,
+    onBack: (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = { },
     content: @Composable (PaddingValues) -> Unit
 ) {
