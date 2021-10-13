@@ -3,9 +3,7 @@ package xyz.xfqlittlefan.easytest.app
 import android.app.Application
 import cn.leancloud.LeanCloud
 import xyz.xfqlittlefan.easytest.util.UtilClass
-import xyz.xfqlittlefan.easytest.util.ThemeUtil
 import org.litepal.LitePal
-import rikka.material.app.DayNightDelegate
 
 class App : Application() {
 
